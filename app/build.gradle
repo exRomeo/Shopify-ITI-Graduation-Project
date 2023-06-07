@@ -4,6 +4,9 @@ plugins {
     id "kotlin-kapt"
 
 }
+task prepareKotlinBuildScriptModel {
+
+}
 
 android {
     namespace 'com.example.shopify'
@@ -95,5 +98,8 @@ dependencies {
     implementation "io.coil-kt:coil-svg:2.3.0"
     implementation "com.google.accompanist:accompanist-coil:0.15.0"
 
+    //carousel
+    implementation 'androidx.tv:tv-foundation:1.0.0-alpha04'
+    implementation 'androidx.tv:tv-material:1.0.0-alpha04'
 
 }
