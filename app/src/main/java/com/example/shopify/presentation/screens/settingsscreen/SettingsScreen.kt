@@ -1,20 +1,15 @@
 package com.example.shopify.presentation.screens.settingsscreen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -24,11 +19,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,18 +40,21 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
+import com.example.shopify.data.models.Address
 
+const val TAG = "TAG"
 
 @Composable
-fun UserBar(modifier: Modifier = Modifier, imageUrl: String, userName: String, email: String) {
+fun UserBar(modifier: Modifier = Modifier, imageUrl: String = "", userName: String, email: String) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(2.dp), verticalAlignment = Alignment.CenterVertically
+            .padding(4.dp), verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -68,8 +66,8 @@ fun UserBar(modifier: Modifier = Modifier, imageUrl: String, userName: String, e
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .clip(CircleShape)
-                .width(48.dp)
-                .height(48.dp)
+                .width(56.dp)
+                .height(56.dp)
         )
         Spacer(modifier = Modifier.width(32.dp))
 
@@ -77,7 +75,7 @@ fun UserBar(modifier: Modifier = Modifier, imageUrl: String, userName: String, e
             Text(
                 text = userName,
                 style = TextStyle(
-                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
                     textAlign = TextAlign.Center
                 )
             )
@@ -96,70 +94,7 @@ fun UserBar(modifier: Modifier = Modifier, imageUrl: String, userName: String, e
 
 
 @Composable
-fun UserProfile() {
-    var size by remember { mutableStateOf(350f) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .scrollable(orientation = Orientation.Vertical,
-                state = rememberScrollableState { delta ->
-                    if (size + delta < 350 && size + delta > 85)
-                        size += delta
-                    delta
-                }
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Box(
-            modifier = Modifier
-                .size(size.dp)
-                .padding(top = 16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data("https://www.gstatic.com/webp/gallery/1.jpg")
-                    .crossfade(true)
-                    .build(),
-                placeholder = painterResource(id = R.drawable.profile_picture_placehodler),
-                alignment = Alignment.TopCenter,
-                contentDescription = stringResource(id = R.string.profile_picture),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-                    .clip(CircleShape)
-            )
-        }
-
-        Text(
-            "This is a header",
-            Modifier
-                .padding(20.dp, 10.dp)
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.headlineSmall
-        )
-
-        LazyColumn {
-            item {
-                Text(
-                    "Start here...." + "lorem ipsum ".repeat(1200),
-                    Modifier
-                        .padding(20.dp, 10.dp, 20.dp, 5.dp)
-                        .align(Alignment.CenterHorizontally),
-                    lineHeight = 20.sp,
-                    style = MaterialTheme.typography.labelMedium
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun CardComponent(
+fun SettingItemCard(
     modifier: Modifier = Modifier,
     mainText: String,
     subText: String,
@@ -175,7 +110,8 @@ fun CardComponent(
                 MaterialTheme.colorScheme.onPrimaryContainer,
                 shape = RoundedCornerShape(10.dp)
             )
-            .background(color = MaterialTheme.colorScheme.primaryContainer),
+            .background(color = MaterialTheme.colorScheme.primaryContainer)
+            .clickable { onClick() },
         contentAlignment = Alignment.TopStart
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -196,7 +132,9 @@ fun CardComponent(
 }
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(settingsViewModel: SettingsViewModel, settingsNav: NavHostController) {
+
+
     LazyColumn(modifier = Modifier.padding(8.dp)) {
         item {
             UserBar(
@@ -207,167 +145,167 @@ fun SettingsScreen() {
             )
         }
         item {
-            CardComponent(
+            val addresses by settingsViewModel.addresses.collectAsState()
+            SettingItemCard(
                 modifier = Modifier.padding(vertical = 8.dp),
                 mainText = "Addresses",
-                subText = "Ammar ebn yaser st"
-            ) {}
-        }
-        item {
-            CardComponent(
-                modifier = Modifier.padding(vertical = 8.dp),
-                mainText = "Phone Numbers ",
-                subText = "+201556003397"
-            ) {}
-        }
-        item {
-            CardComponent(
-                modifier = Modifier.padding(vertical = 8.dp),
-                mainText = "Phone Numbers ",
-                subText = "+201556003397"
-            ) {}
-        }
-        item {
-            CardComponent(
-                modifier = Modifier.padding(vertical = 8.dp),
-                mainText = "Phone Numbers ",
-                subText = "+201556003397"
-            ) {}
-        }
-        item {
-            CardComponent(
-                modifier = Modifier.padding(vertical = 8.dp),
-                mainText = "Phone Numbers ",
-                subText = "+201556003397"
-            ) {}
-        }
-        item {
-            CardComponent(
-                modifier = Modifier.padding(vertical = 8.dp),
-                mainText = "Phone Numbers ",
-                subText = "+201556003397"
-            ) {}
-        }
-        item {
-            CardComponent(
-                modifier = Modifier.padding(vertical = 8.dp),
-                mainText = "Phone Numbers ",
-                subText = "+201556003397"
-            ) {}
-        }
-        item {
-            CardComponent(
-                modifier = Modifier.padding(vertical = 8.dp),
-                mainText = "Phone Numbers ",
-                subText = "+201556003397"
-            ) {}
-        }
-        item {
-            CardComponent(
-                modifier = Modifier.padding(vertical = 8.dp),
-                mainText = "Phone Numbers ",
-                subText = "+201556003397"
-            ) {}
+                subText = "you have ${addresses.size} registered address(s)."
+            ) {
+
+            }
         }
 
+        item {
+            val wishlist by settingsViewModel.wishlist.collectAsState()
+            SettingItemCard(
+                modifier = Modifier.padding(vertical = 8.dp),
+                mainText = "Wish List",
+                subText = "you have ${wishlist.size} item(s) in wishlist"
+            ) {
+
+            }
+        }
+        item {
+            val orders by settingsViewModel.orders.collectAsState()
+            SettingItemCard(
+                modifier = Modifier.padding(vertical = 8.dp),
+                mainText = "Track Orders",
+                subText = "you have ${orders.size} Order(s)."
+            ) {
+
+            }
+        }
     }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditAddressDialog(
+    dialogTitle: String,
+    address: Address,
+    dismissButtonText: String,
+    confirmButtonText: String,
+    onConfirm: (newAddress: Address) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var phoneNumber by remember { mutableStateOf(address.phoneNumber) }
+    var streetName by remember { mutableStateOf(address.streetName) }
+    var buildingNumber by remember { mutableStateOf(address.buildingNumber) }
+    var city by remember { mutableStateOf(address.city) }
+    var zipCode by remember { mutableStateOf(address.zipCode) }
+
+    fun clearFields() {
+        phoneNumber = ""
+        streetName = ""
+        buildingNumber = ""
+        city = ""
+        zipCode = ""
+    }
+
+    AlertDialog(
+        onDismissRequest = {
+            onDismiss()
+            clearFields()
+        },
+        title = {
+            Text(
+                text = dialogTitle,
+                style = TextStyle(textAlign = TextAlign.Center)
+            )
+        },
+        text = {
+            Column(Modifier.padding(4.dp)) {
+
+                OutlinedTextField(
+                    value = phoneNumber,
+                    onValueChange = { phoneNumber = it },
+                    placeholder = { Text(text = "ex +20 01122458") },
+                    label = { Text(text = "Phone Number.") })
+
+                OutlinedTextField(
+                    value = buildingNumber,
+                    onValueChange = { buildingNumber = it },
+                    label = { Text(text = "buildingNumber") })
+
+                OutlinedTextField(
+                    value = streetName,
+                    onValueChange = { streetName = it },
+                    label = { Text(text = "Street Name") })
+
+                OutlinedTextField(
+                    value = city,
+                    onValueChange = { city = it },
+                    label = { Text(text = "City") })
+
+                OutlinedTextField(
+                    value = zipCode,
+                    onValueChange = { zipCode = it },
+                    label = { Text(text = "Zip Code") }
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onConfirm(
+                        Address(
+                            address.id,
+                            phoneNumber,
+                            buildingNumber,
+                            streetName,
+                            city,
+                            zipCode
+                        )
+                    )
+                    onDismiss()
+                    clearFields()
+                }
+            ) {
+                Text(text = confirmButtonText)
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismiss()
+                    clearFields()
+                }
+            ) {
+                Text(text = dismissButtonText)
+            }
+        }
+    )
+    /*     var showEditDialog by remember { mutableStateOf(false) }
+        showEditDialog = true
+        if (showEditDialog) {
+            EditAddressDialog(
+                dialogTitle = "Edit Address",
+                address = Address(0,"","","","",""),
+                dismissButtonText = "Cancel",
+                confirmButtonText = "Save",
+                onConfirm = {
+                    settingsViewModel.updateAddress(it)
+                },
+                onDismiss = {
+                    showEditDialog = false
+                }
+            )
+        }*/
+
 }
 
 
 @Preview(showSystemUi = true)
 @Composable
 fun SettingsPreview() {
-    SettingsScreen()
-
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun ProfilePreview() {
-    UserProfile()
+    SettingsScreen(SettingsViewModel(), rememberNavController())
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun PopupDialogExample(
-    dialogTitle: String,
-    dialogDesc: String,
-    dismissButtonText: String,
-    confirmButtonText: String,
-    onConfirm: (text: String) -> Unit
-) {
-    var fieldText by remember { mutableStateOf("") }
-    // Create a mutable state for tracking whether the dialog is open or closed
-    val showDialog = remember { mutableStateOf(true) }
 
-    if (showDialog.value) {
-        AlertDialog(
-            onDismissRequest = { showDialog.value = false },
-            title = { Text(text = dialogTitle) },
-            text = {
-                Column(Modifier.padding(8.dp)) {
-                    Text(text = "Phone Number.")
-                    TextField(value = fieldText,
-                        onValueChange = { fieldText = it },
-                        placeholder = {
-                            Text(
-                                text = "ex +20 01122458"
-                            )
-                        })
-                    Text(text = dialogDesc)
-                    TextField(value = fieldText, onValueChange = { fieldText = it })
-                    Text(text = dialogDesc)
-                    TextField(value = fieldText, onValueChange = { fieldText = it })
 
-                }
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        onConfirm(fieldText)
-                        showDialog.value = false
-                    }
-                ) {
-                    Text(text = confirmButtonText)
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { showDialog.value = false }
-                ) {
-                    Text(text = dismissButtonText)
-                }
-            },
 
-            )
-    } else {
-        // Show a button to trigger the dialog
-        Button(
-            onClick = { showDialog.value = true }
-        ) {
-            Text(text = "Open Dialog")
-        }
-    }
-}
-
-@Composable
-fun App() {
-    Surface(color = MaterialTheme.colorScheme.background) {
-        PopupDialogExample(
-            dialogTitle = "Address",
-            dialogDesc = "Edit Address.",
-            confirmButtonText = "Save",
-            dismissButtonText = "cancel"
-        ) { Log.i("Alert Dialog", "App:$it ") }
-    }
-}
-
-@Preview(device = "id:pixel_4")
-@Composable
-fun AppPreview() {
-    App()
-}
 
 
 
