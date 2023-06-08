@@ -1,3 +1,28 @@
 <resources>
     <string name="app_name">Shopify</string>
+    <string name="welcome_to">Welcome To</string>
+    <string name="please_enter_your_details">Please enter your details</string>
+    <string name="login">Login</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="dont_have_an_account">Don\'t have an account?</string>
+    <string name="signup">Sign Up</string>
+    <string name="create_account">Create a new account</string>
+    <string name="lets_create_account">Let\'s Create Account Together</string>
+    <string name="name">Full Name</string>
+    <string name="first_name">First Name</string>
+    <string name="second_name">Second Name</string>
+    <string name="email">Email</string>
+    <string name="phone">Phone</string>
+    <string name="password">Password</string>
+    <string name="forget_password">Forget Password?  </string>
+    <string name="or_sign_in_with">Or sign in with</string>
+    <string name="or_sign_up_with">Or sign up with</string>
+    <string name="google">Google</string>
+    <string name="facebook">Facebook</string>
+    <string name="confirmPassword">Confirm Password</string>
+    <string name="please_enter_your_email">Please enter your email</string>
+    <string name="please_enter_your_password">Please enter your password</string>
+    <string name="already_have_account">Already have an account?</string>
+
 </resources>
