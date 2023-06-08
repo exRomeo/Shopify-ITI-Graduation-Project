@@ -4,5 +4,6 @@ data class Product(
     val productId : Int?,
     val productName :String?,
     val productPrice : Double?,
+    val productImage :String?
 
 )
