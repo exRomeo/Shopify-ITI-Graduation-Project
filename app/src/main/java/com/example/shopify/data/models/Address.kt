@@ -7,5 +7,10 @@ data class Address(
     var streetName: String,
     var city: String,
     var zipCode: String
-)
+) {
+    fun getAddressString(): String = "$buildingNumber $streetName, $city, $zipCode"
+
+
+
+}
 

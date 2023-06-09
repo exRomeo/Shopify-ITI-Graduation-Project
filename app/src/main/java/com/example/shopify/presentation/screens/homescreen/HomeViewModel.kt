@@ -1,4 +1,6 @@
 package com.example.shopify.presentation.screens.homescreen
 
-class HomeViewModel {
+import androidx.lifecycle.ViewModel
+
+class HomeViewModel: ViewModel() {
 }

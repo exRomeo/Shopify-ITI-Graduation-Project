@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class SettingsViewModel() : ViewModel() {
-    private var _addresses: MutableStateFlow<MutableList<Address>> = MutableStateFlow(
-        mutableListOf(
+    private var _addresses: MutableStateFlow<List<Address>> = MutableStateFlow(
+        listOf(
             Address(
                 id = 0,
                 phoneNumber = "102541521",
@@ -31,17 +31,23 @@ class SettingsViewModel() : ViewModel() {
 
     fun updateAddress(address: Address) {
         val index = _addresses.value.indexOfFirst { it.id == address.id }
-        if (index >= 0)
-            _addresses.value[index] = address
-
+        if (index >= 0) {
+            val arr = _addresses.value.toMutableList()
+            arr[index] = address
+            _addresses.value = arr
+        }
     }
 
     fun addAddress(address: Address) {
         address.id = _addresses.value.size
-        _addresses.value.add(address)
+        val arr = _addresses.value.toMutableList()
+        arr.add(address)
+        _addresses.value = arr
     }
 
-    private var _currencySymbols: MutableStateFlow<List<String>> = MutableStateFlow(listOf())
-
-
+    fun removeAddress(address: Address) {
+        val arr = _addresses.value.toMutableList()
+        arr.remove(address)
+        _addresses.value = arr
+    }
 }

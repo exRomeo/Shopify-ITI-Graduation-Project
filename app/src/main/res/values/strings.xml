@@ -1,4 +1,23 @@
 <resources>
     <string name="app_name">Shopify</string>
     <string name="profile_picture">profile picture</string>
+    <string name="track_orders">Track Orders</string>
+    <string name="you_have">You have</string>
+    <string name="orders">order(s).</string>
+    <string name="wishlist_items">item(s) in wishlist</string>
+    <string name="wishlist">Wishlist</string>
+    <string name="addresses">Addresses</string>
+    <string name="registered_addresses">registered address(es).</string>
+    <string name="phone_number">Phone Number.</string>
+    <string name="building_number">Building Number.</string>
+    <string name="street_name">Street Name.</string>
+    <string name="city">City.</string>
+    <string name="zip_code">Zip Code.</string>
+    <string name="remove_address">Remove Address</string>
+    <string name="addr_removal_warning">Are you sure you want to remove this address ?</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="remove">Remove</string>
+    <string name="edit_address">Edit Address</string>
+    <string name="add_address">Add Address</string>
 </resources>
