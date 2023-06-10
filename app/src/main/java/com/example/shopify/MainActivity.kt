@@ -1,5 +1,7 @@
 package com.example.shopify
 
+import android.content.ContentProvider
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -7,12 +9,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.ViewModelProvider
+import com.example.shopify.Utilities.ShopifyApplication
+import com.example.shopify.core.helpers.UiState
+import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 import com.example.shopify.presentation.screens.homescreen.HomeViewModel
+import com.example.shopify.presentation.screens.homescreen.HomeViewModelFactory
 import com.example.shopify.presentation.screens.homescreen.ScaffoldStructure
 import com.example.shopify.ui.theme.ShopifyTheme
 
 class MainActivity : ComponentActivity() {
+    private val repository: IProductRepository by lazy {
+        (applicationContext as ShopifyApplication).repository
+    }
+
+    private val viewModel: HomeViewModel by lazy {
+        ViewModelProvider(this, HomeViewModelFactory(repository))[HomeViewModel::class.java]
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -20,7 +35,6 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
               //  Surface {
 
-                 val viewModel: HomeViewModel = HomeViewModel()
 
                     ScaffoldStructure ("Home"){HomeScreen(viewModel = viewModel) }
 

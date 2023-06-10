@@ -2,6 +2,9 @@ package com.example.shopify.presentation.screens.homescreen
 
 
 import android.annotation.SuppressLint
+import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.annotation.StringRes
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -43,6 +46,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,53 +66,116 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.shopify.R
+import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.TopBar
+import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.Product
+import kotlinx.coroutines.flow.collectLatest
+
+
 
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel,modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .verticalScroll(rememberScrollState())
-            .padding(paddingValues = PaddingValues(vertical = 70.dp))
-    )
-    {
+     val brandsState:UiState by viewModel.brandList.collectAsState()
+    viewModel.getBrands()
+            when (brandsState) {
+                is UiState.Loading -> {
 
-        HomeSection(sectionTitle = R.string.special_offers) {
-            AdsCarousel()
-        }
+                }
 
-        HomeSection(sectionTitle = R.string.brands) {
-            BrandCards(
-                brands = listOf(
-                    Brand("adidas","https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png" ),
-                    Brand("adidas","https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png" ),
-                            Brand("adidas","https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png" ),
-                        Brand("adidas","https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png" ),
-            Brand("adidas","https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png" )
+                is UiState.Success -> {
+                    Column(
+                        modifier = modifier
+                            .verticalScroll(rememberScrollState())
+                            .padding(paddingValues = PaddingValues(vertical = 70.dp))
+                    )
+                    {
+
+                        HomeSection(sectionTitle = R.string.special_offers) {
+                            AdsCarousel()
+                        }
+
+                        HomeSection(sectionTitle = R.string.brands) {
+
+                            brandsState .data.body()?.let {
+                                BrandCards(
+
+                                    brands = it
+                                    //                listOf(
+                                    //                    Brand("adidas","https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png" ),
+                                    //                    Brand("adidas","https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png" ),
+                                    //                            Brand("adidas","https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png" ),
+                                    //                        Brand("adidas","https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png" ),
+                                    //            Brand("adidas","https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png" )
+                                    //
+
+                                )
+                            }
+                            }
 
 
-                )
-            )
-        }
-        HomeSection(sectionTitle = R.string.trending_products) {
-            ItemCards(products =listOf(
-                Product(1, "adidas", 100.0,"https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"),
-                Product(1, "adidas", 100.0,"https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"),
-                Product(1, "adidas", 100.0,"https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"),
-                Product(1, "adidas", 100.0,"https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"),
-                Product(1, "adidas", 100.0,"https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"),
-                Product(1, "adidas", 100.0,"https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"),
-            )
-                , isFavourite = true , onFavouriteClicked = {}, onAddToCard = {})
+                        }
+                        HomeSection(sectionTitle = R.string.trending_products) {
+                            ItemCards(products = listOf(
+                                Product(
+                                    1,
+                                    "adidas",
+                                    100.0,
+                                    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
+                                ),
+                                Product(
+                                    1,
+                                    "adidas",
+                                    100.0,
+                                    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
+                                ),
+                                Product(
+                                    1,
+                                    "adidas",
+                                    100.0,
+                                    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
+                                ),
+                                Product(
+                                    1,
+                                    "adidas",
+                                    100.0,
+                                    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
+                                ),
+                                Product(
+                                    1,
+                                    "adidas",
+                                    100.0,
+                                    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
+                                ),
+                                Product(
+                                    1,
+                                    "adidas",
+                                    100.0,
+                                    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
+                                ),
+                            ), isFavourite = true, onFavouriteClicked = {}, onAddToCard = {})
 
-        }
+                        }
 
 
-    }
+                    }
+
+                else -> {}
+            }
+
+
+
+
+      //      }
+     //   }
+
 }
+
+
+
+
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -220,16 +288,20 @@ fun BrandCardContent(modifier: Modifier = Modifier, brand: Brand) {
             }
     ) {
 
-            ImageFromNetwork(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                image = brand.image
-            )
+            brand.image?.src?.let {
+                ImageFromNetwork(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    image = it
+                )
+            }
 
+        brand.name?.let {
             Text(
-                text = brand.name,
+                text = it,
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
+        }
     }
 
 }
@@ -421,8 +493,6 @@ fun ItemCards(modifier: Modifier = Modifier, products: List<Product>,isFavourite
         }
     }
 }
-
-data class  Brand( val name:String ,val image:String)
 
 
 
