@@ -10,6 +10,9 @@ import com.example.shopify.core.navigation.Screens
 import com.example.shopify.presentation.screens.settingsscreen.SettingsScreen
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 import com.example.shopify.presentation.screens.settingsscreen.subscreens.addressesscreen.AddressScreen
+import com.example.shopify.presentation.screens.settingsscreen.subscreens.cartscreen.CartScreen
+import com.example.shopify.presentation.screens.settingsscreen.subscreens.ordersscreen.OrdersScreen
+import com.example.shopify.presentation.screens.settingsscreen.subscreens.wishlist.WishlistScreen
 
 @Composable
 fun SettingsNavigation(
@@ -24,11 +27,15 @@ fun SettingsNavigation(
             AddressScreen(settingsViewModel)
         }
         composable(route = Screens.Orders.route) {
-//            OrdersScreen(settingsViewModel, navController)
+            OrdersScreen(settingsViewModel)
         }
 
         composable(route = Screens.Wishlist.route) {
-//            Wishlist(settingsViewModel, navController)
+            WishlistScreen(settingsViewModel)
+        }
+
+        composable(route = Screens.Cart.route) {
+            CartScreen(viewModel = settingsViewModel, navController = navController)
         }
     }
 }

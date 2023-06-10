@@ -1,12 +1,12 @@
 package com.example.shopify.data.models
 
-data class Currency(val symbol: String, val country: String) {
+data class Currency(val symbol: String, val country: String): ItemWithName {
     companion object {
         val list = listOf(
+            Currency("EGP", "Egyptian Pound"),
             Currency("AED", "United Arab Emirates Dirham"),
             Currency("BHD", "Bahraini Dinar"),
             Currency("CNY", "Chinese Yuan"),
-            Currency("EGP", "Egyptian Pound"),
             Currency("EUR", "Euro"),
             Currency("GBP", "British Pound Sterling"),
             Currency("IQD", "Iraqi Dinar"),
@@ -29,4 +29,9 @@ data class Currency(val symbol: String, val country: String) {
             Currency("ZAR", "South African Rand")
         )
     }
+
+    override fun getShortName(): String = country
+
+
+    override fun getItemName(): String = "$country: $symbol"
 }

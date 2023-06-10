@@ -1,4 +1,4 @@
-package com.example.shopify.presentation.screens.settingsscreen.subscreens.ordersscreen
+package com.example.shopify.presentation.screens.settingsscreen.subscreens.cartscreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,47 +17,53 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.shopify.R
-import com.example.shopify.presentation.composables.OrderItemCard
+import com.example.shopify.presentation.composables.CartItemCard
 import com.example.shopify.presentation.composables.WarningDialog
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OrdersScreen(viewModel: SettingsViewModel) {
+fun CartScreen(viewModel: SettingsViewModel, navController: NavHostController) {
     Scaffold() {
 
         Column(Modifier.padding(it)) {
-            OrdersScreenContent(viewModel = viewModel)
+            CartScreenContent(
+                viewModel = viewModel, navController = navController
+            )
         }
     }
+
 }
 
+
 @Composable
-fun OrdersScreenContent(viewModel: SettingsViewModel) {
+fun CartScreenContent(viewModel: SettingsViewModel, navController: NavHostController) {
     var showDialog by remember { mutableStateOf(false) }
-    val orders by viewModel.orders.collectAsState()
+    val wishlistItems by viewModel.wishlist.collectAsState()
     LazyColumn(
-        contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        contentPadding = PaddingValues(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(orders) {
-            OrderItemCard(
-                product = it,
-                onCancelClick = { showDialog = true }
-            ) {
+        items(wishlistItems) {
+            var itemCount by remember { mutableStateOf(it.amount) }
+            CartItemCard(product = it, increase = {
+                if (itemCount < 10) itemCount++
+            }, decrease = {
+                if (itemCount > 1) itemCount--
+                else showDialog = true
+            }) {
                 /*TODO: Navigation to item detail Page*/
             }
         }
     }
 
     if (showDialog) {
-        WarningDialog(
-            dialogTitle = stringResource(id = R.string.cancel_order),
-            message = stringResource(id = R.string.order_cancellation_warning),
-            dismissButtonText = stringResource(id = R.string.no),
-            confirmButtonText = stringResource(id = R.string.yes),
-            onConfirm = { /*TODO: Remove order logic here*/ }) {
+        WarningDialog(dialogTitle = stringResource(id = R.string.remove_product),
+            message = stringResource(id = R.string.cart_item_removal_warning),
+            dismissButtonText = stringResource(id = R.string.cancel),
+            confirmButtonText = stringResource(id = R.string.remove),
+            onConfirm = { /*TODO: Implementation of item removal*/ }) {
             showDialog = false
         }
     }

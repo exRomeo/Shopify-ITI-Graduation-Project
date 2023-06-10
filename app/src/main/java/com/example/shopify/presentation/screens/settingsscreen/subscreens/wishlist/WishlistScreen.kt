@@ -1,4 +1,4 @@
-package com.example.shopify.presentation.screens.settingsscreen.subscreens.ordersscreen
+package com.example.shopify.presentation.screens.settingsscreen.subscreens.wishlist
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,34 +18,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.shopify.R
-import com.example.shopify.presentation.composables.OrderItemCard
 import com.example.shopify.presentation.composables.WarningDialog
+import com.example.shopify.presentation.composables.WishlistItemCard
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OrdersScreen(viewModel: SettingsViewModel) {
+fun WishlistScreen(viewModel: SettingsViewModel) {
     Scaffold() {
-
         Column(Modifier.padding(it)) {
-            OrdersScreenContent(viewModel = viewModel)
+            WishlistScreenContent(viewModel = viewModel)
         }
     }
 }
 
+
 @Composable
-fun OrdersScreenContent(viewModel: SettingsViewModel) {
+fun WishlistScreenContent(viewModel: SettingsViewModel) {
+
     var showDialog by remember { mutableStateOf(false) }
-    val orders by viewModel.orders.collectAsState()
+    val wishlistItems by viewModel.wishlist.collectAsState()
     LazyColumn(
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(orders) {
-            OrderItemCard(
+        items(wishlistItems) {
+            WishlistItemCard(
                 product = it,
-                onCancelClick = { showDialog = true }
-            ) {
+                onRemoveItem = {
+                    showDialog = true
+                }) {
                 /*TODO: Navigation to item detail Page*/
             }
         }
@@ -53,11 +56,11 @@ fun OrdersScreenContent(viewModel: SettingsViewModel) {
 
     if (showDialog) {
         WarningDialog(
-            dialogTitle = stringResource(id = R.string.cancel_order),
-            message = stringResource(id = R.string.order_cancellation_warning),
-            dismissButtonText = stringResource(id = R.string.no),
-            confirmButtonText = stringResource(id = R.string.yes),
-            onConfirm = { /*TODO: Remove order logic here*/ }) {
+            dialogTitle = stringResource(id = R.string.remove_product),
+            message = stringResource(id = R.string.wishlist_item_removal_warning),
+            dismissButtonText = stringResource(id = R.string.cancel),
+            confirmButtonText = stringResource(id = R.string.remove),
+            onConfirm = { /*TODO: Implementation of item removal*/ }) {
             showDialog = false
         }
     }

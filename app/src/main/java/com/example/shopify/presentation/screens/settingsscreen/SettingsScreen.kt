@@ -5,13 +5,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,7 +49,7 @@ const val TAG = "TAG"
 @Composable
 fun UserBar(
     modifier: Modifier = Modifier,
-    imageUrl: String = "https://louisville.edu/enrollmentmanagement/images/person-icon/image",
+    imageUrl: String = "",
     userName: String,
     email: String
 ) {
@@ -54,7 +61,9 @@ fun UserBar(
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageUrl)
-                .crossfade(false)
+                .placeholder(R.drawable.profile_picture_placehodler)
+                .error(R.drawable.profile_picture_placehodler)
+                .crossfade(true)
                 .build(),
             placeholder = painterResource(R.drawable.profile_picture_placehodler),
             contentDescription = stringResource(R.string.profile_picture),
@@ -92,24 +101,35 @@ fun UserBar(
 fun SettingsScreen(settingsViewModel: SettingsViewModel, settingsNav: NavHostController) {
 
 
+    Column(modifier = Modifier.fillMaxSize()) {
+        UserBar(
+            imageUrl = "https://louisville.edu/enrollmentmanagement/images/person-icon/image",
+            userName = "Please Login",
+            email = ""
+        )
+        SettingsItemList(settingsViewModel = settingsViewModel, settingsNav = settingsNav)
+
+    }
+
+}
+
+
+@Composable
+fun SettingsItemList(settingsViewModel: SettingsViewModel, settingsNav: NavHostController) {
     LazyColumn(
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        item {
-            UserBar(
-                imageUrl = "https://louisville.edu/enrollmentmanagement/images/person-icon/image",
-                userName = "Test User",
-                email = "email@Domain.com"
-            )
-        }
         item {
             val addresses by settingsViewModel.addresses.collectAsState()
             SettingItemCard(
                 mainText = stringResource(id = R.string.addresses),
                 subText = stringResource(id = R.string.you_have) + " ${addresses.size} " + stringResource(
                     id = R.string.registered_addresses
-                )
+                ),
+                iconButton = {
+                    Icon(Icons.Default.Place, stringResource(id = R.string.addresses))
+                }
             ) {
                 settingsNav.navigate(Screens.Addresses.route)
             }
@@ -120,9 +140,12 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel, settingsNav: NavHostCon
                 mainText = stringResource(id = R.string.wishlist),
                 subText = stringResource(id = R.string.you_have) + " ${wishlist.size} " + stringResource(
                     id = R.string.wishlist_items
-                )
+                ),
+                iconButton = {
+                    Icon(Icons.Default.Favorite, stringResource(id = R.string.wishlist))
+                }
             ) {
-                /*ToDO Navigate to Wishlist Screen*/
+                settingsNav.navigate(Screens.Wishlist.route)
             }
         }
         item {
@@ -131,13 +154,29 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel, settingsNav: NavHostCon
                 mainText = stringResource(id = R.string.track_orders),
                 subText = stringResource(id = R.string.you_have) + " ${orders.size} " + stringResource(
                     id = R.string.orders
-                )
+                ),
+                iconButton = {
+                    Icon(Icons.Default.Info, stringResource(id = R.string.track_orders))
+                }
             ) {
-                /*ToDO Navigate to Orders Screen*/
+                settingsNav.navigate(Screens.Orders.route)
+            }
+        }
+        item {
+            val cart by settingsViewModel.cart.collectAsState()
+            SettingItemCard(
+                mainText = stringResource(id = R.string.cart),
+                subText = stringResource(id = R.string.you_have) + " ${cart.size} " + stringResource(
+                    id = R.string.cart_items
+                ),
+                iconButton = {
+                    Icon(Icons.Default.ShoppingCart, stringResource(id = R.string.cart))
+                }
+            ) {
+                settingsNav.navigate(Screens.Cart.route)
             }
         }
     }
-
 }
 
 

@@ -1,7 +1,7 @@
 package com.example.shopify.presentation.composables
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,15 +20,27 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.shopify.data.models.Currency
+import com.example.shopify.data.models.ItemWithName
+import com.example.shopify.presentation.screens.settingsscreen.TAG
+
+@Preview(showSystemUi = true)
+@Composable
+fun MenuPrev() {
+    SingleSelectionDropdownMenu(title = "Choose Currency", items = Currency.list) {
+        Log.i(TAG, "MenuPrev: $it")
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun SingleSelectDropdownMenu() {
-    var selection by remember { mutableStateOf("choose a currency :D") }
+fun <T> SingleSelectionDropdownMenu(
+    title: String,
+    items: List<T>,
+    onSelect: (index: Int) -> Unit
+) where T : ItemWithName {
+    var selection by remember { mutableStateOf(title) }
     var expandedState by remember { mutableStateOf(false) }
     Box(
-        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {
         ExposedDropdownMenuBox(
@@ -36,25 +48,34 @@ fun SingleSelectDropdownMenu() {
             onExpandedChange = { expandedState = !expandedState },
         ) {
             OutlinedTextField(
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
                 value = selection,
                 onValueChange = {},
-                placeholder = { Text(text = "Currency")},
                 readOnly = true,
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(
                         expanded = expandedState
                     )
                 },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                modifier = Modifier.menuAnchor()
+                colors = ExposedDropdownMenuDefaults.textFieldColors()
             )
-            ExposedDropdownMenu(expanded = expandedState,
+            ExposedDropdownMenu(
+                expanded = expandedState,
                 onDismissRequest = { expandedState = false }) {
-                Currency.list.forEach {
+                items.forEach {
                     DropdownMenuItem(
-                        text = { Text(modifier = Modifier.fillMaxWidth(),text = "${it.country}\n${it.symbol}", style = TextStyle(textAlign = TextAlign.Center)) },
+                        text = {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = it.getItemName(),
+                                style = TextStyle(textAlign = TextAlign.Center)
+                            )
+                        },
                         onClick = {
-                            selection = it.country
+                            selection = it.getShortName()
+                            onSelect(items.indexOf(it))
                             expandedState = false
                         })
                 }
@@ -63,6 +84,7 @@ fun SingleSelectDropdownMenu() {
         }
     }
 }
+
 
 //
 //@OptIn(ExperimentalMaterial3Api::class)

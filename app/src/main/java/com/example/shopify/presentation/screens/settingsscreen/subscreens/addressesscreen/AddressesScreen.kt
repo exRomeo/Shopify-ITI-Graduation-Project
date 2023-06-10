@@ -2,7 +2,6 @@ package com.example.shopify.presentation.screens.settingsscreen.subscreens.addre
 
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -22,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import com.example.shopify.R
 import com.example.shopify.data.models.Address
 import com.example.shopify.presentation.composables.EditAddressDialog
-import com.example.shopify.presentation.composables.RemoveConfirmationDialog
 import com.example.shopify.presentation.composables.SettingItemCard
+import com.example.shopify.presentation.composables.WarningDialog
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 
 
@@ -50,25 +48,29 @@ fun AddressScreenPreview() {
 @Composable
 fun AddressScreen(viewModel: SettingsViewModel) {
     var showDialog by remember { mutableStateOf(false) }
-    Scaffold(floatingActionButton = {
-        FloatingActionButton(onClick = { showDialog = true }) {
-            Icon(Icons.Default.Add, contentDescription = stringResource(id = R.string.add_address))
-            if (showDialog) {
-                EditAddressDialog(
-                    dialogTitle = stringResource(id = R.string.add_address),
-                    dismissButtonText = stringResource(id = R.string.cancel),
-                    confirmButtonText = stringResource(id = R.string.save),
-                    onConfirm = { newAddress ->
-                        viewModel.addAddress(newAddress)
-                    },
-                    onDismiss = {
-                        showDialog = false
-                    }
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = { showDialog = true }) {
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = stringResource(id = R.string.add_address)
                 )
-            }
+                if (showDialog) {
+                    EditAddressDialog(
+                        dialogTitle = stringResource(id = R.string.add_address),
+                        dismissButtonText = stringResource(id = R.string.cancel),
+                        confirmButtonText = stringResource(id = R.string.save),
+                        onConfirm = { newAddress ->
+                            viewModel.addAddress(newAddress)
+                        },
+                        onDismiss = {
+                            showDialog = false
+                        }
+                    )
+                }
 
-        }
-    }) {
+            }
+        }) {
         Column(modifier = Modifier.padding(it)) {
             AddressScreenContent(viewModel = viewModel)
         }
@@ -119,31 +121,32 @@ fun AddressList(
     ) {
         items(items = addresses, key = { it.id }) {
 
-            Box() {
-                SettingItemCard(
-                    mainText = it.getAddressString(),
-                    subText = it.phoneNumber,
-                    onClick = {
-                        onClick(it)
+            SettingItemCard(
+                mainText = it.getAddressString(),
+                subText = it.phoneNumber,
+                onClick = {
+                    onClick(it)
+                },
+                iconButton = {
+                    IconButton(
+                        onClick = {
+                            addressToRemove = it
+                            showRemoveConfirmationDialog = true
+                        }
+                    ) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = stringResource(id = R.string.remove_address)
+                        )
                     }
-                )
-                IconButton(
-                    modifier = Modifier.align(Alignment.CenterEnd),
-                    onClick = {
-                        addressToRemove = it
-                        showRemoveConfirmationDialog = true
-                    }) {
-                    Icon(
-                        Icons.Default.Delete,
-                        contentDescription = stringResource(id = R.string.remove_address)
-                    )
                 }
-            }
+            )
+
         }
     }
 
     if (showRemoveConfirmationDialog) {
-        RemoveConfirmationDialog(
+        WarningDialog(
             dialogTitle = stringResource(id = R.string.remove_address),
             message = stringResource(id = R.string.addr_removal_warning),
             dismissButtonText = stringResource(id = R.string.cancel),
