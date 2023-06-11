@@ -40,4 +40,9 @@
     <string name="webclient_id">131338906575-gtdg4aqohriqcr3f7tb973h5dfkss4cd.apps.googleusercontent.com</string>
     <string name="back">Back</string>
 
+    <string name="brands">Brands</string>
+    <string name="trending_products">Trending Products</string>
+    <string name="special_offers">Special Offers</string>
+    <string name="add_to_cart">Add to Cart</string>
+
 </resources>
