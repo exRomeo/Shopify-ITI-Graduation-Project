@@ -26,13 +26,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
+import com.example.shopify.presentation.screens.homescreen.HomeScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = Screens.Home.route) {
+    NavHost(navController = navController, startDestination = Screens.SettingsNavigation.route) {
 //
 //        composable(route = Screens.Home.route) {
-////            HomeScreen(navController)
+//            HomeScreen(navController)
 //        }
 //        composable(route = Screens.Home.route){
 //            HomeScreen(viewModel = viewModel)

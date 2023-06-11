@@ -45,6 +45,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
 import com.example.shopify.data.models.Product
+import com.example.shopify.data.models.ProductSample
 
 
 @Composable
@@ -101,7 +102,7 @@ fun PreviewSettingItemCard() {
 @Composable
 fun WishlistItemCard(
     modifier: Modifier = Modifier,
-    product: Product,
+    product: ProductSample,
     onRemoveItem: () -> Unit,
     onClick: () -> Unit
 ) {
@@ -177,7 +178,7 @@ fun WishlistItemCard(
 @Preview
 fun WishlistItemCardPreview() {
     WishlistItemCard(
-        product = Product(
+        product = ProductSample(
             5,
             "Very Long Product Title1235",
             35.87,
@@ -193,7 +194,7 @@ fun WishlistItemCardPreview() {
 @Composable
 fun CartItemCard(
     modifier: Modifier = Modifier,
-    product: Product,
+    product: ProductSample,
     increase: () -> Unit,
     decrease: () -> Unit,
     onClick: () -> Unit
@@ -290,7 +291,7 @@ fun CartItemCard(
 @Preview
 fun CartItemCardPreview() {
     CartItemCard(
-        product = Product(
+        product = ProductSample(
             5,
             "Very Long Product Title1235",
             35.87,
@@ -306,7 +307,7 @@ fun CartItemCardPreview() {
 @Composable
 fun OrderItemCard(
     modifier: Modifier = Modifier,
-    product: Product,
+    product: ProductSample,
     onCancelClick: () -> Unit,
     onClick: () -> Unit
 ) {
@@ -366,7 +367,7 @@ fun OrderItemCard(
 @Preview
 fun OrderItemCardPreview() {
     OrderItemCard(
-        product = Product(
+        product = ProductSample(
             5,
             "Very Long Product Title1235",
             35.87,

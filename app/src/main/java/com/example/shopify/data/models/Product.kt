@@ -24,3 +24,13 @@ data class Product(
     val title:String?,
     val price:String?
 )
+
+
+data class ProductSample(
+    var id: Int,
+    val productName: String,
+    val productPrice: Double,
+    val imageURL: String,
+    val orderDate: String,
+    var amount: Int
+)

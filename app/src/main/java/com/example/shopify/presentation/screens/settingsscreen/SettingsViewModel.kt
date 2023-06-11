@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.data.models.Product
+import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.repositories.user.IUserDataRepository
 import com.example.shopify.data.repositories.user.remote.retrofitclient.USER_ID
@@ -75,9 +76,9 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
      * Orders Functions
      */
 
-    private var _orders: MutableStateFlow<List<Product>> = MutableStateFlow(
+    private var _orders: MutableStateFlow<List<ProductSample>> = MutableStateFlow(
         listOf(
-            Product(
+            ProductSample(
                 5,
                 "Nice Shoes",
                 99.99,
@@ -90,7 +91,7 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
     val orders = _orders.asStateFlow()
 
 
-    fun updateOrderItem(product: Product) {
+    fun updateOrderItem(product: ProductSample) {
         val index = _orders.value.indexOfFirst { it.id == product.id }
         if (index >= 0) {
             val arr = _orders.value.toMutableList()
@@ -99,14 +100,14 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
         }
     }
 
-    fun addOrderItem(product: Product) {
+    fun addOrderItem(product: ProductSample) {
         product.id = _orders.value.size
         val arr = _orders.value.toMutableList()
         arr.add(product)
         _orders.value = arr
     }
 
-    fun removeOrderItem(product: Product) {
+    fun removeOrderItem(product: ProductSample) {
         val arr = _orders.value.toMutableList()
         arr.remove(product)
         _orders.value = arr
@@ -117,9 +118,9 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
      * Wishlist Functions
      */
 
-    private var _wishlist: MutableStateFlow<List<Product>> = MutableStateFlow(
+    private var _wishlist: MutableStateFlow<List<ProductSample>> = MutableStateFlow(
         listOf(
-            Product(
+            ProductSample(
                 5,
                 "Nice Shoes",
                 99.99,
@@ -131,7 +132,7 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
     )
     val wishlist = _wishlist.asStateFlow()
 
-    fun updateWishlistItem(product: Product) {
+    fun updateWishlistItem(product: ProductSample) {
         val index = _wishlist.value.indexOfFirst { it.id == product.id }
         if (index >= 0) {
             val arr = _wishlist.value.toMutableList()
@@ -140,14 +141,14 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
         }
     }
 
-    fun addWishlistItem(product: Product) {
+    fun addWishlistItem(product: ProductSample) {
         product.id = _wishlist.value.size
         val arr = _wishlist.value.toMutableList()
         arr.add(product)
         _wishlist.value = arr
     }
 
-    fun removeWishlistItem(product: Product) {
+    fun removeWishlistItem(product: ProductSample) {
         val arr = _wishlist.value.toMutableList()
         arr.remove(product)
         _wishlist.value = arr
@@ -158,9 +159,9 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
      * Cart Functions
      */
 
-    private var _cart: MutableStateFlow<List<Product>> = MutableStateFlow(
+    private var _cart: MutableStateFlow<List<ProductSample>> = MutableStateFlow(
         listOf(
-            Product(
+            ProductSample(
                 5,
                 "Nice Shoes",
                 99.99,
@@ -172,7 +173,7 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
     )
     val cart = _cart.asStateFlow()
 
-    fun updateCart(product: Product) {
+    fun updateCart(product: ProductSample) {
         val index = _cart.value.indexOfFirst { it.id == product.id }
         if (index >= 0) {
             val arr = _cart.value.toMutableList()
@@ -181,14 +182,14 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
         }
     }
 
-    fun addCart(product: Product) {
+    fun addCart(product: ProductSample) {
         product.id = _cart.value.size
         val arr = _cart.value.toMutableList()
         arr.add(product)
         _cart.value = arr
     }
 
-    fun removeCart(product: Product) {
+    fun removeCart(product: ProductSample) {
         val arr = _cart.value.toMutableList()
         arr.remove(product)
         _cart.value = arr
