@@ -20,41 +20,45 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.shopify.presentation.screens.authentication.login.LoginScreen
-import com.example.shopify.presentation.screens.authentication.login.LoginViewModel
-import com.example.shopify.presentation.screens.authentication.registeration.SignupScreen
-import com.example.shopify.presentation.screens.authentication.registeration.SignupViewModel
+import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
-import com.example.shopify.presentation.screens.homescreen.HomeViewModel
 
 @Composable
-fun NavGraph(navController:NavHostController, viewModel: HomeViewModel){
-    NavHost(navController = navController, startDestination = Screens.Home.route){
-        composable(route = Screens.Home.route){
-            HomeScreen(viewModel = viewModel)
+fun NavGraph(navController: NavHostController) {
+    NavHost(navController = navController, startDestination = Screens.SettingsNavigation.route) {
+//
+//        composable(route = Screens.Home.route) {
+//            HomeScreen(navController)
+//        }
+//        composable(route = Screens.Home.route){
+//            HomeScreen(viewModel = viewModel)
+//        }
+
+        composable(route = Screens.Login.route) {
+            //   LoginScreen()
         }
-        composable(route = Screens.Home.route){
-            HomeScreen(viewModel = viewModel)
+        composable(route = Screens.Signup.route) {
+            //SignupScreen(viewModel as SignupViewModel)
         }
 
-        composable(route = Screens.Login.route){
-         //   LoginScreen()
-        }
-        composable(route = Screens.Signup.route){
-            //SignupScreen(viewModel as SignupViewModel)
+        composable(route = Screens.SettingsNavigation.route) {
+            SettingsNavigation()
         }
     }
 }
+
 @Composable
 fun getNavController() = rememberNavController()
+
 @Composable
-fun getBackStackEntry(navController: NavHostController) = navController.currentBackStackEntryAsState()
+fun getBackStackEntry(navController: NavHostController) =
+    navController.currentBackStackEntryAsState()
+
 data class BottomNavItem(
     val name: String,
     val route: String,
@@ -81,7 +85,7 @@ val bottomNavItems = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(modifier: Modifier = Modifier, title: String, onSearch:() ->Unit) {
+fun TopBar(modifier: Modifier = Modifier, title: String, onSearch: () -> Unit) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.surfaceTint
