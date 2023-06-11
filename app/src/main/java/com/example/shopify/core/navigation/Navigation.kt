@@ -20,11 +20,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.shopify.presentation.screens.authentication.login.LoginScreen
+import com.example.shopify.presentation.screens.authentication.login.LoginViewModel
+import com.example.shopify.presentation.screens.authentication.registeration.SignupScreen
+import com.example.shopify.presentation.screens.authentication.registeration.SignupViewModel
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 import com.example.shopify.presentation.screens.homescreen.HomeViewModel
 
@@ -36,6 +41,13 @@ fun NavGraph(navController:NavHostController, viewModel: HomeViewModel){
         }
         composable(route = Screens.Home.route){
             HomeScreen(viewModel = viewModel)
+        }
+
+        composable(route = Screens.Login.route){
+         //   LoginScreen()
+        }
+        composable(route = Screens.Signup.route){
+            //SignupScreen(viewModel as SignupViewModel)
         }
     }
 }
