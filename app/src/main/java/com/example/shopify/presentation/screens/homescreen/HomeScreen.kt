@@ -77,38 +77,36 @@ import com.example.shopify.data.models.SmartCollections
 import com.example.shopify.data.models.Varient
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel,modifier: Modifier = Modifier) {
-     val brandsState:UiState by viewModel.brandList.collectAsState()
-    val randomsState:UiState by viewModel.randomList.collectAsState()
-         var brandList :  List<Brand> = listOf()
-         var randomList :List<Varient> = listOf()
-         when (brandsState) {
-            is UiState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+fun HomeScreen(viewModel: HomeViewModel, modifier: Modifier = Modifier) {
+    val brandsState: UiState by viewModel.brandList.collectAsState()
+    val randomsState: UiState by viewModel.randomList.collectAsState()
+    var brandList: List<Brand> = listOf()
+    var randomList: List<Varient> = listOf()
+    when (brandsState) {
+        is UiState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            )
+            {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(size = 64.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                    strokeWidth = 6.dp
                 )
-                {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(size = 64.dp),
-                        color = MaterialTheme.colorScheme.primary,
-                        strokeWidth = 6.dp
-                    )
-                }
-
             }
 
-            is UiState.Success<*> -> {
-                brandList = (brandsState as UiState.Success<SmartCollections>).data.body()?.smart_collections!!
-                //Log.i("menna","no")
-
-
-            }
-
-            else -> {
-                Log.i("homepage", (randomsState as UiState.Error).error.toString())
-            }
         }
+
+        is UiState.Success<*> -> {
+            brandList =
+                (brandsState as UiState.Success<SmartCollections>).data.body()?.smart_collections!!
+        }
+
+        else -> {
+            Log.i("homepage", (randomsState as UiState.Error).error.toString())
+        }
+    }
     when (randomsState) {
         is UiState.Loading -> {
         }
@@ -125,100 +123,43 @@ fun HomeScreen(viewModel: HomeViewModel,modifier: Modifier = Modifier) {
         }
     }
 
- if(brandList.isNotEmpty() && randomList.isNotEmpty()) {
+    if (brandList.isNotEmpty() && randomList.isNotEmpty()) {
 
-     Column(
-         modifier = modifier
-             .verticalScroll(rememberScrollState())
-             .padding(paddingValues = PaddingValues(vertical = 70.dp))
-     )
-     {
-
-
-         HomeSection(sectionTitle = R.string.special_offers) {
-             AdsCarousel()
-         }
-
-         HomeSection(sectionTitle = R.string.brands) {
-
-             //  (brandsState as UiState.Success).data.body()?.let {
-             brandList?.let { BrandCards(brands = it) }
-         }
+        Column(
+            modifier = modifier
+                .verticalScroll(rememberScrollState())
+                .padding(paddingValues = PaddingValues(vertical = 70.dp))
+        )
+        {
 
 
+            HomeSection(sectionTitle = R.string.special_offers) {
+                AdsCarousel()
+            }
 
+            HomeSection(sectionTitle = R.string.brands) {
 
-         HomeSection(sectionTitle = R.string.trending_products) {
-             ItemCards(products = randomList,
-                 //listOf(
-//                            Product(
-//                                1,
-//                                "adidas",
-//                                100.0,
-//                                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
-//                            ),
-//                            Product(
-//                                1,
-//                                "adidas",
-//                                100.0,
-//                                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
-//                            ),
-//                            Product(
-//                                1,
-//                                "adidas",
-//                                100.0,
-//                                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
-//                            ),
-//                            Product(
-//                                1,
-//                                "adidas",
-//                                100.0,
-//                                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
-//                            ),
-//                            Product(
-//                                1,
-//                                "adidas",
-//                                100.0,
-//                                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
-//                            ),
-//                            Product(
-//                                1,
-//                                "adidas",
-//                                100.0,
-//                                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
-//                            ),
-                 //)
-                 isFavourite = true, onFavouriteClicked = {}, onAddToCard = {})
-
-         }
-     }
- }
-
-    else{
-        Log.i("hla","progress")
-
-
- }
-
+                //  (brandsState as UiState.Success).data.body()?.let {
+                brandList?.let { BrandCards(brands = it) }
             }
 
 
 
 
-      //      }
-     //   }
+            HomeSection(sectionTitle = R.string.trending_products) {
+                ItemCards(products = randomList,
+                    isFavourite = true, onFavouriteClicked = {}, onAddToCard = {})
 
+            }
+        }
+    }
 
-
-
-
-
-
+}
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScaffoldStructure(screenTitle:String,screen: @Composable () -> Unit) {
+fun ScaffoldStructure(screenTitle: String, screen: @Composable () -> Unit) {
 
     Scaffold(
         topBar = {
@@ -259,26 +200,25 @@ fun CardDesign(
 @Composable
 fun ItemCardContent(
     modifier: Modifier = Modifier, isFavourite: Boolean,
-    onFavouritesClicked: (Boolean) -> Unit, onAddToCard: (item:Product) -> Unit, item: Varient
+    onFavouritesClicked: (Boolean) -> Unit, onAddToCard: (item: Product) -> Unit, item: Varient
 ) {
     Column(modifier = modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
-                item.image?.src?.let {
-                    ImageFromNetwork(image = it,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(15.dp))
-                            .background(color = Color.White)
-                            .align(Alignment.CenterHorizontally)
-                            .clickable {
+        item.image?.src?.let {
+            ImageFromNetwork(image = it,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(color = Color.White)
+                    .align(Alignment.CenterHorizontally)
+                    .clickable {
 
-                            }
-                    )
-                }
-
+                    }
+            )
+        }
 
 
         // Divider(thickness = 5.dp, color= Color.Black)
         Row(horizontalArrangement = Arrangement.spacedBy(30.dp)) {
-          // var titles= item.title?.split("|")
+            // var titles= item.title?.split("|")
             item.variants?.get(0)?.title.let {
                 if (it != null) {
                     Text(
@@ -304,7 +244,7 @@ fun ItemCardContent(
                 .align(Alignment.CenterHorizontally)
                 .padding(10.dp),
             shape = RoundedCornerShape(20.dp),
-            onClick = {onAddToCard},
+            onClick = { onAddToCard },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -333,15 +273,15 @@ fun BrandCardContent(modifier: Modifier = Modifier, brand: Brand) {
             }
     ) {
 
-            brand.image?.src?.let {
-                ImageFromNetwork(
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                        .clip(RoundedCornerShape(15.dp))
-                        .background(color = Color.White)
-                    ,
-                    image = it
-                )
-            }
+        brand.image?.src?.let {
+            ImageFromNetwork(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(color = Color.White),
+                image = it
+            )
+        }
 
         brand.name?.let {
             Text(
@@ -377,8 +317,8 @@ fun AdsCarousel() {
             .fillMaxWidth()
             .padding(16.dp)
             .height(200.dp)
-           // .clickable { onAddClick },
-                ,
+        // .clickable { onAddClick },
+        ,
         content = { index ->
             items[index].also { item ->
                 CarouselItem(
@@ -523,7 +463,13 @@ fun BrandCards(modifier: Modifier = Modifier, brands: List<Brand>) {
 }
 
 @Composable
-fun ItemCards(modifier: Modifier = Modifier, products: List<Varient>,isFavourite: Boolean,onFavouriteClicked:(Boolean)->Unit,onAddToCard:(item:Product)->Unit) {
+fun ItemCards(
+    modifier: Modifier = Modifier,
+    products: List<Varient>,
+    isFavourite: Boolean,
+    onFavouriteClicked: (Boolean) -> Unit,
+    onAddToCard: (item: Product) -> Unit
+) {
     LazyRow(
         modifier = modifier.padding(start = 6.dp, end = 6.dp)
     ) {
@@ -531,7 +477,7 @@ fun ItemCards(modifier: Modifier = Modifier, products: List<Varient>,isFavourite
             CardDesign(onCardClicked = {}) {
                 ItemCardContent(
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
-                    isFavourite = isFavourite ,
+                    isFavourite = isFavourite,
                     onFavouritesClicked = onFavouriteClicked,
                     onAddToCard = onAddToCard,
                     item = item
