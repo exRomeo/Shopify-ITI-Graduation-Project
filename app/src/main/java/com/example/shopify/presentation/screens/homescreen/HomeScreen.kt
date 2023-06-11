@@ -16,10 +16,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -38,6 +40,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
@@ -46,9 +49,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -71,98 +72,134 @@ import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.TopBar
 import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.Product
-import kotlinx.coroutines.flow.collectLatest
-
-
-
+import com.example.shopify.data.models.Products
+import com.example.shopify.data.models.SmartCollections
+import com.example.shopify.data.models.Varient
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel,modifier: Modifier = Modifier) {
      val brandsState:UiState by viewModel.brandList.collectAsState()
-    viewModel.getBrands()
-            when (brandsState) {
-                is UiState.Loading -> {
-
+    val randomsState:UiState by viewModel.randomList.collectAsState()
+         var brandList :  List<Brand> = listOf()
+         var randomList :List<Varient> = listOf()
+         when (brandsState) {
+            is UiState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                )
+                {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(size = 64.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        strokeWidth = 6.dp
+                    )
                 }
 
-                is UiState.Success -> {
-                    Column(
-                        modifier = modifier
-                            .verticalScroll(rememberScrollState())
-                            .padding(paddingValues = PaddingValues(vertical = 70.dp))
-                    )
-                    {
+            }
 
-                        HomeSection(sectionTitle = R.string.special_offers) {
-                            AdsCarousel()
-                        }
-
-                        HomeSection(sectionTitle = R.string.brands) {
-
-                            brandsState .data.body()?.let {
-                                BrandCards(
-
-                                    brands = it
-                                    //                listOf(
-                                    //                    Brand("adidas","https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png" ),
-                                    //                    Brand("adidas","https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png" ),
-                                    //                            Brand("adidas","https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png" ),
-                                    //                        Brand("adidas","https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png" ),
-                                    //            Brand("adidas","https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png" )
-                                    //
-
-                                )
-                            }
-                            }
+            is UiState.Success<*> -> {
+                brandList = (brandsState as UiState.Success<SmartCollections>).data.body()?.smart_collections!!
+                //Log.i("menna","no")
 
 
-                        }
-                        HomeSection(sectionTitle = R.string.trending_products) {
-                            ItemCards(products = listOf(
-                                Product(
-                                    1,
-                                    "adidas",
-                                    100.0,
-                                    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
-                                ),
-                                Product(
-                                    1,
-                                    "adidas",
-                                    100.0,
-                                    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
-                                ),
-                                Product(
-                                    1,
-                                    "adidas",
-                                    100.0,
-                                    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
-                                ),
-                                Product(
-                                    1,
-                                    "adidas",
-                                    100.0,
-                                    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
-                                ),
-                                Product(
-                                    1,
-                                    "adidas",
-                                    100.0,
-                                    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
-                                ),
-                                Product(
-                                    1,
-                                    "adidas",
-                                    100.0,
-                                    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
-                                ),
-                            ), isFavourite = true, onFavouriteClicked = {}, onAddToCard = {})
+            }
 
-                        }
+            else -> {
+                Log.i("homepage", (randomsState as UiState.Error).error.toString())
+            }
+        }
+    when (randomsState) {
+        is UiState.Loading -> {
+        }
+
+        is UiState.Success<*> -> {
+            randomList = (randomsState as UiState.Success<Products>).data.body()?.products!!
 
 
-                    }
+        }
 
-                else -> {}
+        else -> {
+
+            Log.i("homepage", (randomsState as UiState.Error).error.toString())
+        }
+    }
+
+ if(brandList.isNotEmpty() && randomList.isNotEmpty()) {
+
+     Column(
+         modifier = modifier
+             .verticalScroll(rememberScrollState())
+             .padding(paddingValues = PaddingValues(vertical = 70.dp))
+     )
+     {
+
+
+         HomeSection(sectionTitle = R.string.special_offers) {
+             AdsCarousel()
+         }
+
+         HomeSection(sectionTitle = R.string.brands) {
+
+             //  (brandsState as UiState.Success).data.body()?.let {
+             brandList?.let { BrandCards(brands = it) }
+         }
+
+
+
+
+         HomeSection(sectionTitle = R.string.trending_products) {
+             ItemCards(products = randomList,
+                 //listOf(
+//                            Product(
+//                                1,
+//                                "adidas",
+//                                100.0,
+//                                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
+//                            ),
+//                            Product(
+//                                1,
+//                                "adidas",
+//                                100.0,
+//                                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
+//                            ),
+//                            Product(
+//                                1,
+//                                "adidas",
+//                                100.0,
+//                                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
+//                            ),
+//                            Product(
+//                                1,
+//                                "adidas",
+//                                100.0,
+//                                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
+//                            ),
+//                            Product(
+//                                1,
+//                                "adidas",
+//                                100.0,
+//                                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
+//                            ),
+//                            Product(
+//                                1,
+//                                "adidas",
+//                                100.0,
+//                                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
+//                            ),
+                 //)
+                 isFavourite = true, onFavouriteClicked = {}, onAddToCard = {})
+
+         }
+     }
+ }
+
+    else{
+        Log.i("hla","progress")
+
+
+ }
+
             }
 
 
@@ -171,7 +208,7 @@ fun HomeScreen(viewModel: HomeViewModel,modifier: Modifier = Modifier) {
       //      }
      //   }
 
-}
+
 
 
 
@@ -222,14 +259,15 @@ fun CardDesign(
 @Composable
 fun ItemCardContent(
     modifier: Modifier = Modifier, isFavourite: Boolean,
-    onFavouritesClicked: (Boolean) -> Unit, onAddToCard: (item:Product) -> Unit, item: Product
+    onFavouritesClicked: (Boolean) -> Unit, onAddToCard: (item:Product) -> Unit, item: Varient
 ) {
     Column(modifier = modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
-                item.productImage?.let {
+                item.image?.src?.let {
                     ImageFromNetwork(image = it,
                         modifier = Modifier
                             .clip(RoundedCornerShape(15.dp))
                             .background(color = Color.White)
+                            .align(Alignment.CenterHorizontally)
                             .clickable {
 
                             }
@@ -240,20 +278,27 @@ fun ItemCardContent(
 
         // Divider(thickness = 5.dp, color= Color.Black)
         Row(horizontalArrangement = Arrangement.spacedBy(30.dp)) {
-            Text(
-                text = item.productName.toString(),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
+          // var titles= item.title?.split("|")
+            item.variants?.get(0)?.title.let {
+                if (it != null) {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
+            }
             FavoriteButton(isFavourite = isFavourite, onClicked = onFavouritesClicked)
 
         }
 
-        Text(
-            text = item.productPrice.toString(),
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        item.variants?.get(0)?.price.let {
+            Text(
+                text = it.toString(),
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
         Button(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -290,7 +335,10 @@ fun BrandCardContent(modifier: Modifier = Modifier, brand: Brand) {
 
             brand.image?.src?.let {
                 ImageFromNetwork(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(color = Color.White)
+                    ,
                     image = it
                 )
             }
@@ -475,7 +523,7 @@ fun BrandCards(modifier: Modifier = Modifier, brands: List<Brand>) {
 }
 
 @Composable
-fun ItemCards(modifier: Modifier = Modifier, products: List<Product>,isFavourite: Boolean,onFavouriteClicked:(Boolean)->Unit,onAddToCard:(item:Product)->Unit) {
+fun ItemCards(modifier: Modifier = Modifier, products: List<Varient>,isFavourite: Boolean,onFavouriteClicked:(Boolean)->Unit,onAddToCard:(item:Product)->Unit) {
     LazyRow(
         modifier = modifier.padding(start = 6.dp, end = 6.dp)
     ) {

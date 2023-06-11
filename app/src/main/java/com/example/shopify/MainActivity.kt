@@ -1,7 +1,5 @@
 package com.example.shopify
 
-import android.content.ContentProvider
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,10 +7,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.ViewModelProvider
 import com.example.shopify.Utilities.ShopifyApplication
-import com.example.shopify.core.helpers.UiState
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 import com.example.shopify.presentation.screens.homescreen.HomeViewModel

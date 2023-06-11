@@ -11,13 +11,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
 class HomeViewModel( val repository: IProductRepository):ViewModel() {
 
     private var _brandsList: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val brandList: StateFlow<UiState> = _brandsList
 
-    fun getBrands() {
+    private var _randomList: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
+    val randomList: StateFlow<UiState> = _randomList
+
+    init{
+        getBrands()
+        getRandomProducts()
+
+    }
+    private fun getBrands() {
         viewModelScope.launch(Dispatchers.IO) {
             val response = repository.getBrands()
             withContext(Dispatchers.Main) {
@@ -27,6 +34,23 @@ class HomeViewModel( val repository: IProductRepository):ViewModel() {
                     }
                     .collect {
                         _brandsList.value = UiState.Success(it)
+
+                    }
+
+            }
+        }
+    }
+
+    private fun getRandomProducts() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = repository.getRandomproducts()
+            withContext(Dispatchers.Main) {
+                response
+                    .catch {
+                        _randomList.value = UiState.Error(it)
+                    }
+                    .collect {
+                        _randomList.value = UiState.Success(it)
 
                     }
 
