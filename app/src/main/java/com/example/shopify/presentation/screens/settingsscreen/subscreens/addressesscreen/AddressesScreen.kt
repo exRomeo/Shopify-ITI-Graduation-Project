@@ -10,7 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,7 +26,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.shopify.R
-import com.example.shopify.data.models.Address
+import com.example.shopify.core.helpers.UserScreenUISState
+import com.example.shopify.data.models.address.Address
+import com.example.shopify.data.repositories.user.UserDataRepository
+import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
+import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
 import com.example.shopify.presentation.composables.EditAddressDialog
 import com.example.shopify.presentation.composables.SettingItemCard
 import com.example.shopify.presentation.composables.WarningDialog
@@ -37,14 +41,11 @@ import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 @Composable
 fun AddressScreenPreview() {
 
-    val viewModel = SettingsViewModel()
-
+    val viewModel =
+        SettingsViewModel(UserDataRepository(UserDataRemoteSource(RetrofitClient.customerAddressAPI)))
     AddressScreen(viewModel = viewModel)
-
-
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddressScreen(viewModel: SettingsViewModel) {
     var showDialog by remember { mutableStateOf(false) }
@@ -72,18 +73,33 @@ fun AddressScreen(viewModel: SettingsViewModel) {
             }
         }) {
         Column(modifier = Modifier.padding(it)) {
-            AddressScreenContent(viewModel = viewModel)
+            val state by viewModel.addresses.collectAsState()
+            when (val currentState = state) {
+                is UserScreenUISState.Loading -> {}
+                is UserScreenUISState.Success<*> -> {
+                    val addresses: List<Address> =
+                        currentState.data as List<Address>
+                    AddressScreenContent(addresses = addresses, viewModel = viewModel)
+
+                }
+
+                is UserScreenUISState.Failure -> {
+
+                }
+
+                else -> {}
+            }
         }
     }
 }
 
 @Composable
-fun AddressScreenContent(viewModel: SettingsViewModel) {
+fun AddressScreenContent(addresses: List<Address>, viewModel: SettingsViewModel) {
     var addressToEdit: Address? by remember { mutableStateOf(null) }
 
     var showEditDialog by remember { mutableStateOf(false) }
 
-    AddressList(viewModel = viewModel) {
+    AddressList(addresses = addresses, viewModel = viewModel) {
         addressToEdit = it
         showEditDialog = true
     }
@@ -108,10 +124,10 @@ fun AddressScreenContent(viewModel: SettingsViewModel) {
 @Composable
 fun AddressList(
     modifier: Modifier = Modifier,
+    addresses: List<Address>,
     viewModel: SettingsViewModel,
     onClick: (Address) -> Unit
 ) {
-    val addresses by viewModel.addresses.collectAsState()
     var showRemoveConfirmationDialog by remember { mutableStateOf(false) }
     var addressToRemove: Address? by remember { mutableStateOf(null) }
     LazyColumn(
@@ -120,7 +136,6 @@ fun AddressList(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(items = addresses, key = { it.id }) {
-
             SettingItemCard(
                 mainText = it.getAddressString(),
                 subText = it.phoneNumber,
@@ -129,13 +144,15 @@ fun AddressList(
                 },
                 iconButton = {
                     IconButton(
+                        enabled = !it.default,
                         onClick = {
                             addressToRemove = it
                             showRemoveConfirmationDialog = true
+
                         }
                     ) {
                         Icon(
-                            Icons.Default.Delete,
+                            if (it.default) Icons.Default.Home else Icons.Default.Delete,
                             contentDescription = stringResource(id = R.string.remove_address)
                         )
                     }

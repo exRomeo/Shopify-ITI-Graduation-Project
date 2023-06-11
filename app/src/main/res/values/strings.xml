@@ -33,4 +33,6 @@
     <string name="cancel_order">Cancel Order</string>
     <string name="order_cancellation_warning">Are sure you want to cancel this order ?</string>
     <string name="expected_to_arrive">Expected to be delivered in 3 business day(s).</string>
+    <string name="default_address">Default Address</string>
+    <string name="empty_field_warning">All fields are required.</string>
 </resources>

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,6 +19,7 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -41,10 +41,70 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
+import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.navigation.Screens
+import com.example.shopify.data.models.address.Address
+import com.example.shopify.data.repositories.user.UserDataRepository
+import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
+import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
 import com.example.shopify.presentation.composables.SettingItemCard
 
 const val TAG = "TAG"
+
+
+@Composable
+fun SettingsScreen(settingsViewModel: SettingsViewModel, settingsNav: NavHostController) {
+
+
+    Scaffold() {
+        Column(modifier = Modifier.padding(it)) {
+
+            val state by settingsViewModel.addresses.collectAsState()
+            when (val currentState = state) {
+                is UserScreenUISState.Loading -> {
+
+                }
+                is UserScreenUISState.Success<*> -> {
+                    val addresses: List<Address> =
+                        currentState.data as List<Address>
+                    SettingsScreenContent(
+                        addresses,
+                        settingsViewModel = settingsViewModel,
+                        settingsNav = settingsNav
+                    )
+                }
+
+                is UserScreenUISState.Failure -> {
+
+                }
+
+                else -> {}
+            }
+        }
+    }
+}
+
+@Composable
+fun SettingsScreenContent(
+    addresses: List<Address>,
+    settingsViewModel: SettingsViewModel,
+    settingsNav: NavHostController
+) {
+
+
+    UserBar(
+        imageUrl = "https://louisville.edu/enrollmentmanagement/images/person-icon/image",
+        userName = "Please Login",
+        email = ""
+    )
+    SettingsItemList(
+        addresses = addresses,
+        settingsViewModel = settingsViewModel,
+        settingsNav = settingsNav
+    )
+
+}
+
 
 @Composable
 fun UserBar(
@@ -98,30 +158,17 @@ fun UserBar(
 
 
 @Composable
-fun SettingsScreen(settingsViewModel: SettingsViewModel, settingsNav: NavHostController) {
-
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        UserBar(
-            imageUrl = "https://louisville.edu/enrollmentmanagement/images/person-icon/image",
-            userName = "Please Login",
-            email = ""
-        )
-        SettingsItemList(settingsViewModel = settingsViewModel, settingsNav = settingsNav)
-
-    }
-
-}
-
-
-@Composable
-fun SettingsItemList(settingsViewModel: SettingsViewModel, settingsNav: NavHostController) {
+fun SettingsItemList(
+    addresses: List<Address>,
+    settingsViewModel: SettingsViewModel,
+    settingsNav: NavHostController
+) {
     LazyColumn(
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-            val addresses by settingsViewModel.addresses.collectAsState()
+//            val addresses by settingsViewModel.addresses.collectAsState()
             SettingItemCard(
                 mainText = stringResource(id = R.string.addresses),
                 subText = stringResource(id = R.string.you_have) + " ${addresses.size} " + stringResource(
@@ -183,7 +230,10 @@ fun SettingsItemList(settingsViewModel: SettingsViewModel, settingsNav: NavHostC
 @Preview(showSystemUi = true)
 @Composable
 fun SettingsPreview() {
-    SettingsScreen(SettingsViewModel(), rememberNavController())
+    SettingsScreen(
+        SettingsViewModel(UserDataRepository(UserDataRemoteSource(RetrofitClient.customerAddressAPI))),
+        rememberNavController()
+    )
 }
 
 
