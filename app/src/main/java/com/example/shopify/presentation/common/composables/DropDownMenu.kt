@@ -1,4 +1,4 @@
-package com.example.shopify.presentation.composables
+package com.example.shopify.presentation.common.composables
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box

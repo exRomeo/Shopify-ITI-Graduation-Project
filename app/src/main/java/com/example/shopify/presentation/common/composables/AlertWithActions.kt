@@ -1,4 +1,4 @@
-package com.example.shopify.presentation.composables
+package com.example.shopify.presentation.common.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

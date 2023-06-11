@@ -19,8 +19,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.shopify.R
-import com.example.shopify.presentation.composables.CartItemCard
-import com.example.shopify.presentation.composables.WarningDialog
+import com.example.shopify.presentation.common.composables.CartItemCard
+import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

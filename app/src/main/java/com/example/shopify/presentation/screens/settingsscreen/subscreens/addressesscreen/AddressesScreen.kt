@@ -31,9 +31,9 @@ import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.repositories.user.UserDataRepository
 import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
 import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
-import com.example.shopify.presentation.composables.EditAddressDialog
-import com.example.shopify.presentation.composables.SettingItemCard
-import com.example.shopify.presentation.composables.WarningDialog
+import com.example.shopify.presentation.common.composables.EditAddressDialog
+import com.example.shopify.presentation.common.composables.SettingItemCard
+import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 
 

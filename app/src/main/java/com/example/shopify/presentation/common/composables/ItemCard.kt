@@ -1,4 +1,4 @@
-package com.example.shopify.presentation.composables
+package com.example.shopify.presentation.common.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -274,7 +274,7 @@ fun CartItemCard(
                         }
                     ) {
                         Icon(
-                            painterResource(id = R.drawable.baseline_remove_24),
+                            painterResource(id = R.drawable.remove),
                             stringResource(id = R.string.remove)
                         )
                     }

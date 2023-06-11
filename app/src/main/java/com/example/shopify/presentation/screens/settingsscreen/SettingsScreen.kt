@@ -47,7 +47,8 @@ import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.repositories.user.UserDataRepository
 import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
 import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
-import com.example.shopify.presentation.composables.SettingItemCard
+import com.example.shopify.presentation.common.composables.LottieAnimation
+import com.example.shopify.presentation.common.composables.SettingItemCard
 
 const val TAG = "TAG"
 
@@ -57,13 +58,16 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel, settingsNav: NavHostCon
 
 
     Scaffold() {
-        Column(modifier = Modifier.padding(it)) {
+        Column(
+            modifier = Modifier.padding(it),
+        ) {
 
             val state by settingsViewModel.addresses.collectAsState()
             when (val currentState = state) {
                 is UserScreenUISState.Loading -> {
-
+                    LottieAnimation(animation = R.raw.loading_animation)
                 }
+
                 is UserScreenUISState.Success<*> -> {
                     val addresses: List<Address> =
                         currentState.data as List<Address>

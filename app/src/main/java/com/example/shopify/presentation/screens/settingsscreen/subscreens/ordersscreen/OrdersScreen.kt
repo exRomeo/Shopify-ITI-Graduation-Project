@@ -18,8 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.shopify.R
-import com.example.shopify.presentation.composables.OrderItemCard
-import com.example.shopify.presentation.composables.WarningDialog
+import com.example.shopify.presentation.common.composables.OrderItemCard
+import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
