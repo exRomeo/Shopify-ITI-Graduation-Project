@@ -10,19 +10,79 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.shopify.core.navigation.NavGraph
 import com.example.shopify.ui.theme.ShopifyTheme
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
+private const val BASE_URL = "https://mad43-alex-and-team2.myshopify.com/"
+private const val  CUSTOMER_PREF_NAME = "customer"
 class MainActivity : ComponentActivity() {
+    private val repository: IProductRepository by lazy {
+        (applicationContext as ShopifyApplication).repository
+    }
+
+    private val viewModel: HomeViewModel by lazy {
+        ViewModelProvider(this, HomeViewModelFactory(repository))[HomeViewModel::class.java]
+    }
+    lateinit var loginViewModelFactory: LoginViewModelFactory
+    private lateinit var loginViewModel: LoginViewModel
+    lateinit var signupViewModelFactory: SignupViewModelFactory
+    private lateinit var signupViewModel: SignupViewModel
+    lateinit var navController : NavHostController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        loginViewModelFactory =
+//            LoginViewModelFactory(
+//                AuthRepository(
+//                    AuthenticationClient(
+//                        RetrofitHelper.getAuthenticationService(BASE_URL),
+//                        FirebaseAuth.getInstance(),
+//                        FirebaseFirestore.getInstance()
+//                    ),
+//                    SharedPreference.customPreference(this, CUSTOMER_PREF_NAME)
+//                )
+//            )
+//
+//        loginViewModel = ViewModelProvider(this, loginViewModelFactory).get(LoginViewModel::class.java)
+//
+//        signupViewModelFactory =
+//            SignupViewModelFactory(
+//                AuthRepository(
+//                    AuthenticationClient(
+//                        RetrofitHelper.getAuthenticationService(BASE_URL),
+//                        FirebaseAuth.getInstance(),
+//                        FirebaseFirestore.getInstance()
+//                    ),
+//                    SharedPreference.customPreference(this, CUSTOMER_PREF_NAME)
+//                )
+//            )
+//        signupViewModel =
+//            ViewModelProvider(this, signupViewModelFactory).get(SignupViewModel::class.java)
+
         setContent {
             ShopifyTheme {
                 // A surface container using the 'background' color from the theme
-                NavGraph(navController = rememberNavController())
+//                NavGraph(navController = rememberNavController())
 //                Surface(
 //                    modifier = Modifier.fillMaxSize(),
 //                    color = MaterialTheme.colorScheme.background
 //                ) {
 //                    Greeting("Android")
+//                }
+              //  Surface {
+
+
+
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colorScheme.background
+//                ) {
+//                    ScaffoldStructure ("Home"){HomeScreen(viewModel = viewModel) }
+
+//                    navController = rememberNavController()
+//                    NavGraph(navController = navController, viewModel = loginViewModel)
+             //      SignupScreen(signupViewModel)
+//                   LoginScreen(loginViewModel/*,navController*/)
 //                }
             }
         }
