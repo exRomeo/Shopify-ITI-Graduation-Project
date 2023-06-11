@@ -30,6 +30,7 @@ fun CustomCornerButton(
     cornerRadius: Dp = 0.dp,
     elevation : Dp = 0.dp,
     onClick: () -> Unit,
+    isEnabled :Boolean,
     @DrawableRes imageId: Int? = null,
     @StringRes textId: Int,
     textStyle: TextStyle
@@ -39,7 +40,8 @@ fun CustomCornerButton(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(color),
         shape = RoundedCornerShape(cornerRadius),
-        elevation = ButtonDefaults.buttonElevation(elevation)
+        elevation = ButtonDefaults.buttonElevation(elevation),
+        enabled = isEnabled
     ) {
         if (imageId != null) {
             Image(

@@ -17,6 +17,7 @@ fun AuthenticationButton(
     @DrawableRes imageId: Int? = null,
     @StringRes textId: Int,
     elevation : Dp,
+    isEnabled : Boolean? = null,
     textStyle: TextStyle,
     onClick: () -> Unit,
 
@@ -27,6 +28,7 @@ fun AuthenticationButton(
         cornerRadius = 10.dp,
         elevation = elevation,
         onClick = onClick,
+        isEnabled = isEnabled ?: true,
         imageId = imageId,
         textId = textId,
         textStyle = textStyle

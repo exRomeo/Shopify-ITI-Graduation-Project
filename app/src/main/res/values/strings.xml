@@ -13,7 +13,20 @@
     <string name="first_name">First Name</string>
     <string name="second_name">Second Name</string>
     <string name="email">Email</string>
+    <string name="email_is_required">Email is required</string>
+    <string name="first_name_is_required">First name is required</string>
+    <string name="second_name_is_required">Second name is required</string>
+    <string name="address_is_required">Address is required</string>
+    <string name="phone_is_required">Phone is required</string>
+    <string name="password_is_required">Password is required</string>
+    <string name="confirm_password_is_required">Confirm password is required</string>
+    <string name="email_is_not_valid">Email is not valid</string>
+    <string name="empty"></string>
+    <string name="phone_is_not_valid">Phone is not valid</string>
+    <string name="password_is_not_valid">Password is not valid</string>
+    <string name="confirm_password_is_not_match">Confirm password is not matched password</string>
     <string name="phone">Phone</string>
+    <string name="address">Address</string>
     <string name="password">Password</string>
     <string name="forget_password">Forget Password?  </string>
     <string name="or_sign_in_with">Or sign in with</string>
@@ -24,5 +37,7 @@
     <string name="please_enter_your_email">Please enter your email</string>
     <string name="please_enter_your_password">Please enter your password</string>
     <string name="already_have_account">Already have an account?</string>
+    <string name="webclient_id">131338906575-gtdg4aqohriqcr3f7tb973h5dfkss4cd.apps.googleusercontent.com</string>
+    <string name="back">Back</string>
 
 </resources>
