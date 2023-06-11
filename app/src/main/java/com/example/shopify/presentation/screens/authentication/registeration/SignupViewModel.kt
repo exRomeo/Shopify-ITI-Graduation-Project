@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.data.models.RequestBody
+import com.example.shopify.data.models.ResponseBody
 import com.example.shopify.data.repositories.authentication.IAuthRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -59,7 +60,7 @@ class SignupViewModel(private val authRepository: IAuthRepository) : ViewModel()
             is AuthenticationResponseState.Success -> {
                 Log.i("TAG", "checkLoggedInState: SUCCESS")
                 Log.i("TAG", "checkLoggedInState: ${responseState.responseBody}")
-                responseState.responseBody?.customer?.let {
+                responseState.responseBody?.customer?.let  {
                     registerUserToFirebase(
                         email, password,
                         it.id,

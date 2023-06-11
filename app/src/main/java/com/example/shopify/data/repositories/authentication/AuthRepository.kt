@@ -7,6 +7,7 @@ import com.example.shopify.core.utils.SharedPreference.customerID
 import com.example.shopify.data.models.RequestBody
 import com.example.shopify.data.remote.authentication.IAuthenticationClient
 import com.example.shopify.data.remote.authentication.IAuthenticationService
+import com.google.firebase.auth.AuthCredential
 
 
 class AuthRepository(
@@ -30,6 +31,10 @@ class AuthRepository(
         password: String
     ): AuthenticationResponseState {
         return authenticationClient.loginUserFirebase(email, password)
+    }
+
+    override suspend fun googleSignIn(credential: AuthCredential): AuthenticationResponseState {
+        return authenticationClient.googleSignIn(credential)
     }
 
     override fun saveCustomerID(customerID: String) {

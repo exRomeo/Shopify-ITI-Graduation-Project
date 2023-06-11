@@ -6,6 +6,7 @@ import com.example.shopify.data.models.Errors
 import com.example.shopify.data.models.RequestBody
 import com.example.shopify.data.models.Response
 import com.example.shopify.data.models.ResponseBody
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -29,7 +30,7 @@ class AuthenticationClient(
             val response = authenticationService.registerUserToShopify(customer)
             AuthenticationResponseState.Success(response)
         } catch (ex: HttpException) {
-            AuthenticationResponseState.Error(ex.toString())
+            AuthenticationResponseState.Error(ex.message.toString())
         }
     }
 
@@ -43,7 +44,7 @@ class AuthenticationClient(
             addCustomerID(customerID)
             checkedLoggedIn()
         } catch (ex: Exception) {
-            AuthenticationResponseState.Error(ex.message)
+            AuthenticationResponseState.Error(ex.message.toString())
         }
     }
 
@@ -57,7 +58,16 @@ class AuthenticationClient(
             Log.i("TAG", "loginUserFirebase: $responseBody")
             checkedLoggedIn(responseBody)
         } catch (ex: Exception) {
-            AuthenticationResponseState.Error(ex.message)
+            AuthenticationResponseState.Error(ex.message.toString())
+        }
+    }
+
+    override suspend fun googleSignIn(credential: AuthCredential): AuthenticationResponseState {
+        return try {
+            val response = authenticationFirebase.signInWithCredential(credential).await()
+            AuthenticationResponseState.GoogleSuccess(response)
+        } catch (ex: Exception) {
+            AuthenticationResponseState.Error(ex.message.toString())
         }
     }
 

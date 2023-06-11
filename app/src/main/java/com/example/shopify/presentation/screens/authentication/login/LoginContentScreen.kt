@@ -31,6 +31,7 @@ import androidx.navigation.NavController
 import com.example.shopify.R
 import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.core.navigation.Screens
+import com.example.shopify.core.utils.Constant
 import com.example.shopify.presentation.screens.authentication.AuthenticationButton
 import com.example.shopify.presentation.screens.authentication.AuthenticationTextField
 import com.example.shopify.presentation.screens.authentication.TextFieldType
@@ -41,6 +42,8 @@ import com.example.shopify.ui.theme.ibarraBold
 import com.example.shopify.ui.theme.ibarraRegular
 import com.example.shopify.ui.theme.mainColor
 import com.example.shopify.ui.theme.textColor
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 
 @Composable
@@ -214,7 +217,14 @@ fun LoginContentScreen(
                     fontSize = 14.sp
                 )
             ) {
-                println("email is $email , password is $password")
+//                val google = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                    .requestEmail()
+//                    .requestIdToken(Constant.webClient)
+////                    .requestProfile()
+//                    .build()
+//                val googleSignInClient = GoogleSignIn.getClient(google)
+//                loginViewModel.
+//                println("email is $email , password is $password")
             }
             AuthenticationButton(
                 modifier = Modifier
