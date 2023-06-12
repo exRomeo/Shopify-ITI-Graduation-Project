@@ -25,6 +25,7 @@ import com.example.shopify.R
 import com.example.shopify.presentation.screens.authentication.TextFieldType
 import com.example.shopify.ui.theme.backgroundColor
 import com.example.shopify.ui.theme.hintColor
+import java.lang.Error
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +38,8 @@ fun CustomTextField(
     onValueChange: (String) -> Unit,
     color: Color,
     cornerRadius: Dp = 0.dp,
-    textFieldType: TextFieldType
+    textFieldType: TextFieldType,
+    isError: Boolean
 ) {
 
     var passwordVisible by remember {
@@ -60,7 +62,7 @@ fun CustomTextField(
         value = text,
         textStyle = textStyle,
         onValueChange = onValueChange,
-//        isError = ,
+       // isError = isError,
         label = {
             Text(
                 text = stringResource(id = hintId),

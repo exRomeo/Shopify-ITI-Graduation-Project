@@ -1,7 +1,6 @@
 package com.example.shopify.presentation.screens.authentication.login
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shopify.core.helpers.AuthenticationResponseState
@@ -57,13 +56,9 @@ class LoginViewModel(private val authRepository: IAuthRepository) : ViewModel() 
                 Log.i("TAG", "checkLoggedInState: SUCCESS")
                 Log.i(
                     "TAG",
-                    "checkLoggedInState: ${responseState.responseBody?.customer?.customerId}"
+                    "checkLoggedInState: ${responseState.responseBody?.customer?.id}"
                 )
-                responseState.responseBody?.customer?.customerId?.let {
-                    authRepository.saveCustomerID(
-                        it
-                    )
-                }
+                authRepository.saveCustomerIDToSharedPreference(responseState.responseBody?.customer?.id.toString())
                 _authResponse.value = responseState
             }
 

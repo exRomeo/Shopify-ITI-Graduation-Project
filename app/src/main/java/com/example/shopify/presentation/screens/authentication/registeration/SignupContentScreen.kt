@@ -34,11 +34,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.shopify.R
-import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.core.utils.CredentialsValidator
 import com.example.shopify.data.models.Address
 import com.example.shopify.data.models.Customer
-import com.example.shopify.data.models.RequestBody
+import com.example.shopify.data.models.CustomerRequestBody
 import com.example.shopify.presentation.screens.authentication.AuthenticationTextField
 import com.example.shopify.presentation.screens.authentication.TextFieldType
 import com.example.shopify.presentation.screens.authentication.AuthenticationButton
@@ -69,7 +68,7 @@ fun SignupContentScreen(
     confirmPassword: String,
     onConfirmPasswordChanged: (String) -> Unit,
     isDataEntered: Boolean,
-    errorResponse : String,
+    errorResponse: String,
     signupNavController: NavController
 ) {
     Column(
@@ -108,7 +107,7 @@ fun SignupContentScreen(
             color = hintColor,
             fontSize = 18.sp
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth()
@@ -140,7 +139,7 @@ fun SignupContentScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         AuthenticationTextField(
             modifier = Modifier
                 .height(72.dp)
@@ -154,7 +153,7 @@ fun SignupContentScreen(
             onValueChange = onEmailChanged,
             textFieldType = TextFieldType.Email
         )
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         AuthenticationTextField(
             modifier = Modifier
                 .height(72.dp)
@@ -168,7 +167,7 @@ fun SignupContentScreen(
             onValueChange = onPhoneChanged,
             textFieldType = TextFieldType.Phone
         )
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         AuthenticationTextField(
             modifier = Modifier
                 .height(72.dp)
@@ -180,7 +179,7 @@ fun SignupContentScreen(
             onValueChange = onAddressChanged,
             textFieldType = TextFieldType.Address
         )
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         AuthenticationTextField(
             modifier = Modifier
                 .height(72.dp)
@@ -194,7 +193,7 @@ fun SignupContentScreen(
             onValueChange = onPasswordChanged,
             textFieldType = TextFieldType.Password
         )
-        Spacer(modifier = Modifier.height(2.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         AuthenticationTextField(
             modifier = Modifier
                 .height(72.dp)
@@ -225,7 +224,7 @@ fun SignupContentScreen(
                 .align(Alignment.CenterHorizontally),
             color = mainColor,
             textId = R.string.signup,
-            elevation = 5.dp,
+            elevation = 8.dp,
             isEnabled = isDataEntered,
             textStyle = TextStyle(
                 fontFamily = IbarraFont,
@@ -237,17 +236,17 @@ fun SignupContentScreen(
             when (dataIsValid(email, phone, password, confirmPassword)) {
                 true -> signupViewModel.registerUserToShopify(
                     requestBody =
-                    RequestBody(
+                    CustomerRequestBody(
                         customer = Customer(
-                            first_name = firstName,
-                            last_name = secondName,
+                            firstName = firstName,
+                            lastName = secondName,
                             email = email,
                             phone = phone,
-                            verified_email = true,
+                            verifiedEmail = true,
                             addresses = listOf(Address(address1 = address, phone = phone)),
                             password = password,
-                            password_confirmation = confirmPassword,
-                            send_email_welcome = false
+                            passwordConfirmation = confirmPassword,
+                            sendEmailWelcome = false
                         )
                     )
                 )//signupViewModel.registerUser(email, password) //Log.i("TAG", "SignupScreen: is valid")
@@ -292,7 +291,7 @@ fun SignupContentScreen(
                 color = Color.White,
                 imageId = R.drawable.google,
                 textId = R.string.google,
-                elevation = 20.dp,
+                elevation = 12.dp,
                 textStyle = TextStyle(
                     fontFamily = IbarraFont,
                     fontWeight = FontWeight.SemiBold,
@@ -309,7 +308,7 @@ fun SignupContentScreen(
                 color = facebookBackground,
                 imageId = R.drawable.facebook,
                 textId = R.string.facebook,
-                elevation = 5.dp,
+                elevation = 8.dp,
                 textStyle = TextStyle(
                     fontFamily = IbarraFont,
                     fontWeight = FontWeight.SemiBold,

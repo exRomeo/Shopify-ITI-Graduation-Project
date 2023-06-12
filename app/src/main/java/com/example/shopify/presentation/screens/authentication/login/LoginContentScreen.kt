@@ -1,6 +1,5 @@
 package com.example.shopify.presentation.screens.authentication.login
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +16,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -29,9 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.shopify.R
-import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.core.navigation.Screens
-import com.example.shopify.core.utils.Constant
 import com.example.shopify.presentation.screens.authentication.AuthenticationButton
 import com.example.shopify.presentation.screens.authentication.AuthenticationTextField
 import com.example.shopify.presentation.screens.authentication.TextFieldType
@@ -42,8 +38,6 @@ import com.example.shopify.ui.theme.ibarraBold
 import com.example.shopify.ui.theme.ibarraRegular
 import com.example.shopify.ui.theme.mainColor
 import com.example.shopify.ui.theme.textColor
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 
 @Composable
@@ -55,7 +49,7 @@ fun LoginContentScreen(
     onPasswordChanged: (String) -> Unit,
     isDataEntered: Boolean,
     errorResponse: String,
-     loginNavController : NavController
+    loginNavController: NavController
 ) {
     Column(
         modifier = Modifier
@@ -70,7 +64,7 @@ fun LoginContentScreen(
             fontSize = 32.sp
         )
         Text(
-            text = "Shopify",
+            text = stringResource(id = R.string.shopingoo),
             style = ibarraBold,
             color = mainColor,
             fontSize = 32.sp
@@ -138,7 +132,7 @@ fun LoginContentScreen(
                 .align(CenterHorizontally),
             color = mainColor,
             textId = R.string.login,
-            elevation = 5.dp,
+            elevation = 8.dp,
             isEnabled = isDataEntered,
             textStyle = TextStyle(
                 fontFamily = IbarraFont,
@@ -209,7 +203,7 @@ fun LoginContentScreen(
                 color = Color.White,
                 imageId = R.drawable.google,
                 textId = R.string.google,
-                elevation = 20.dp,
+                elevation = 12.dp,
                 textStyle = TextStyle(
                     fontFamily = IbarraFont,
                     fontWeight = FontWeight.SemiBold,
@@ -233,7 +227,7 @@ fun LoginContentScreen(
                 color = facebookBackground,
                 imageId = R.drawable.facebook,
                 textId = R.string.facebook,
-                elevation = 5.dp,
+                elevation = 8.dp,
                 textStyle = TextStyle(
                     fontFamily = IbarraFont,
                     fontWeight = FontWeight.SemiBold,

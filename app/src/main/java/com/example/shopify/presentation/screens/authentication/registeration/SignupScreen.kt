@@ -15,17 +15,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.shopify.R
+import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.AuthenticationResponseState
-import com.example.shopify.core.helpers.RetrofitHelper
-import com.example.shopify.core.navigation.Screens
-import com.example.shopify.core.utils.SharedPreference
-import com.example.shopify.data.remote.authentication.AuthenticationClient
-import com.example.shopify.data.repositories.authentication.AuthRepository
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-
-private const val BASE_URL = "https://mad43-alex-and-team2.myshopify.com/"
-private const val CUSTOMER_PREF_NAME = "customer"
+import com.example.shopify.data.repositories.authentication.IAuthRepository
 
 @Composable
 fun SignupScreen(signupNavController: NavController) {
@@ -60,22 +52,12 @@ fun SignupScreen(signupNavController: NavController) {
                     && (password == confirmPassword)
         }
     }
-    val signupViewModelFactory =
-        SignupViewModelFactory(
-            AuthRepository(
-                AuthenticationClient(
-                    RetrofitHelper.getAuthenticationService(BASE_URL),
-                    FirebaseAuth.getInstance(),
-                    FirebaseFirestore.getInstance()
-                ),
-                SharedPreference.customPreference(
-                    LocalContext.current.applicationContext,
-                    CUSTOMER_PREF_NAME
-                )
-            )
-        )
+    val authRepository: IAuthRepository =
+        (LocalContext.current.applicationContext as ShopifyApplication).authRepository
+    val signupViewModelFactory = SignupViewModelFactory(authRepository)
     val signupViewModel: SignupViewModel = viewModel(factory = signupViewModelFactory)
     val authState by signupViewModel.authResponse.collectAsState()
+
     when (val authResponse = authState) {
         is AuthenticationResponseState.Success -> {
             LaunchedEffect(key1 = authState) {
@@ -96,6 +78,7 @@ fun SignupScreen(signupNavController: NavController) {
         }
 
         else -> {
+            error = stringResource(id = R.string.something_is_wrong)
             Log.i("TAG", "THERE'S SOMETHING WRONG ")
         }
     }

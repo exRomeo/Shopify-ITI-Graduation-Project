@@ -35,6 +35,7 @@
     <string name="default_address">Default Address</string>
     <string name="empty_field_warning">All fields are required.</string>
     <string name="welcome_to">Welcome To</string>
+    <string name="shopingoo">Shopingoo</string>
     <string name="please_enter_your_details">Please enter your details</string>
     <string name="login">Login</string>
     <string name="sign_in">Sign in</string>
@@ -72,6 +73,7 @@
     <string name="already_have_account">Already have an account?</string>
     <string name="back">Back</string>
     <string name="email_password_must_be_unique">Email or password has already been taken</string>
+    <string name="something_is_wrong">There\'S something wrong</string>
     <string name="brands">Brands</string>
     <string name="trending_products">Trending Products</string>
     <string name="special_offers">Special Offers</string>
