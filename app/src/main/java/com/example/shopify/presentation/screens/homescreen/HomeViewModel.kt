@@ -1,5 +1,6 @@
 package com.example.shopify.presentation.screens.homescreen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -33,6 +34,7 @@ class HomeViewModel( val repository: IProductRepository):ViewModel() {
                         _brandsList.value = UiState.Error(it)
                     }
                     .collect {
+                        Log.i("menna","getbrands")
                         _brandsList.value = UiState.Success(it)
 
                     }

@@ -11,6 +11,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import com.example.shopify.core.helpers.AuthenticationResponseState
+import com.example.shopify.core.navigation.Screens
 
 @Composable
 fun LoginScreen(loginViewModel: LoginViewModel/*, loginNavController: NavController*/) { //state hoisting move state to the caller of composable
@@ -34,7 +35,7 @@ fun LoginScreen(loginViewModel: LoginViewModel/*, loginNavController: NavControl
         is AuthenticationResponseState.Success -> {
             error = ""
             Log.i("TAG", "NAVIGATE TO HOME SCREEN")
-            //loginNavController.navigate(route = Screens.Login.route)
+         //   navController.navigate(route = Screens.Login.route)
         }
 
         is AuthenticationResponseState.Loading -> {
