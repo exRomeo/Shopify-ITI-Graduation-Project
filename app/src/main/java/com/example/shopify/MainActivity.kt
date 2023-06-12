@@ -57,7 +57,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        FirebaseApp.initializeApp(this)
         loginViewModelFactory =
             LoginViewModelFactory(
                 AuthRepository(
@@ -70,7 +69,8 @@ class MainActivity : ComponentActivity() {
                 )
             )
 
-        loginViewModel = ViewModelProvider(this, loginViewModelFactory).get(LoginViewModel::class.java)
+        loginViewModel =
+            ViewModelProvider(this, loginViewModelFactory).get(LoginViewModel::class.java)
 
         signupViewModelFactory =
             SignupViewModelFactory(
@@ -99,16 +99,16 @@ class MainActivity : ComponentActivity() {
                 //  Surface {
 
 
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colorScheme.background
+//                ) {
 //                    ScaffoldStructure("Home") { HomeScreen(viewModel = viewModel) }
-//                    navController = rememberNavController()
-//                    NavGraph(navController = navController)
+                    navController = rememberNavController()
+                    NavGraph(navController = navController)
 //                    SignupScreen(signupViewModel)
 //                    LoginScreen(loginViewModel/*,navController*/)
-                }
+//                }
             }
         }
     }

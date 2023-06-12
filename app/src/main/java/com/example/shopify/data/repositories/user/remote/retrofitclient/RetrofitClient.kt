@@ -1,5 +1,7 @@
 package com.example.shopify.data.repositories.user.remote.retrofitclient
 
+import android.content.Context
+import okhttp3.Cache
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

@@ -5,11 +5,12 @@ import com.example.shopify.data.models.address.AddressBody
 import com.example.shopify.data.models.address.AddressesResponse
 import com.example.shopify.data.models.address.DeleteResponse
 import com.example.shopify.data.models.address.NewAddressResponse
+import com.example.shopify.data.repositories.user.remote.IUserDataRemoteSource
 import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
 import com.example.shopify.data.repositories.user.remote.retrofitclient.USER_ID
 import retrofit2.Response
 
-class UserDataRepository(private val userDataRemoteSource: UserDataRemoteSource): IUserDataRepository {
+class UserDataRepository(private val userDataRemoteSource: IUserDataRemoteSource): IUserDataRepository {
 
 
     /**
