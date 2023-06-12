@@ -1,5 +1,6 @@
 package com.example.shopify.presentation.screens.homescreen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -11,6 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.log
+
 class HomeViewModel( val repository: IProductRepository):ViewModel() {
 
     private var _brandsList: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
@@ -31,9 +34,11 @@ class HomeViewModel( val repository: IProductRepository):ViewModel() {
                 response
                     .catch {
                         _brandsList.value = UiState.Error(it)
+
                     }
                     .collect {
                         _brandsList.value = UiState.Success(it)
+                        Log.i("TAG", "getBrands: =======================>")
 
                     }
 

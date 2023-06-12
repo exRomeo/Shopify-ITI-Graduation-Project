@@ -56,7 +56,7 @@ class AuthenticationClient(
             authenticationFirebase.signInWithEmailAndPassword(email, password).await()
             val responseBody = retrieveCustomerID()
             Log.i("TAG", "loginUserFirebase: $responseBody")
-            checkedLoggedIn(responseBody)
+            checkedLoggedIn()
         } catch (ex: Exception) {
             AuthenticationResponseState.Error(ex.message.toString())
         }
@@ -91,25 +91,28 @@ class AuthenticationClient(
         }
     }
 
-    private suspend fun retrieveCustomerID(): ResponseBody = coroutineScope {
+    private suspend fun retrieveCustomerID(): String = coroutineScope {
         val querySnapshot: DocumentSnapshot?
+        var customerID : String = ""
         return@coroutineScope try {
             val uid = authenticationFirebase.currentUser?.uid ?: ""
             Log.i("TAG", "retrieveCustomerID: $uid")
             querySnapshot = fireStore.collection("customer").document(uid).get().await()
-            ResponseBody(
-                customer = Response(
-                    id = 0,
-                    customerId = querySnapshot.data?.get("customer_id").toString()
-                ),
-                errors = null
-            )
+//            ResponseBody(
+//                customer = Response(
+//                    id = 0,
+//                    customerId = querySnapshot.data?.get("customer_id").toString()
+//                ),
+//                errors = null
+//            )
+            querySnapshot.data?.get("customer_id").toString()
         } catch (ex: Exception) {
             Log.i("TAG", "retrieveCustomerID: Failure ${ex.message}")
-            ResponseBody(
-                customer = null,
-                errors = Errors(email = listOf(ex.message), phone = null)
-            )
+//            ResponseBody(
+//                customer = null,
+//                errors = Errors(email = listOf(ex.message), phone = null)
+//            )
+            "0"
         }
 
     }

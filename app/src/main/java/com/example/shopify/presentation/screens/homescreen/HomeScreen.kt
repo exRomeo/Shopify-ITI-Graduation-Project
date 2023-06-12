@@ -86,8 +86,8 @@ fun HomeScreen(navController: NavController, modifier: Modifier = Modifier) {
 
     val repository: IProductRepository =
         (LocalContext.current.applicationContext as ShopifyApplication).repository
-
     val viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(repository))
+//    Log.i("TAG", "HomeScreen: ")
     val brandsState: UiState by viewModel.brandList.collectAsState()
     val randomsState: UiState by viewModel.randomList.collectAsState()
     var brandList: List<Brand> = listOf()

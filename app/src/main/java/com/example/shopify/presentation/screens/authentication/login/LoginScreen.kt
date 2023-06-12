@@ -63,7 +63,7 @@ fun LoginScreen( loginNavController: NavController) { //state hoisting move stat
         }
 
         is AuthenticationResponseState.Loading -> {
-            Log.i("TAG", " LOADING")
+            Log.i("TAG", " LOADING IN LOGIN SCREEN")
         }
 
         is AuthenticationResponseState.Error -> {
