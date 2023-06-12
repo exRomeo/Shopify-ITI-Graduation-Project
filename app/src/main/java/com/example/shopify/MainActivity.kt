@@ -49,10 +49,10 @@ class MainActivity : ComponentActivity() {
     private val viewModel: HomeViewModel by lazy {
         ViewModelProvider(this, HomeViewModelFactory(repository))[HomeViewModel::class.java]
     }
-    lateinit var loginViewModelFactory: LoginViewModelFactory
-    private lateinit var loginViewModel: LoginViewModel
-    lateinit var signupViewModelFactory: SignupViewModelFactory
-    private lateinit var signupViewModel: SignupViewModel
+//    lateinit var loginViewModelFactory: LoginViewModelFactory
+//    private lateinit var loginViewModel: LoginViewModel
+//    lateinit var signupViewModelFactory: SignupViewModelFactory
+//    private lateinit var signupViewModel: SignupViewModel
     lateinit var navController: NavHostController
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +71,7 @@ class MainActivity : ComponentActivity() {
 //            )
 //
 //        loginViewModel = ViewModelProvider(this, loginViewModelFactory).get(LoginViewModel::class.java)
-//
+
 //        signupViewModelFactory =
 //            SignupViewModelFactory(
 //                AuthRepository(
@@ -107,7 +107,7 @@ class MainActivity : ComponentActivity() {
                     navController = rememberNavController()
                     NavGraph(navController = navController)
 //                    SignupScreen(signupViewModel)
-//                    LoginScreen(loginViewModel/*,navController*/)
+//                    LoginScreen(navController)
                 }
             }
         }

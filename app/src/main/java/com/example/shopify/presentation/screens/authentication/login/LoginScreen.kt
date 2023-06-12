@@ -2,6 +2,7 @@ package com.example.shopify.presentation.screens.authentication.login
 
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -57,9 +58,12 @@ fun LoginScreen( loginNavController: NavController) { //state hoisting move stat
     val authState by loginViewModel.authResponse.collectAsState()
     when (val authResponse = authState) {
         is AuthenticationResponseState.Success -> {
-            error = ""
-            Log.i("TAG", "NAVIGATE TO HOME SCREEN")
-            loginNavController.navigate(route = Screens.Home.route)
+            LaunchedEffect(key1 = authState){
+                error = ""
+                Log.i("TAG", "NAVIGATE TO HOME SCREEN")
+                loginNavController.navigate(route = Screens.Home.route)
+
+            }
         }
 
         is AuthenticationResponseState.Loading -> {

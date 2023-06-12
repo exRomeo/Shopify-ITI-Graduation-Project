@@ -72,7 +72,6 @@ fun SignupContentScreen(
     errorResponse : String,
     signupNavController: NavController
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()

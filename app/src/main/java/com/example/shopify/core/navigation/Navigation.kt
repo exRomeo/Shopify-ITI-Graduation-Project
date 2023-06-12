@@ -42,7 +42,7 @@ fun NavGraph(navController: NavHostController) {
 //        }
 
         composable(route = Screens.Login.route) {
-               LoginScreen(navController)
+            LoginScreen(navController)
         }
         composable(route = Screens.Signup.route) {
             SignupScreen(navController)
