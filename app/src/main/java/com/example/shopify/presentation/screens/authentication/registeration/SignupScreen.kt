@@ -9,11 +9,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.shopify.core.helpers.AuthenticationResponseState
+import com.example.shopify.core.helpers.RetrofitHelper
+import com.example.shopify.core.utils.SharedPreference
+import com.example.shopify.data.remote.authentication.AuthenticationClient
+import com.example.shopify.data.repositories.authentication.AuthRepository
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
+private const val BASE_URL = "https://mad43-alex-and-team2.myshopify.com/"
+private const val CUSTOMER_PREF_NAME = "customer"
 @Composable
-fun SignupScreen(signupViewModel: SignupViewModel/*,signupNavController: NavController*/) {
+fun SignupScreen(signupNavController: NavController) {
     var firstName by remember {
         mutableStateOf("")
     }
@@ -45,12 +55,24 @@ fun SignupScreen(signupViewModel: SignupViewModel/*,signupNavController: NavCont
                     && (password == confirmPassword)
         }
     }
+    val signupViewModelFactory =
+        SignupViewModelFactory(
+            AuthRepository(
+                AuthenticationClient(
+                    RetrofitHelper.getAuthenticationService(BASE_URL),
+                    FirebaseAuth.getInstance(),
+                    FirebaseFirestore.getInstance()
+                ),
+                SharedPreference.customPreference(LocalContext.current.applicationContext, CUSTOMER_PREF_NAME)
+            )
+        )
+    val signupViewModel: SignupViewModel = viewModel(factory=signupViewModelFactory)
     val authState by signupViewModel.authResponse.collectAsState()
     when (val authResponse = authState) {
         is AuthenticationResponseState.Success -> {
             error = ""
             Log.i("TAG", "NAVIGATE TO LOGIN SCREEN")
-            // signupNavController.popBackStack()
+             signupNavController.popBackStack()
         }
 
         is AuthenticationResponseState.Loading -> {
@@ -85,6 +107,6 @@ fun SignupScreen(signupViewModel: SignupViewModel/*,signupNavController: NavCont
         onConfirmPasswordChanged = { confirmPassword = it },
         isDataEntered = isDataEntered,
         errorResponse = error,
-       // signupNavController = signupNavController
+        signupNavController = signupNavController
     )
 }

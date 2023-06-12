@@ -60,6 +60,7 @@ fun CustomTextField(
         value = text,
         textStyle = textStyle,
         onValueChange = onValueChange,
+//        isError = ,
         label = {
             Text(
                 text = stringResource(id = hintId),

@@ -54,8 +54,8 @@ fun LoginContentScreen(
     password: String,
     onPasswordChanged: (String) -> Unit,
     isDataEntered: Boolean,
-    errorResponse: String
-    // loginNavController : NavController
+    errorResponse: String,
+     loginNavController : NavController
 ) {
     Column(
         modifier = Modifier
@@ -164,7 +164,7 @@ fun LoginContentScreen(
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 modifier = Modifier.clickable {
-                    //loginNavController.navigate(Screens.Signup.route)
+                    loginNavController.navigate(Screens.Signup.route)
                 },
                 text = stringResource(id = R.string.signup),
                 style = ibarraRegular,

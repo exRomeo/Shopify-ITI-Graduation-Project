@@ -58,15 +58,19 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.tv.material3.Carousel
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.shopify.R
+import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.TopBar
@@ -75,9 +79,15 @@ import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.SmartCollections
 import com.example.shopify.data.models.Varient
+import com.example.shopify.data.repositories.product.IProductRepository
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel, modifier: Modifier = Modifier) {
+fun HomeScreen(navController: NavController, modifier: Modifier = Modifier) {
+
+    val repository: IProductRepository =
+        (LocalContext.current.applicationContext as ShopifyApplication).repository
+
+    val viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(repository))
     val brandsState: UiState by viewModel.brandList.collectAsState()
     val randomsState: UiState by viewModel.randomList.collectAsState()
     var brandList: List<Brand> = listOf()
@@ -100,10 +110,10 @@ fun HomeScreen(viewModel: HomeViewModel, modifier: Modifier = Modifier) {
 
         is UiState.Success<*> -> {
             brandList =
-                (brandsState as UiState.Success<SmartCollections>).data.body()?.smart_collections!!
+                (brandsState as UiState.Success<SmartCollections>).data.body()?.smart_collections ?: listOf()
         }
 
-        else -> {
+        is UiState.Error -> {
             Log.i("homepage", (randomsState as UiState.Error).error.toString())
         }
     }
@@ -112,12 +122,12 @@ fun HomeScreen(viewModel: HomeViewModel, modifier: Modifier = Modifier) {
         }
 
         is UiState.Success<*> -> {
-            randomList = (randomsState as UiState.Success<Products>).data.body()?.products!!
+            randomList = (randomsState as UiState.Success<Products>).data.body()?.products ?: listOf()
 
 
         }
 
-        else -> {
+        is UiState.Error -> {
 
             Log.i("homepage", (randomsState as UiState.Error).error.toString())
         }

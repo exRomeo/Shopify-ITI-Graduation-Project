@@ -71,7 +71,7 @@
     <string name="please_enter_your_password">Please enter your password</string>
     <string name="already_have_account">Already have an account?</string>
     <string name="back">Back</string>
-
+    <string name="email_password_must_be_unique">Email or password has already been taken</string>
     <string name="brands">Brands</string>
     <string name="trending_products">Trending Products</string>
     <string name="special_offers">Special Offers</string>

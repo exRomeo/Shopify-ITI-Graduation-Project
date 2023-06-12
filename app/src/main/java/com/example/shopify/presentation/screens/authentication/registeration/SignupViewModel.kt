@@ -68,15 +68,18 @@ class SignupViewModel(private val authRepository: IAuthRepository) : ViewModel()
                 }
             }
 
-            is AuthenticationResponseState.Error -> {
+            /*is AuthenticationResponseState.Error -> {
                 Log.i("TAG", "checkLoggedInState: ${responseState.message.toString()}")
                 _authResponse.value = responseState
             }
 
             is AuthenticationResponseState.NotLoggedIn -> {
                 Log.i("TAG", "checkLoggedInState: IS NOT LOGGED")
-            }
+            }*/
 
+            else ->{
+                _authResponse.value = responseState
+            }
         }
     }
 
@@ -94,7 +97,7 @@ class SignupViewModel(private val authRepository: IAuthRepository) : ViewModel()
                 _authResponse.value = responseState
             }
 
-            is AuthenticationResponseState.Error -> {
+            /*is AuthenticationResponseState.Error -> {
 //                Log.i("TAG", "checkLoggedInState: ERROR ${_authResponse.value}")
                 Log.i("TAG", "checkLoggedInState ERROR: ${responseState.message.toString()}")
                 _authResponse.value = responseState
@@ -102,6 +105,9 @@ class SignupViewModel(private val authRepository: IAuthRepository) : ViewModel()
 
             is AuthenticationResponseState.NotLoggedIn -> {
                 Log.i("TAG", "checkLoggedInState: IS NOT LOGGED")
+            }*/
+            else->{
+                _authResponse.value = responseState
             }
         }
     }

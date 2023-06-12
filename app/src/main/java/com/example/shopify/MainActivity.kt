@@ -58,33 +58,33 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        FirebaseApp.initializeApp(this)
-        loginViewModelFactory =
-            LoginViewModelFactory(
-                AuthRepository(
-                    AuthenticationClient(
-                        RetrofitHelper.getAuthenticationService(BASE_URL),
-                        FirebaseAuth.getInstance(),
-                        FirebaseFirestore.getInstance()
-                    ),
-                    SharedPreference.customPreference(this, CUSTOMER_PREF_NAME)
-                )
-            )
-
-        loginViewModel = ViewModelProvider(this, loginViewModelFactory).get(LoginViewModel::class.java)
-
-        signupViewModelFactory =
-            SignupViewModelFactory(
-                AuthRepository(
-                    AuthenticationClient(
-                        RetrofitHelper.getAuthenticationService(BASE_URL),
-                        FirebaseAuth.getInstance(),
-                        FirebaseFirestore.getInstance()
-                    ),
-                    SharedPreference.customPreference(this, CUSTOMER_PREF_NAME)
-                )
-            )
-        signupViewModel =
-            ViewModelProvider(this, signupViewModelFactory).get(SignupViewModel::class.java)
+//        loginViewModelFactory =
+//            LoginViewModelFactory(
+//                AuthRepository(
+//                    AuthenticationClient(
+//                        RetrofitHelper.getAuthenticationService(BASE_URL),
+//                        FirebaseAuth.getInstance(),
+//                        FirebaseFirestore.getInstance()
+//                    ),
+//                    SharedPreference.customPreference(this, CUSTOMER_PREF_NAME)
+//                )
+//            )
+//
+//        loginViewModel = ViewModelProvider(this, loginViewModelFactory).get(LoginViewModel::class.java)
+//
+//        signupViewModelFactory =
+//            SignupViewModelFactory(
+//                AuthRepository(
+//                    AuthenticationClient(
+//                        RetrofitHelper.getAuthenticationService(BASE_URL),
+//                        FirebaseAuth.getInstance(),
+//                        FirebaseFirestore.getInstance()
+//                    ),
+//                    SharedPreference.customPreference(this, CUSTOMER_PREF_NAME)
+//                )
+//            )
+//        signupViewModel =
+//            ViewModelProvider(this, signupViewModelFactory).get(SignupViewModel::class.java)
 
         setContent {
             ShopifyTheme {
@@ -104,8 +104,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 //                    ScaffoldStructure("Home") { HomeScreen(viewModel = viewModel) }
-//                    navController = rememberNavController()
-//                    NavGraph(navController = navController)
+                    navController = rememberNavController()
+                    NavGraph(navController = navController)
 //                    SignupScreen(signupViewModel)
 //                    LoginScreen(loginViewModel/*,navController*/)
                 }
