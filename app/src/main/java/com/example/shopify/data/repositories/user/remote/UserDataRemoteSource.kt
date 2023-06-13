@@ -6,11 +6,14 @@ import com.example.shopify.data.models.address.AddressBody
 import com.example.shopify.data.models.address.AddressesResponse
 import com.example.shopify.data.models.address.DeleteResponse
 import com.example.shopify.data.models.address.NewAddressResponse
+import com.example.shopify.data.models.draftorder.DraftOrderResponse
 import com.example.shopify.data.repositories.user.remote.retrofitclient.CustomerAddressAPI
+import com.example.shopify.data.repositories.user.remote.retrofitclient.DraftOrderAPI
 import retrofit2.Response
 
 class UserDataRemoteSource(
-    private val customerAddressAPI: CustomerAddressAPI
+    private val customerAddressAPI: CustomerAddressAPI,
+    private val draftOrderAPI: DraftOrderAPI
 ) : IUserDataRemoteSource {
 
     /**
@@ -79,19 +82,16 @@ class UserDataRemoteSource(
      * Wishlist Functions
      */
 
-    override suspend fun getWishlist(userID: Int) {
-        TODO("Not yet implemented")
-    }
 
-    override suspend fun updateWishlistItem(product: Product) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getWishlistItems(draftOrderID: Long): DraftOrderResponse =
+        draftOrderAPI.getDraftOrder(BuildConfig.ACCESS_TOKEN, draftOrderID)
 
-    override suspend fun addWishlistItem(product: Product) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun updateWishlistItem(draftOrderID: Long): DraftOrderResponse =
+        draftOrderAPI.updateDraftOrder(BuildConfig.ACCESS_TOKEN, draftOrderID)
 
-    override suspend fun removeWishlistItem(product: Product) {
-        TODO("Not yet implemented")
-    }
+
+    override suspend fun addWishlistItem(draftOrderID: Long): DraftOrderResponse =
+        draftOrderAPI.updateDraftOrder()
+
+
 }

@@ -1,5 +1,6 @@
 package com.example.shopify.data.repositories.user
 
+import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.models.address.AddressesResponse
 import com.example.shopify.data.models.address.DeleteResponse
@@ -25,4 +26,18 @@ interface IUserDataRepository {
     suspend fun removeAddress(
         address: Address
     ): Response<DeleteResponse>
+
+
+    /**
+     * Wishlist functions
+     */
+
+    fun getWishlistItems(product: ProductSample)
+
+    fun addWishlistItem(product: ProductSample)
+
+    fun updateWishlistItem(product: ProductSample)
+
+    fun removeWishlistItem(product: ProductSample)
+
 }
