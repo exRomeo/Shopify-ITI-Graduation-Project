@@ -46,7 +46,7 @@ class ShopifyApplication : Application() {
             }
 
             else -> {  //IsNot LoggedIn
-                currentCustomer = CollectCurrentCustomerData(null, null)
+                currentCustomer = null
             }
         }
 

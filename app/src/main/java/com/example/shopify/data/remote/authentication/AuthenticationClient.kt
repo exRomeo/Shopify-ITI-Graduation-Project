@@ -28,7 +28,7 @@ class AuthenticationClient(
         try {
             val response = authenticationService.getSingleCustomerFromShopify(customerID)
             AuthenticationResponseState.Success(response)
-        } catch (ex: HttpException) {
+        } catch (ex: Exception) {
             AuthenticationResponseState.Error(ex.message.toString())
         }
 
@@ -36,7 +36,7 @@ class AuthenticationClient(
         try {
             val response = authenticationService.registerUserToShopify(customer)
             AuthenticationResponseState.Success(response)
-        } catch (ex: HttpException) {
+        } catch (ex: Exception) {
             AuthenticationResponseState.Error(ex.message.toString())
         }
 
