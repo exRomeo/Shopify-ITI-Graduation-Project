@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -36,8 +37,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
@@ -49,20 +52,31 @@ import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
 import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.SettingItemCard
+import com.example.shopify.presentation.screens.homescreen.ScaffoldStructure
 
 const val TAG = "TAG"
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(settingsViewModel: SettingsViewModel, settingsNav: NavHostController) {
+fun SettingsScreen(settingsViewModel: SettingsViewModel= viewModel(
+    factory = SettingsViewModelFactory(
+        UserDataRepository(
+            UserDataRemoteSource(
+                RetrofitClient.customerAddressAPI
+            )
+        )
+    )
+), settingsNav: NavHostController) {
 
 
-    Scaffold() {
-        Column(
-            modifier = Modifier.padding(it),
-        ) {
+    ScaffoldStructure("Settings", navController = settingsNav) {
+//        Column(
+//            modifier = Modifier.padding(it),
+//        ) {
 
             val state by settingsViewModel.addresses.collectAsState()
+        println(state)
             when (val currentState = state) {
                 is UserScreenUISState.Loading -> {
                     LottieAnimation(animation = R.raw.loading_animation)
@@ -86,7 +100,7 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel, settingsNav: NavHostCon
             }
         }
     }
-}
+//}
 
 @Composable
 fun SettingsScreenContent(

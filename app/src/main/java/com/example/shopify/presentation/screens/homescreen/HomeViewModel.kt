@@ -37,6 +37,7 @@ class HomeViewModel( val repository: IProductRepository):ViewModel() {
 
                     }
                     .collect {
+                        Log.i("menna","getbrands")
                         _brandsList.value = UiState.Success(it)
                         Log.i("TAG", "getBrands: =======================>")
 
