@@ -33,22 +33,24 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
+import com.example.shopify.presentation.screens.authentication.login.LoginScreen
+import com.example.shopify.presentation.screens.authentication.registeration.SignupScreen
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 
 
 @Composable
 fun NavGraph(navController: NavHostController = rememberNavController()) {
     NavHost(navController = navController,
-        startDestination = Screens.Home.route) {
+        startDestination = Screens.Login.route) {
         composable(route = Screens.Home.route) {
 //            HomeScreen(navController)
             Test()
         }
         composable(route = Screens.Login.route) {
-            //   LoginScreen()
+            LoginScreen(navController)
         }
         composable(route = Screens.Signup.route) {
-            //SignupScreen(viewModel as SignupViewModel)
+            SignupScreen(navController)
         }
     }
 }
