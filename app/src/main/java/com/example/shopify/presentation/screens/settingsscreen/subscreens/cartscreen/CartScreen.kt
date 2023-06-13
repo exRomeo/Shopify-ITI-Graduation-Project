@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,7 +22,6 @@ import com.example.shopify.presentation.common.composables.CartItemCard
 import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(viewModel: SettingsViewModel, navController: NavHostController) {
     Scaffold() {
@@ -46,7 +44,7 @@ fun CartScreenContent(viewModel: SettingsViewModel, navController: NavHostContro
         contentPadding = PaddingValues(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(wishlistItems) {
-            var itemCount by remember { mutableStateOf(it.amount) }
+            var itemCount by remember { mutableStateOf(0) }
             CartItemCard(product = it, increase = {
                 if (itemCount < 10) itemCount++
             }, decrease = {

@@ -42,7 +42,7 @@ import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 fun AddressScreenPreview() {
 
     val viewModel =
-        SettingsViewModel(UserDataRepository(UserDataRemoteSource(RetrofitClient.customerAddressAPI)))
+        SettingsViewModel(UserDataRepository(UserDataRemoteSource(RetrofitClient.customerAddressAPI, RetrofitClient.draftOrderAPI)))
     AddressScreen(viewModel = viewModel)
 }
 

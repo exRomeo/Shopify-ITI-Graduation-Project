@@ -1,36 +1,32 @@
 package com.example.shopify.data.models
 
-//data class Product(
-//    val productId : Int?,
-//    val productName :String?,
-//    val productPrice : Double?,
-//    val productImage :String?
-//)
-
 data class Products(
-    val products:List<Varient>?,
-):java.io.Serializable
+    val products: List<Varient>?,
+) : java.io.Serializable
 
 data class Varient(
-    val title:String?,
-    val variants:List<Product>?,
-    val image:Image?
+    val title: String?,
+    val variants: List<Product>?,
+    val image: Image?
 
 )
 
 data class Product(
-
-    val product_id:Long?,
-    val title:String?,
-    val price:String?
+    val id: Long,
+    val product_id: Long?,
+    val title: String?,
+    val price: String?
 )
 
 
 data class ProductSample(
-    var id: Int,
-    val productName: String,
-    val productPrice: Double,
-    val imageURL: String,
-    val orderDate: String,
-    var amount: Int
+    var id: Long,
+    val title: String,
+    val variants: List<Product>,
+    val images: List<Image>,
+    val image: Image
+)
+
+data class ProductResponse(
+    val product: ProductSample
 )

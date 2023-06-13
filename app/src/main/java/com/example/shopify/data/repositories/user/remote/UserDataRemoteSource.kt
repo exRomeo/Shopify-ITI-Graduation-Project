@@ -2,11 +2,12 @@ package com.example.shopify.data.repositories.user.remote
 
 import com.example.shopify.BuildConfig
 import com.example.shopify.data.models.Product
+import com.example.shopify.data.models.ProductResponse
 import com.example.shopify.data.models.address.AddressBody
 import com.example.shopify.data.models.address.AddressesResponse
 import com.example.shopify.data.models.address.DeleteResponse
 import com.example.shopify.data.models.address.NewAddressResponse
-import com.example.shopify.data.models.draftorder.DraftOrderResponse
+import com.example.shopify.data.models.draftorder.DraftOrderBody
 import com.example.shopify.data.repositories.user.remote.retrofitclient.CustomerAddressAPI
 import com.example.shopify.data.repositories.user.remote.retrofitclient.DraftOrderAPI
 import retrofit2.Response
@@ -83,15 +84,34 @@ class UserDataRemoteSource(
      */
 
 
-    override suspend fun getWishlistItems(draftOrderID: Long): DraftOrderResponse =
-        draftOrderAPI.getDraftOrder(BuildConfig.ACCESS_TOKEN, draftOrderID)
+    override suspend fun getDraftOrder(draftOrderID: Long): Response<DraftOrderBody> =
+        draftOrderAPI.getDraftOrder(
+            accessToken = BuildConfig.ACCESS_TOKEN,
+            draftOrderID = draftOrderID
+        )
 
-    override suspend fun updateWishlistItem(draftOrderID: Long): DraftOrderResponse =
-        draftOrderAPI.updateDraftOrder(BuildConfig.ACCESS_TOKEN, draftOrderID)
+    override suspend fun updateDraftOrder(
+        draftOrderID: Long,
+        draftOrderBody: DraftOrderBody
+    ): Response<DraftOrderBody> =
+        draftOrderAPI.updateDraftOrder(
+            accessToken = BuildConfig.ACCESS_TOKEN,
+            draftOrderBody = draftOrderBody,
+            draftOrderID = draftOrderID
+        )
 
 
-    override suspend fun addWishlistItem(draftOrderID: Long): DraftOrderResponse =
-        draftOrderAPI.updateDraftOrder()
+    override suspend fun createDraftOrder(
+        draftOrderBody: DraftOrderBody
+    ): Response<DraftOrderBody> =
+        draftOrderAPI.createDraftOrder(
+            accessToken = BuildConfig.ACCESS_TOKEN,
+            draftOrderBody = draftOrderBody
+        )
 
-
+    override suspend fun getProductByID(productID: Long): Response<ProductResponse> =
+        draftOrderAPI.getProductByID(
+            accessToken = BuildConfig.ACCESS_TOKEN,
+            productID = productID
+        )
 }

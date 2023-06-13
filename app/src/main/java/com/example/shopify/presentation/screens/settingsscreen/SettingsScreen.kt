@@ -17,7 +17,6 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -58,7 +57,7 @@ const val TAG = "TAG"
 fun SettingsScreen(settingsViewModel: SettingsViewModel, settingsNav: NavHostController) {
 
 
-    Scaffold() {
+    Scaffold {
         Column(
             modifier = Modifier.padding(it),
         ) {
@@ -173,7 +172,6 @@ fun SettingsItemList(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-//            val addresses by settingsViewModel.addresses.collectAsState()
             SettingItemCard(
                 mainText = stringResource(id = R.string.addresses),
                 subText = stringResource(id = R.string.you_have) + " ${addresses.size} " + stringResource(
@@ -187,6 +185,7 @@ fun SettingsItemList(
             }
         }
         item {
+
             val wishlist by settingsViewModel.wishlist.collectAsState()
             SettingItemCard(
                 mainText = stringResource(id = R.string.wishlist),
@@ -236,7 +235,14 @@ fun SettingsItemList(
 @Composable
 fun SettingsPreview() {
     SettingsScreen(
-        SettingsViewModel(UserDataRepository(UserDataRemoteSource(RetrofitClient.customerAddressAPI))),
+        SettingsViewModel(
+            UserDataRepository(
+                UserDataRemoteSource(
+                    RetrofitClient.customerAddressAPI,
+                    RetrofitClient.draftOrderAPI
+                )
+            )
+        ),
         rememberNavController()
     )
 }

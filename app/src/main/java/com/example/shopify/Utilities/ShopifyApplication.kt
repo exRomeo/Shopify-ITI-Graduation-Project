@@ -25,6 +25,7 @@ class ShopifyApplication : Application() {
             RetrofitClient.draftOrderAPI
         )
     }
+
     val userDataRepository: IUserDataRepository by lazy {
         UserDataRepository(
             userDataRemoteSource

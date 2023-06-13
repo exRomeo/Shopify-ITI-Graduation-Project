@@ -1,39 +1,35 @@
 package com.example.shopify.data.models.draftorder
 
-data class DraftOrderBody(
-    val draftOrder: DraftOrder
-)
+import com.google.gson.annotations.SerializedName
 
-data class DraftOrderResponse(
+data class DraftOrderBody(
+    @field:SerializedName("draft_order")
     val draftOrder: DraftOrder
 )
 
 data class LineItem(
-    val id: Long,
-    var variantID: Long? = null,
-    var productID: Long? = null,
+    @field:SerializedName("variant_id")
+    var variantID: Long,
+    @field:SerializedName("product_id")
+    var productID: Long,
+    @field:SerializedName("title")
     val title: String,
+    @field:SerializedName("quantity")
     val quantity: Long,
+    @field:SerializedName("name")
     val name: String,
+    @field:SerializedName("price")
     val price: String
 )
 
 data class DraftOrder(
+    @field:SerializedName("id")
     val id: Long,
+    @field:SerializedName("note")
     val note: String,
-    val email: String,
-    val currency: String,
-    val name: String,
-    val status: String,
-    val lineItems: List<LineItem>,
-    val totalPrice: String,
-    val customer: Customer
+    @field:SerializedName("line_items")
+    val lineItems: MutableList<LineItem>,
+    @field:SerializedName("total_price")
+    val totalPrice: String
 )
 
-data class Customer(
-    val id: Long,
-    val email: String,
-    val firstName: String,
-    val lastName: String,
-    val phone: String
-)

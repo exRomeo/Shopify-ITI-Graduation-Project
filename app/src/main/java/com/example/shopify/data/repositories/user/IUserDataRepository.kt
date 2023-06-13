@@ -1,10 +1,11 @@
 package com.example.shopify.data.repositories.user
 
-import com.example.shopify.data.models.ProductSample
+import com.example.shopify.data.models.ProductResponse
 import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.models.address.AddressesResponse
 import com.example.shopify.data.models.address.DeleteResponse
 import com.example.shopify.data.models.address.NewAddressResponse
+import com.example.shopify.data.models.draftorder.DraftOrderBody
 import retrofit2.Response
 
 interface IUserDataRepository {
@@ -32,12 +33,19 @@ interface IUserDataRepository {
      * Wishlist functions
      */
 
-    fun getWishlistItems(product: ProductSample)
+    suspend fun getDraftOrder(
+        draftOrderID: Long
+    ): Response<DraftOrderBody>
 
-    fun addWishlistItem(product: ProductSample)
+    suspend fun createDraftOrder(
+        draftOrderBody: DraftOrderBody
+    ): Response<DraftOrderBody>
 
-    fun updateWishlistItem(product: ProductSample)
+    suspend fun updateDraftOrder(
+        draftOrderID: Long,
+        draftOrderBody: DraftOrderBody
+    ): Response<DraftOrderBody>
 
-    fun removeWishlistItem(product: ProductSample)
 
+    suspend fun getProductByID(productID:Long): Response<ProductResponse>
 }

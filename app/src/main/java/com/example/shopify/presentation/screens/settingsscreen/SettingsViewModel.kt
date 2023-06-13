@@ -7,7 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.address.Address
+import com.example.shopify.data.models.draftorder.DraftOrderBody
+import com.example.shopify.data.models.draftorder.LineItem
 import com.example.shopify.data.repositories.user.IUserDataRepository
+import com.example.shopify.data.repositories.user.remote.retrofitclient.DRAFT_ORDER_ID
 import com.example.shopify.data.repositories.user.remote.retrofitclient.USER_ID
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +22,7 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
 
     init {
         getAddresses()
+        getWishlistItems()
     }
 
     private var _toastMessage: MutableSharedFlow<String> = MutableSharedFlow()
@@ -77,16 +81,7 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
      */
 
     private var _orders: MutableStateFlow<List<ProductSample>> = MutableStateFlow(
-        listOf(
-            ProductSample(
-                5,
-                "Nice Shoes",
-                99.99,
-                "https://cdn.shopify.com/s/files/1/0771/5900/6514/products/9f190cba7218c819c81566bca6298c6a.jpg?v=1685528902",
-                "26/06/2023",
-                1
-            )
-        )
+        listOf()
     )
     val orders = _orders.asStateFlow()
 
@@ -101,7 +96,7 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
     }
 
     fun addOrderItem(product: ProductSample) {
-        product.id = _orders.value.size
+        product.id = _orders.value.size.toLong()
         val arr = _orders.value.toMutableList()
         arr.add(product)
         _orders.value = arr
@@ -118,40 +113,92 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
      * Wishlist Functions
      */
 
-    private var _wishlist: MutableStateFlow<List<ProductSample>> = MutableStateFlow(
-        listOf(
-            ProductSample(
-                5,
-                "Nice Shoes",
-                99.99,
-                "https://cdn.shopify.com/s/files/1/0771/5900/6514/products/9f190cba7218c819c81566bca6298c6a.jpg?v=1685528902",
-                "26/06/2023",
-                1
-            )
-        )
-    )
+    private var _wishlist: MutableStateFlow<List<ProductSample>> = MutableStateFlow(listOf())
     val wishlist = _wishlist.asStateFlow()
-
-    fun updateWishlistItem(product: ProductSample) {
-        val index = _wishlist.value.indexOfFirst { it.id == product.id }
-        if (index >= 0) {
-            val arr = _wishlist.value.toMutableList()
-            arr[index] = product
-            _wishlist.value = arr
+    private lateinit var wishlistDraftOrder: DraftOrderBody
+    fun getWishlistItems() {
+        viewModelScope.launch {
+            val response =
+                userDataRepository.getDraftOrder(DRAFT_ORDER_ID)
+            if (response.isSuccessful && response.body() != null) {
+                wishlistDraftOrder = response.body()!!
+                val draftOrderItems = wishlistDraftOrder.draftOrder.lineItems
+                _wishlist.value = getProductsFromLineItems(draftOrderItems)
+            }
         }
     }
 
-    fun addWishlistItem(product: ProductSample) {
-        product.id = _wishlist.value.size
-        val arr = _wishlist.value.toMutableList()
-        arr.add(product)
-        _wishlist.value = arr
+    private suspend fun getProductsFromLineItems(lineItems: List<LineItem>): MutableList<ProductSample> {
+        val items: MutableList<ProductSample> = mutableListOf()
+        lineItems.forEach {
+            val productResponse = userDataRepository.getProductByID(it.productID)
+            if (productResponse.isSuccessful && productResponse.body() != null) {
+                items.add(productResponse.body()!!.product)
+            }
+        }
+        return items
     }
 
-    fun removeWishlistItem(product: ProductSample) {
-        val arr = _wishlist.value.toMutableList()
-        arr.remove(product)
-        _wishlist.value = arr
+    fun addWishlistItem(product: ProductSample) {
+        if(!::wishlistDraftOrder.isInitialized)
+            getWishlistItems()
+        viewModelScope.launch {
+            addToDraftOrder(product)
+            userDataRepository.updateDraftOrder(
+                draftOrderID = wishlistDraftOrder.draftOrder.id,
+                draftOrderBody = DraftOrderBody(wishlistDraftOrder.draftOrder)
+            )
+            getWishlistItems()
+        }
+    }
+
+    private fun addToDraftOrder(product: ProductSample) {
+        if (!::wishlistDraftOrder.isInitialized)
+            getWishlistItems()
+        wishlistDraftOrder.draftOrder.lineItems.add(
+            element = LineItem(
+                variantID = product.variants[0].id,
+                productID = product.id,
+                title = product.title,
+                quantity = 1,
+                name = product.title,
+                price = product.variants[0].price ?: "0.00"
+            )
+        )
+    }
+
+    fun removeWishlistItem(product: ProductSample?) {
+        product?.let { item ->
+            val index: Int =
+                wishlistDraftOrder
+                    .draftOrder
+                    .lineItems
+                    .indexOfFirst {
+                        it.productID == item.id
+                    }
+            Log.i(TAG, "removeWishlistItem: $index")
+            wishlistDraftOrder
+                .draftOrder
+                .lineItems
+                .removeAt(index)
+            viewModelScope.launch {
+                userDataRepository.updateDraftOrder(
+                    draftOrderID = wishlistDraftOrder.draftOrder.id,
+                    draftOrderBody = wishlistDraftOrder
+                )
+                getWishlistItems()
+            }
+        }
+
+    }
+
+
+    fun hasWishlist() {
+
+    }
+
+    fun createWishlist() {
+
     }
 
 
@@ -160,16 +207,7 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
      */
 
     private var _cart: MutableStateFlow<List<ProductSample>> = MutableStateFlow(
-        listOf(
-            ProductSample(
-                5,
-                "Nice Shoes",
-                99.99,
-                "https://cdn.shopify.com/s/files/1/0771/5900/6514/products/9f190cba7218c819c81566bca6298c6a.jpg?v=1685528902",
-                "26/06/2023",
-                1
-            )
-        )
+        listOf()
     )
     val cart = _cart.asStateFlow()
 
@@ -183,7 +221,7 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
     }
 
     fun addCart(product: ProductSample) {
-        product.id = _cart.value.size
+        product.id = _cart.value.size.toLong()
         val arr = _cart.value.toMutableList()
         arr.add(product)
         _cart.value = arr
