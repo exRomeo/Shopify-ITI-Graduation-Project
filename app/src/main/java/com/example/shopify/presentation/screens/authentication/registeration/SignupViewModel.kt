@@ -4,10 +4,10 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.data.models.CustomerRequestBody
 import com.example.shopify.data.repositories.authentication.IAuthRepository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,7 +26,7 @@ class SignupViewModel(private val authRepository: IAuthRepository) : ViewModel()
 
     fun registerUserToShopify(requestBody: CustomerRequestBody) {
         Log.i("TAG", "registerUserToShopify: send body ${requestBody.customer}")
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val response = authRepository.registerUserToShopify(requestBody)
             checkShopifyLoggedInState(
                 response,
@@ -38,7 +38,7 @@ class SignupViewModel(private val authRepository: IAuthRepository) : ViewModel()
 
     private fun registerUserToFirebase(email: String, password: String, customerId: Long) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
-            CoroutineScope(Dispatchers.IO).launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 val response =
                     authRepository.registerUserToFirebase(email, password, customerId)
                 _authResponse.value = response
@@ -59,14 +59,15 @@ class SignupViewModel(private val authRepository: IAuthRepository) : ViewModel()
             is AuthenticationResponseState.Success -> {
                 Log.i("TAG", "checkLoggedInState: SUCCESS")
                 Log.i("TAG", "checkLoggedInState: ${responseState.responseBody}")
-                responseState.responseBody?.customer?.let  {
+                responseState.responseBody?.customer?.let {
                     registerUserToFirebase(
                         email, password,
                         it.id,
                     )
                 }
             }
-            else ->{
+
+            else -> {
                 Log.i("TAG", "checkShopifyLoggedInState: ERROR")
                 _authResponse.value = responseState
             }

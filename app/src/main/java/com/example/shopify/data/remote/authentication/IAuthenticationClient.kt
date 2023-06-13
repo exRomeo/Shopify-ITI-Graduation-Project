@@ -8,8 +8,6 @@ import com.example.shopify.data.models.CustomerResponseBody
 import com.google.firebase.auth.AuthCredential
 
 
-private const val BASE_URL = "https://mad43-alex-and-team2.myshopify.com/"
-
 interface IAuthenticationClient {
     suspend fun getSingleCustomerFromShopify(customerID: Long): AuthenticationResponseState
     suspend fun registerUserToShopify(customer: CustomerRequestBody): AuthenticationResponseState

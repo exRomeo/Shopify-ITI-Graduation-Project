@@ -28,9 +28,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.shopify.R
 import com.example.shopify.core.navigation.Screens
-import com.example.shopify.presentation.screens.authentication.AuthenticationButton
-import com.example.shopify.presentation.screens.authentication.AuthenticationTextField
-import com.example.shopify.presentation.screens.authentication.TextFieldType
+import com.example.shopify.presentation.screens.authentication.common_auth_components.AuthenticationButton
+import com.example.shopify.presentation.screens.authentication.common_auth_components.AuthenticationTextField
+import com.example.shopify.presentation.screens.authentication.common_auth_components.TextFieldType
 import com.example.shopify.ui.theme.IbarraFont
 import com.example.shopify.ui.theme.facebookBackground
 import com.example.shopify.ui.theme.hintColor

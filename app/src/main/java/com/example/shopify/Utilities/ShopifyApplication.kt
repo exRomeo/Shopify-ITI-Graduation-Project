@@ -6,7 +6,7 @@ import com.example.shopify.core.helpers.RetrofitHelper
 import com.example.shopify.core.utils.SharedPreference
 import com.example.shopify.data.models.CollectCurrentCustomerData
 import com.example.shopify.data.models.GetCurrentCustomer.getCurrentCustomer
-import com.example.shopify.data.remote.RemoteResource
+import com.example.shopify.data.remote.product.RemoteResource
 import com.example.shopify.data.remote.authentication.AuthenticationClient
 import com.example.shopify.data.repositories.authentication.AuthRepository
 import com.example.shopify.data.repositories.authentication.IAuthRepository
@@ -44,7 +44,6 @@ class ShopifyApplication : Application() {
             is AuthenticationResponseState.Success -> { //Is loggedIn
                 currentCustomer = getCurrentCustomer(authRepository)
             }
-
             else -> {  //IsNot LoggedIn
                 currentCustomer = null
             }

@@ -38,9 +38,9 @@ import com.example.shopify.core.utils.CredentialsValidator
 import com.example.shopify.data.models.Address
 import com.example.shopify.data.models.Customer
 import com.example.shopify.data.models.CustomerRequestBody
-import com.example.shopify.presentation.screens.authentication.AuthenticationTextField
-import com.example.shopify.presentation.screens.authentication.TextFieldType
-import com.example.shopify.presentation.screens.authentication.AuthenticationButton
+import com.example.shopify.presentation.screens.authentication.common_auth_components.AuthenticationTextField
+import com.example.shopify.presentation.screens.authentication.common_auth_components.TextFieldType
+import com.example.shopify.presentation.screens.authentication.common_auth_components.AuthenticationButton
 import com.example.shopify.ui.theme.IbarraFont
 import com.example.shopify.ui.theme.backgroundColor
 import com.example.shopify.ui.theme.facebookBackground

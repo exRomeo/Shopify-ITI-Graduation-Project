@@ -34,9 +34,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.List
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -46,8 +43,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -59,19 +54,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import androidx.tv.material3.Carousel
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import coil.compose.AsyncImage
@@ -81,15 +70,12 @@ import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
-import com.example.shopify.core.navigation.Screens
 import com.example.shopify.core.navigation.TopBar
-import com.example.shopify.core.navigation.bottomNavItems
-import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
 import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.SmartCollections
-import com.example.shopify.data.models.Varient
+import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
 
 @Composable
@@ -104,7 +90,7 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
     val brandsState: UiState by viewModel.brandList.collectAsState()
     val randomsState: UiState by viewModel.randomList.collectAsState()
     var brandList: List<Brand> = listOf()
-    var randomList: List<Varient> = listOf()
+    var randomList: List<Variant> = listOf()
     when (brandsState) {
         is UiState.Loading -> {
             Log.i("menna","loading")
@@ -224,7 +210,7 @@ fun CardDesign(
 @Composable
 fun ItemCardContent(
     modifier: Modifier = Modifier, isFavourite: Boolean,
-    onFavouritesClicked: (Boolean) -> Unit, onAddToCard: (item: Product) -> Unit, item: Varient
+    onFavouritesClicked: (Boolean) -> Unit, onAddToCard: (item: Product) -> Unit, item: Variant
 ) {
     Column(modifier = modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
         item.image?.src?.let {
@@ -489,7 +475,7 @@ fun BrandCards(modifier: Modifier = Modifier, brands: List<Brand>) {
 @Composable
 fun ItemCards(
     modifier: Modifier = Modifier,
-    products: List<Varient>,
+    products: List<Variant>,
     isFavourite: Boolean,
     onFavouriteClicked: (Boolean) -> Unit,
     onAddToCard: (item: Product) -> Unit
@@ -511,10 +497,3 @@ fun ItemCards(
         }
     }
 }
-
-
-
-
-
-
-

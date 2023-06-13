@@ -18,13 +18,13 @@ class LoginViewModel(private val authRepository: IAuthRepository) : ViewModel() 
     private var _authResponse: MutableStateFlow<AuthenticationResponseState> =
         MutableStateFlow(AuthenticationResponseState.Loading)
     val authResponse get() = _authResponse.asStateFlow()
-    private val _googleState : MutableStateFlow<GoogleSignInState> =
+    private val _googleState: MutableStateFlow<GoogleSignInState> =
         MutableStateFlow(GoogleSignInState())
     val googleState get() = _googleState.asStateFlow()
 
     fun loginUser(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
-            CoroutineScope(Dispatchers.IO).launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 val responseState =
                     authRepository.loginUserFirebase(email, password)
                 checkLoggedInState(responseState)
@@ -32,17 +32,19 @@ class LoginViewModel(private val authRepository: IAuthRepository) : ViewModel() 
         }
     }
 
-    fun googleSignIn(credential: AuthCredential){
-        viewModelScope.launch {
-           val response = authRepository.googleSignIn(credential)
-            when(response){
-                is AuthenticationResponseState.GoogleSuccess ->{
+    fun googleSignIn(credential: AuthCredential) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = authRepository.googleSignIn(credential)
+            when (response) {
+                is AuthenticationResponseState.GoogleSuccess -> {
                     _googleState.value = GoogleSignInState(response.auth)
                 }
-                is AuthenticationResponseState.Error->{
-                    _googleState.value = GoogleSignInState(error= response.message.toString())
+
+                is AuthenticationResponseState.Error -> {
+                    _googleState.value = GoogleSignInState(error = response.message.toString())
                 }
-                else ->{
+
+                else -> {
                     _googleState.value = GoogleSignInState()
                 }
 
@@ -50,6 +52,7 @@ class LoginViewModel(private val authRepository: IAuthRepository) : ViewModel() 
         }
 
     }
+
     private fun checkLoggedInState(responseState: AuthenticationResponseState) {
         when (responseState) {
             is AuthenticationResponseState.Success -> {
