@@ -19,7 +19,6 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -57,36 +56,34 @@ const val TAG = "TAG"
 fun SettingsScreen(settingsViewModel: SettingsViewModel, settingsNav: NavHostController) {
 
 
-    Scaffold {
-        Column(
-            modifier = Modifier.padding(it),
-        ) {
+    ScaffoldStructure("Settings", navController = settingsNav) {
 
-            val state by settingsViewModel.addresses.collectAsState()
-            when (val currentState = state) {
-                is UserScreenUISState.Loading -> {
-                    LottieAnimation(animation = R.raw.loading_animation)
-                }
 
-                is UserScreenUISState.Success<*> -> {
-                    val addresses: List<Address> =
-                        currentState.data as List<Address>
-                    SettingsScreenContent(
-                        addresses,
-                        settingsViewModel = settingsViewModel,
-                        settingsNav = settingsNav
-                    )
-                }
-
-                is UserScreenUISState.Failure -> {
-
-                }
-
-                else -> {}
+        val state by settingsViewModel.addresses.collectAsState()
+        when (val currentState = state) {
+            is UserScreenUISState.Loading -> {
+                LottieAnimation(animation = R.raw.loading_animation)
             }
+
+            is UserScreenUISState.Success<*> -> {
+                val addresses: List<Address> =
+                    currentState.data as List<Address>
+                SettingsScreenContent(
+                    addresses,
+                    settingsViewModel = settingsViewModel,
+                    settingsNav = settingsNav
+                )
+            }
+
+            is UserScreenUISState.Failure -> {
+
+            }
+
+            else -> {}
         }
     }
 }
+
 
 @Composable
 fun SettingsScreenContent(
@@ -185,7 +182,6 @@ fun SettingsItemList(
             }
         }
         item {
-
             val wishlist by settingsViewModel.wishlist.collectAsState()
             SettingItemCard(
                 mainText = stringResource(id = R.string.wishlist),
