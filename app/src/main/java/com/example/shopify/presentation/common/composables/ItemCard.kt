@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
+import com.example.shopify.data.models.Image
 import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.ProductSample
 
@@ -63,7 +64,7 @@ fun SettingItemCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
@@ -119,7 +120,7 @@ fun WishlistItemCard(
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(product.imageURL)
+                        .data(product.image.src)
                         .placeholder(R.drawable.product_image_placeholder)
                         .error(R.drawable.product_image_placeholder)
                         .crossfade(true)
@@ -134,17 +135,20 @@ fun WishlistItemCard(
 
                 Column(
                     modifier
-                        .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
+                        .padding(start = 8.dp, top = 4.dp, bottom = 4.dp, end = 4.dp)
                         .weight(1f)
                 ) {
                     Text(
-                        text = product.productName,
+                        text = product.title,
                         style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize)
                     )
                     Spacer(modifier = Modifier.padding(vertical = 4.dp))
                     Text(
-                        text = product.productPrice.toString(),
-                        style = TextStyle(color = Color.Gray),
+                        text = product.variants[0].price ?: "0.00",
+                        style = TextStyle(
+                            color = Color.Gray,
+                            fontSize = MaterialTheme.typography.bodyLarge.fontSize
+                        ),
                         modifier = Modifier.padding(start = 4.dp)
                     )
                 }
@@ -181,10 +185,9 @@ fun WishlistItemCardPreview() {
         product = ProductSample(
             5,
             "Very Long Product Title1235",
-            35.87,
-            "",
-            "26/6/2023",
-            5
+            listOf(Product(1, 0, "Product TITLE", "10.254")),
+            listOf(Image("")),
+            Image(""),
         ),
         onRemoveItem = {},
         onClick = {}
@@ -195,6 +198,7 @@ fun WishlistItemCardPreview() {
 fun CartItemCard(
     modifier: Modifier = Modifier,
     product: ProductSample,
+    initialCount: Long,
     increase: () -> Unit,
     decrease: () -> Unit,
     onClick: () -> Unit
@@ -205,14 +209,14 @@ fun CartItemCard(
             .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
-        var count by remember { mutableStateOf(product.amount) }
+        var count by remember { mutableStateOf(initialCount) }
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(product.imageURL)
+                    .data(product.images[0].src)
                     .crossfade(true)
                     .build(),
                 contentDescription = stringResource(id = R.string.product_image),
@@ -225,16 +229,16 @@ fun CartItemCard(
             )
             Column(
                 modifier
-                    .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
+                    .padding(start = 8.dp, top = 4.dp, bottom = 4.dp, end = 4.dp)
                     .weight(1f)
             ) {
                 Text(
-                    text = product.productName,
+                    text = product.title,
                     style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize)
                 )
                 Spacer(modifier = Modifier.padding(vertical = 4.dp))
                 Text(
-                    text = product.productPrice.toString(),
+                    text = product.variants[0].price ?: "0.00!",
                     style = TextStyle(color = Color.Gray),
                     modifier = Modifier.padding(start = 4.dp)
                 )
@@ -294,11 +298,12 @@ fun CartItemCardPreview() {
         product = ProductSample(
             5,
             "Very Long Product Title1235",
-            35.87,
-            "",
-            "26/6/2023",
-            5
-        ), increase = {},
+            listOf(Product(1, 0, "Product TITLE", "10.254")),
+            listOf(Image("")),
+            Image(""),
+        ),
+        initialCount = 0,
+        increase = {},
         decrease = {},
         onClick = {}
     )
@@ -320,7 +325,7 @@ fun OrderItemCard(
         Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = "${stringResource(id = R.string.order_no)} ${product.id}")
-                Text(text = "${stringResource(id = R.string.placed_on)} ${product.orderDate}")
+                Text(text = "${stringResource(id = R.string.placed_on)} ${"product.orderDate"}")
             }
             TextButton(onClick = { onCancelClick() }) {
                 Text(
@@ -333,7 +338,7 @@ fun OrderItemCard(
         Row {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(product.imageURL)
+                    .data(product.images[0].src)
                     .crossfade(true)
                     .build(),
                 contentDescription = stringResource(id = R.string.product_image),
@@ -347,11 +352,11 @@ fun OrderItemCard(
 
             Column(
                 modifier
-                    .padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 4.dp)
+                    .padding(start = 8.dp, top = 4.dp, bottom = 4.dp, end = 4.dp)
                     .weight(1f)
             ) {
                 Text(
-                    text = product.productName,
+                    text = product.title,
                     style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize)
                 )
                 Spacer(modifier = Modifier.padding(vertical = 4.dp))
@@ -370,10 +375,9 @@ fun OrderItemCardPreview() {
         product = ProductSample(
             5,
             "Very Long Product Title1235",
-            35.87,
-            "",
-            "26/6/2023",
-            5
+            listOf(Product(1, 0, "Product TITLE", "10.254")),
+            listOf(Image("")),
+            Image(""),
         ),
         onCancelClick = {}
     ) {

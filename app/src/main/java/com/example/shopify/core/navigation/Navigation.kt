@@ -2,6 +2,7 @@ package com.example.shopify.core.navigation
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -27,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -44,8 +44,10 @@ import com.example.shopify.presentation.screens.homescreen.HomeScreen
 
 @Composable
 fun NavGraph(navController: NavHostController = rememberNavController()) {
-    NavHost(navController = navController,
-        startDestination = Screens.Login.route) {
+    NavHost(
+        navController = navController,
+        startDestination = Screens.Login.route
+    ) {
         composable(route = Screens.Home.route) {
 //            HomeScreen(navController)
             Test()

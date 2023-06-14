@@ -178,12 +178,15 @@ fun HomeScreen(navController: NavHostController,paddingValues: PaddingValues,mod
         }
     }
 
+}
 
-
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScaffoldStructure(screenTitle: String,navController: NavHostController, screen: @Composable () -> Unit) {
+fun ScaffoldStructure(
+    screenTitle: String,
+    navController: NavHostController,
+    screen: @Composable (PaddingValues) -> Unit
+) {
 
     Scaffold(
         topBar = {
@@ -191,7 +194,7 @@ fun ScaffoldStructure(screenTitle: String,navController: NavHostController, scre
 
         },
         content = {
-            screen()
+            screen(it)
         },
         bottomBar = { Bottombar(navController = navController) }
 
@@ -288,7 +291,7 @@ fun ItemCardContent(
 }
 
 @Composable
-fun BrandCardContent(modifier: Modifier = Modifier, brand: Brand,navController: NavHostController) {
+fun BrandCardContent(modifier: Modifier = Modifier, brand: Brand) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
