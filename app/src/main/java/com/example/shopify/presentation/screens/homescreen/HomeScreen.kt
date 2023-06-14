@@ -1,7 +1,6 @@
 package com.example.shopify.presentation.screens.homescreen
 
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.animation.ContentTransform
@@ -34,9 +33,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.List
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -46,8 +42,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -59,19 +53,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import androidx.tv.material3.Carousel
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import coil.compose.AsyncImage
@@ -81,10 +69,7 @@ import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
-import com.example.shopify.core.navigation.Screens
 import com.example.shopify.core.navigation.TopBar
-import com.example.shopify.core.navigation.bottomNavItems
-import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
 import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.Products
@@ -93,13 +78,14 @@ import com.example.shopify.data.models.Varient
 import com.example.shopify.data.repositories.product.IProductRepository
 
 @Composable
-fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
+fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
 //    ScaffoldStructure(screenTitle = "Home")
 //    {
 //HomeScreen(navController = navController )
 //    }
-  val repository: IProductRepository = (LocalContext.current.applicationContext as ShopifyApplication) .repository
-     val viewModel: HomeViewModel = viewModel(factory =  HomeViewModelFactory(repository))
+    val repository: IProductRepository =
+        (LocalContext.current.applicationContext as ShopifyApplication).repository
+    val viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(repository))
 
     val brandsState: UiState by viewModel.brandList.collectAsState()
     val randomsState: UiState by viewModel.randomList.collectAsState()
@@ -107,7 +93,7 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
     var randomList: List<Varient> = listOf()
     when (brandsState) {
         is UiState.Loading -> {
-            Log.i("menna","loading")
+            Log.i("menna", "loading")
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -123,7 +109,7 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
         }
 
         is UiState.Success<*> -> {
-            Log.i("menna","success")
+            Log.i("menna", "success")
             brandList =
                 (brandsState as UiState.Success<SmartCollections>).data.body()?.smart_collections!!
         }
@@ -149,7 +135,7 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
     }
 
     if (brandList.isNotEmpty() && randomList.isNotEmpty()) {
-        ScaffoldStructure("home",navController) {
+        ScaffoldStructure("home", navController) {
             Column(
                 modifier = modifier
                     .verticalScroll(rememberScrollState())
@@ -179,10 +165,13 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
 
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScaffoldStructure(screenTitle: String,navController: NavHostController, screen: @Composable () -> Unit) {
+fun ScaffoldStructure(
+    screenTitle: String,
+    navController: NavHostController,
+    screen: @Composable (PaddingValues) -> Unit
+) {
 
     Scaffold(
         topBar = {
@@ -190,13 +179,12 @@ fun ScaffoldStructure(screenTitle: String,navController: NavHostController, scre
 
         },
         content = {
-            screen()
+            screen(it)
         },
         bottomBar = { Bottombar(navController = navController) }
 
     )
 }
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)

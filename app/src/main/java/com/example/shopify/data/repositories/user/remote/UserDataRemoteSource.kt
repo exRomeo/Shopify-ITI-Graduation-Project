@@ -2,15 +2,19 @@ package com.example.shopify.data.repositories.user.remote
 
 import com.example.shopify.BuildConfig
 import com.example.shopify.data.models.Product
+import com.example.shopify.data.models.ProductResponse
 import com.example.shopify.data.models.address.AddressBody
 import com.example.shopify.data.models.address.AddressesResponse
 import com.example.shopify.data.models.address.DeleteResponse
 import com.example.shopify.data.models.address.NewAddressResponse
+import com.example.shopify.data.models.draftorder.DraftOrderBody
 import com.example.shopify.data.repositories.user.remote.retrofitclient.CustomerAddressAPI
+import com.example.shopify.data.repositories.user.remote.retrofitclient.DraftOrderAPI
 import retrofit2.Response
 
 class UserDataRemoteSource(
-    private val customerAddressAPI: CustomerAddressAPI
+    private val customerAddressAPI: CustomerAddressAPI,
+    private val draftOrderAPI: DraftOrderAPI
 ) : IUserDataRemoteSource {
 
     /**
@@ -76,22 +80,48 @@ class UserDataRemoteSource(
     }
 
     /**
-     * Wishlist Functions
+     * Draft Order Functions
      */
 
-    override suspend fun getWishlist(userID: Int) {
-        TODO("Not yet implemented")
+
+    override suspend fun getDraftOrder(draftOrderID: Long): Response<DraftOrderBody> =
+        draftOrderAPI.getDraftOrder(
+            accessToken = BuildConfig.ACCESS_TOKEN,
+            draftOrderID = draftOrderID
+        )
+
+    override suspend fun updateDraftOrder(
+        draftOrderID: Long,
+        draftOrderBody: DraftOrderBody
+    ): Response<DraftOrderBody> =
+        draftOrderAPI.updateDraftOrder(
+            accessToken = BuildConfig.ACCESS_TOKEN,
+            draftOrderBody = draftOrderBody,
+            draftOrderID = draftOrderID
+        )
+
+    override suspend fun deleteDraftOrder(
+        draftOrderID: Long
+    ) {
+        draftOrderAPI.deleteDraftOrder(
+            accessToken = BuildConfig.ACCESS_TOKEN,
+            draftOrderID = draftOrderID
+        )
     }
 
-    override suspend fun updateWishlistItem(product: Product) {
-        TODO("Not yet implemented")
-    }
 
-    override suspend fun addWishlistItem(product: Product) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun createDraftOrder(
+        draftOrderBody: DraftOrderBody
+    ): Response<DraftOrderBody> =
+        draftOrderAPI.createDraftOrder(
+            accessToken = BuildConfig.ACCESS_TOKEN,
+            draftOrderBody = draftOrderBody
+        )
 
-    override suspend fun removeWishlistItem(product: Product) {
-        TODO("Not yet implemented")
-    }
+
+    override suspend fun getProductByID(productID: Long): Response<ProductResponse> =
+        draftOrderAPI.getProductByID(
+            accessToken = BuildConfig.ACCESS_TOKEN,
+            productID = productID
+        )
 }
