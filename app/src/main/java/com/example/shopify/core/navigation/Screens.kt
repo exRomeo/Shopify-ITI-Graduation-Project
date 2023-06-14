@@ -11,4 +11,5 @@ sealed class Screens (val route : String){
     object Orders : Screens("orders")
     object Wishlist : Screens("wishlist")
     object Cart : Screens("cart")
+    object Brands : Screens("brands")
 }

@@ -20,6 +20,7 @@ class HomeViewModel( val repository: IProductRepository):ViewModel() {
     private var _randomList: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val randomList: StateFlow<UiState> = _randomList
 
+
     init{
         getBrands()
         getRandomProducts()

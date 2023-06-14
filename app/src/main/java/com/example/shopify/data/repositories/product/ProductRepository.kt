@@ -23,4 +23,10 @@ class ProductRepository(val remoteResource: RemoteResource):IProductRepository {
         }
     }
 
+    override suspend fun getSpecificBrandProducts(id:Long): Flow<Response<Products>> {
+        return flow{
+            emit(remoteResource.getSpecificBrandProducts(id))
+        }
+    }
+
 }
