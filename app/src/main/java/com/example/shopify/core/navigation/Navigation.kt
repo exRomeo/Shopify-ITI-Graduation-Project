@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material.icons.rounded.Home
@@ -26,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -36,9 +38,7 @@ import androidx.navigation.navArgument
 import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
 import com.example.shopify.presentation.screens.authentication.login.LoginScreen
 import com.example.shopify.presentation.screens.authentication.registeration.SignupScreen
-
 import com.example.shopify.presentation.screens.brands.BrandsScreen
-
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 
 
@@ -47,31 +47,21 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
     NavHost(navController = navController,
         startDestination = Screens.Login.route) {
         composable(route = Screens.Home.route) {
-
-          // HomeScreen(navController)
+//            HomeScreen(navController)
             Test()
-
         }
         composable(route = Screens.Login.route) {
 
-            LoginScreen(navController)
-            //  LoginScreen()
 
+            LoginScreen(navController)
+
+            LoginScreen(navController)
         }
         composable(route = Screens.Signup.route) {
             SignupScreen(navController)
         }
-//        composable(route = "${Screens.Brands.route}/{collectionId}",
-//            arguments = listOf(navArgument("collectionId") {
-//                type = NavType.LongType})){
-//            BrandsScreen(navController, it.arguments?.getLong("collectionId"), padding)
-//
-//
-//            }
-            //SignupScreen(viewModel as SignupViewModel)
-        }
     }
-
+}
 
 @Composable
 fun getNavController() = rememberNavController()
@@ -120,15 +110,12 @@ fun TopBar(modifier: Modifier = Modifier, title: String, onSearch: () -> Unit) {
 
         },
         navigationIcon = {
-          //  SearchBar(query = "", onQueryChange ={} , onSearch ={} , active = true, onActiveChange = {}) {
-
-          //  }
-//            IconButton(onClick = onSearch) {
-//                Icon(
-//                    imageVector = Icons.Filled.Search, contentDescription = "Navigation icon",
-//                    tint = MaterialTheme.colorScheme.onPrimary
-//                )
-//            }
+            IconButton(onClick = onSearch) {
+                Icon(
+                    imageVector = Icons.Filled.Search, contentDescription = "Navigation icon",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
         },
         actions = {
             //navigate to carts
