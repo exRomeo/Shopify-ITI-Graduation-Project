@@ -2,13 +2,15 @@ package com.example.shopify.data.remote.authentication
 
 import android.util.Log
 import com.example.shopify.core.helpers.AuthenticationResponseState
-import com.example.shopify.data.models.Errors
-import com.example.shopify.data.models.RequestBody
-import com.example.shopify.data.models.Response
-import com.example.shopify.data.models.ResponseBody
+import com.example.shopify.core.helpers.KeyFirebase
+import com.example.shopify.data.models.CustomerFirebase
+import com.example.shopify.data.models.CustomerRequestBody
+import com.example.shopify.data.models.CustomerResponseBody
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -16,61 +18,79 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import retrofit2.HttpException
 
-private const val BASE_URL = "https://mad43-alex-and-team2.myshopify.com/"
 
 class AuthenticationClient(
     private val authenticationService: IAuthenticationService,
     private val authenticationFirebase: FirebaseAuth,
     private val fireStore: FirebaseFirestore
 ) : IAuthenticationClient {
+    override suspend fun getSingleCustomerFromShopify(customerID: Long): AuthenticationResponseState =
+        try {
+            val response = authenticationService.getSingleCustomerFromShopify(customerID)
+            AuthenticationResponseState.Success(response)
+        } catch (ex: Exception) {
+            AuthenticationResponseState.Error(ex.message.toString())
+        }
 
-    override suspend fun registerUserToShopify(customer: RequestBody): AuthenticationResponseState {
-        return try {
+    override suspend fun registerUserToShopify(customer: CustomerRequestBody): AuthenticationResponseState =
+        try {
             val response = authenticationService.registerUserToShopify(customer)
             AuthenticationResponseState.Success(response)
-        } catch (ex: HttpException) {
-            AuthenticationResponseState.Error(ex.toString())
+        } catch (ex: Exception) {
+            AuthenticationResponseState.Error(ex.message.toString())
         }
-    }
 
     override suspend fun registerUserToFirebase(
         email: String,
         password: String,
         customerID: Long
-    ): AuthenticationResponseState {
-        return try {
+    ): AuthenticationResponseState =
+        try {
             authenticationFirebase.createUserWithEmailAndPassword(email, password).await()
-            addCustomerID(customerID)
+            addCustomerIDs(customerID)
             checkedLoggedIn()
         } catch (ex: Exception) {
-            AuthenticationResponseState.Error(ex.message)
+            AuthenticationResponseState.Error(ex.message.toString())
         }
-    }
+
 
     override suspend fun loginUserFirebase(
         email: String,
         password: String
-    ): AuthenticationResponseState {
-        return try {
+    ): AuthenticationResponseState =
+        try {
             authenticationFirebase.signInWithEmailAndPassword(email, password).await()
-            val responseBody = retrieveCustomerID()
+            val responseBody = retrieveCustomerIDs()
             Log.i("TAG", "loginUserFirebase: $responseBody")
-            checkedLoggedIn(responseBody)
+            checkedLoggedIn()
         } catch (ex: Exception) {
-            AuthenticationResponseState.Error(ex.message)
+            AuthenticationResponseState.Error(ex.message.toString())
         }
-    }
 
-    private fun checkedLoggedIn(responseBody: ResponseBody? = null): AuthenticationResponseState {
-        return if (authenticationFirebase.currentUser == null) {
+    override suspend fun googleSignIn(credential: AuthCredential): AuthenticationResponseState =
+        try {
+            val response = authenticationFirebase.signInWithCredential(credential).await()
+            AuthenticationResponseState.GoogleSuccess(response)
+        } catch (ex: Exception) {
+            AuthenticationResponseState.Error(ex.message.toString())
+        }
+
+    override fun checkedLoggedIn(responseBody: CustomerResponseBody?): AuthenticationResponseState =
+        if (authenticationFirebase.currentUser == null) {
             AuthenticationResponseState.NotLoggedIn
         } else {
+            //updateCustomerID(KeyFirebase.card_id,1523)
             AuthenticationResponseState.Success(responseBody)
         }
-    }
 
-    private fun addCustomerID(customerID: Long) {
-        val customerMap = hashMapOf("id" to customerID, "customer_id" to customerID)
+
+    override fun addCustomerIDs(customerID: Long) {
+        val customerMap = hashMapOf(
+            "customer_id" to customerID,
+            "order_id" to -1,
+            "wishlist_id" to -1,
+            "card_id" to -1
+        )
         val uid = authenticationFirebase.currentUser?.uid ?: ""
         try {
             CoroutineScope(Dispatchers.IO).launch {
@@ -81,27 +101,40 @@ class AuthenticationClient(
         }
     }
 
-    private suspend fun retrieveCustomerID(): ResponseBody = coroutineScope {
+    override fun updateCustomerID(key: KeyFirebase, newValue: Long) {
+        val uid = authenticationFirebase.currentUser?.uid ?: ""
+        try {
+            CoroutineScope(Dispatchers.IO).launch {
+                fireStore.collection("customer").document(uid).update(key.toString(), newValue)
+                    .await()
+            }
+        } catch (ex: Exception) {
+            Log.i("TAG", "addCustomerID: Failure")
+        }
+    }
+
+    override suspend fun retrieveCustomerIDs(): CustomerFirebase = coroutineScope {
         val querySnapshot: DocumentSnapshot?
+        val customer: CustomerFirebase?
         return@coroutineScope try {
             val uid = authenticationFirebase.currentUser?.uid ?: ""
             Log.i("TAG", "retrieveCustomerID: $uid")
             querySnapshot = fireStore.collection("customer").document(uid).get().await()
-            ResponseBody(
-                customer = Response(
-                    id = 0,
-                    customerId = querySnapshot.data?.get("customer_id").toString()
-                ),
-                errors = null
+            Log.i("TAG", "retrieveCustomerID: ${querySnapshot.data}")
+            val customerData = querySnapshot.toObject<CustomerFirebase>()
+            Log.i("TAG", "retrieveCustomerID: $customerData")
+            customer = CustomerFirebase(
+                customer_id = customerData?.customer_id,
+                order_id = customerData?.order_id,
+                card_id = customerData?.card_id,
+                wishlist_id = customerData?.wishlist_id
             )
+            Log.i("TAG", "retrieveCustomer FROM FIREBASE: $customer")
+            customer
         } catch (ex: Exception) {
             Log.i("TAG", "retrieveCustomerID: Failure ${ex.message}")
-            ResponseBody(
-                customer = null,
-                errors = Errors(email = listOf(ex.message), phone = null)
-            )
+            CustomerFirebase()
         }
-
     }
 }
 /*override suspend fun loginUserWithGoogle(

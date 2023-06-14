@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.log
+
 class HomeViewModel( val repository: IProductRepository):ViewModel() {
 
     private var _brandsList: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
@@ -33,10 +35,12 @@ class HomeViewModel( val repository: IProductRepository):ViewModel() {
                 response
                     .catch {
                         _brandsList.value = UiState.Error(it)
+
                     }
                     .collect {
                         Log.i("menna","getbrands")
                         _brandsList.value = UiState.Success(it)
+                        Log.i("TAG", "getBrands: =======================>")
 
                     }
 

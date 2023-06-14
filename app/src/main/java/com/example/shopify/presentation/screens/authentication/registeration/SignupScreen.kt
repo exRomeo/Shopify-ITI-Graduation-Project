@@ -2,6 +2,7 @@ package com.example.shopify.presentation.screens.authentication.registeration
 
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -9,11 +10,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.shopify.R
+import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.AuthenticationResponseState
+import com.example.shopify.data.repositories.authentication.IAuthRepository
 
 @Composable
-fun SignupScreen(signupViewModel: SignupViewModel/*,signupNavController: NavController*/) {
+fun SignupScreen(signupNavController: NavController) {
     var firstName by remember {
         mutableStateOf("")
     }
@@ -45,12 +52,19 @@ fun SignupScreen(signupViewModel: SignupViewModel/*,signupNavController: NavCont
                     && (password == confirmPassword)
         }
     }
+    val authRepository: IAuthRepository =
+        (LocalContext.current.applicationContext as ShopifyApplication).authRepository
+    val signupViewModelFactory = SignupViewModelFactory(authRepository)
+    val signupViewModel: SignupViewModel = viewModel(factory = signupViewModelFactory)
     val authState by signupViewModel.authResponse.collectAsState()
+
     when (val authResponse = authState) {
         is AuthenticationResponseState.Success -> {
-            error = ""
-            Log.i("TAG", "NAVIGATE TO LOGIN SCREEN")
-            // signupNavController.popBackStack()
+            LaunchedEffect(key1 = authState) {
+                Log.i("TAG", "NAVIGATE TO LOGIN SCREEN")
+                signupNavController.popBackStack()
+            }
+
         }
 
         is AuthenticationResponseState.Loading -> {
@@ -59,11 +73,12 @@ fun SignupScreen(signupViewModel: SignupViewModel/*,signupNavController: NavCont
         }
 
         is AuthenticationResponseState.Error -> {
+            error = stringResource(id = R.string.email_password_must_be_unique)
             Log.i("TAG", " ERROR ${authResponse.message}")
-            error = authResponse.message.toString()
         }
 
         else -> {
+            error = stringResource(id = R.string.something_is_wrong)
             Log.i("TAG", "THERE'S SOMETHING WRONG ")
         }
     }
@@ -85,6 +100,6 @@ fun SignupScreen(signupViewModel: SignupViewModel/*,signupNavController: NavCont
         onConfirmPasswordChanged = { confirmPassword = it },
         isDataEntered = isDataEntered,
         errorResponse = error,
-       // signupNavController = signupNavController
+        signupNavController = signupNavController
     )
 }

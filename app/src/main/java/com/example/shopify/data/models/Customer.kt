@@ -1,31 +1,56 @@
 package com.example.shopify.data.models
 
-data class RequestBody(
+import com.google.gson.annotations.SerializedName
+
+
+data class CustomerRequestBody(
     val customer: Customer
 )
 
-data class ResponseBody(
-    val customer: Response?,
-    val errors : Errors?
+data class CustomerResponseBody(
+    val customer: SimpleResponse?,
+    val errors: Errors?
 )
+
 data class Errors(
     val email: List<String?>?,
     val phone: List<String?>?
 )
-data class Response(
+
+data class SimpleResponse(
     val id: Long,
-    val customerId : String?
+    @field:SerializedName("first_name")
+    val firstName: String?,
+    @field:SerializedName("last_name")
+    val lastName: String?,
+    val email: String?,
+    val phone: String?,
 )
+
+data class CustomerFirebase(
+    val customer_id: Long?,
+    val order_id: Long?,
+    val card_id: Long?,
+    val wishlist_id: Long?
+) {
+    constructor() : this(-1, -1, -1, -1)
+}
+
 data class Customer(
-    val first_name: String,
-    val last_name: String,
+    @field:SerializedName("first_name")
+    val firstName: String,
+    @field:SerializedName("last_name")
+    val lastName: String,
     val email: String,
     val phone: String,
-    val verified_email: Boolean,
+    @field:SerializedName("verified_email")
+    val verifiedEmail: Boolean,
     val addresses: List<Address>,
     val password: String,
-    val password_confirmation: String,
-    val send_email_welcome: Boolean
+    @field:SerializedName("password_confirmation")
+    val passwordConfirmation: String,
+    @field:SerializedName("send_email_welcome")
+    val sendEmailWelcome: Boolean
 )
 
 data class Address(
