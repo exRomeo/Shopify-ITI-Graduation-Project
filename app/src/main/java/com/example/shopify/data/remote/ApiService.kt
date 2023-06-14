@@ -17,5 +17,8 @@ interface ApiService {
     @Headers("X-Shopify-Access-Token: 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")
     @GET("/admin/api/2023-04/products.json?")
     suspend fun getRandomProducts(): Response<Products>
-
+//val id:Long
+    @Headers("X-Shopify-Access-Token: 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")
+    @GET("/admin/api/2023-04/products.json?")
+    suspend fun getSpecificBrandProducts(@Query("collection_id") id:Long) : Response<Products>
 }

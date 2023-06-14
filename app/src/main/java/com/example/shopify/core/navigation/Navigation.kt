@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material.icons.rounded.Home
@@ -18,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -26,15 +26,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
 import com.example.shopify.presentation.screens.authentication.login.LoginScreen
 import com.example.shopify.presentation.screens.authentication.registeration.SignupScreen
+
+import com.example.shopify.presentation.screens.brands.BrandsScreen
+
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 
 
@@ -43,17 +47,31 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
     NavHost(navController = navController,
         startDestination = Screens.Login.route) {
         composable(route = Screens.Home.route) {
-//            HomeScreen(navController)
+
+          // HomeScreen(navController)
             Test()
+
         }
         composable(route = Screens.Login.route) {
+
             LoginScreen(navController)
+            //  LoginScreen()
+
         }
         composable(route = Screens.Signup.route) {
             SignupScreen(navController)
         }
+//        composable(route = "${Screens.Brands.route}/{collectionId}",
+//            arguments = listOf(navArgument("collectionId") {
+//                type = NavType.LongType})){
+//            BrandsScreen(navController, it.arguments?.getLong("collectionId"), padding)
+//
+//
+//            }
+            //SignupScreen(viewModel as SignupViewModel)
+        }
     }
-}
+
 
 @Composable
 fun getNavController() = rememberNavController()
@@ -102,12 +120,15 @@ fun TopBar(modifier: Modifier = Modifier, title: String, onSearch: () -> Unit) {
 
         },
         navigationIcon = {
-            IconButton(onClick = onSearch) {
-                Icon(
-                    imageVector = Icons.Filled.Search, contentDescription = "Navigation icon",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-            }
+          //  SearchBar(query = "", onQueryChange ={} , onSearch ={} , active = true, onActiveChange = {}) {
+
+          //  }
+//            IconButton(onClick = onSearch) {
+//                Icon(
+//                    imageVector = Icons.Filled.Search, contentDescription = "Navigation icon",
+//                    tint = MaterialTheme.colorScheme.onPrimary
+//                )
+//            }
         },
         actions = {
             //navigate to carts
@@ -144,6 +165,12 @@ fun Test() {
     val navController = rememberNavController()
 
     Scaffold(
+
+        topBar = {
+            val backStackEntry by navController.currentBackStackEntryAsState()
+            val route  = backStackEntry?.destination?.route?.split("/")
+            route?.get(0)?.let { TopBar(title = it  ,onSearch = {}) }
+        },
         bottomBar = {
             val backStackEntry by navController.currentBackStackEntryAsState()
 
@@ -185,8 +212,18 @@ fun Test() {
             composable(
                 route = Screens.Home.route
             ) {
-                HomeScreen(navController)
+                HomeScreen(navController,padding)
+
             }
+
+            composable(route = "${Screens.Brands.route}/{collectionId}",
+                arguments = listOf(navArgument("collectionId") {
+                    type = NavType.LongType})){
+                BrandsScreen(navController,it.arguments?.getLong("collectionId"),padding)
+
+
+            }
+
 
             composable(
                 route = "categories"

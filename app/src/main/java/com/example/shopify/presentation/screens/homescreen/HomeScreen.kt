@@ -84,6 +84,7 @@ import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.core.navigation.TopBar
 import com.example.shopify.core.navigation.bottomNavItems
+import com.example.shopify.core.navigation.getNavController
 import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
 import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.Product
@@ -93,7 +94,7 @@ import com.example.shopify.data.models.Varient
 import com.example.shopify.data.repositories.product.IProductRepository
 
 @Composable
-fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
+fun HomeScreen(navController: NavHostController,paddingValues: PaddingValues,modifier: Modifier = Modifier) {
 //    ScaffoldStructure(screenTitle = "Home")
 //    {
 //HomeScreen(navController = navController )
@@ -149,11 +150,11 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
     }
 
     if (brandList.isNotEmpty() && randomList.isNotEmpty()) {
-        ScaffoldStructure("home",navController) {
+      //  ScaffoldStructure("home",navController) {
             Column(
                 modifier = modifier
                     .verticalScroll(rememberScrollState())
-                    .padding(paddingValues = PaddingValues(vertical = 70.dp))
+                    .padding(paddingValues = paddingValues)
             )
             {
 
@@ -165,7 +166,7 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
                 HomeSection(sectionTitle = R.string.brands) {
 
                     //  (brandsState as UiState.Success).data.body()?.let {
-                    BrandCards(brands = brandList)
+                    BrandCards(brands = brandList, navController = navController)
                 }
 
                 HomeSection(sectionTitle = R.string.trending_products) {
@@ -177,7 +178,7 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
         }
     }
 
-}
+
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -287,12 +288,15 @@ fun ItemCardContent(
 }
 
 @Composable
-fun BrandCardContent(modifier: Modifier = Modifier, brand: Brand) {
+fun BrandCardContent(modifier: Modifier = Modifier, brand: Brand,navController: NavHostController) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .padding(15.dp)
             .clickable {
+                Log.i("menna", brand.id.toString())
+                    navController.navigate("${Screens.Brands.route}/${brand.id}")
+
 
             }
     ) {
@@ -472,13 +476,13 @@ fun HomeSection(
 }
 
 @Composable
-fun BrandCards(modifier: Modifier = Modifier, brands: List<Brand>) {
+fun BrandCards(modifier: Modifier = Modifier, brands: List<Brand>,navController:NavHostController) {
     LazyRow(
         modifier = modifier.padding(start = 6.dp, end = 6.dp)
     ) {
         items(brands) { item ->
             CardDesign(onCardClicked = {}) {
-                BrandCardContent(brand = item)
+                BrandCardContent(brand = item, navController = navController)
 
             }
 

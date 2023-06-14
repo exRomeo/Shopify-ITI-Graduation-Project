@@ -8,4 +8,5 @@ import retrofit2.Response
 interface IRemoteResource {
 suspend fun getBrands():Response<SmartCollections>
 suspend fun getRandomProducts():Response<Products>
+suspend fun getSpecificBrandProducts(id:Long):Response<Products>
 }
