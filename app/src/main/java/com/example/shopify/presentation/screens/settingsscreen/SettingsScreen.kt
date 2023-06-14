@@ -43,8 +43,6 @@ import coil.request.ImageRequest
 import com.example.shopify.R
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.navigation.Screens
-import com.example.shopify.data.remote.authentication.AuthenticationClient
-import com.example.shopify.data.repositories.authentication.AuthRepository
 import com.example.shopify.data.repositories.user.UserDataRepository
 import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
 import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
@@ -228,24 +226,24 @@ fun SettingsItemList(
 }
 
 
-//@Preview(showSystemUi = true)
-//@Composable
-//fun SettingsPreview() {
-//    SettingsScreen(
-//        SettingsViewModel(
-//            UserDataRepository(
-//                UserDataRemoteSource(
-//                    RetrofitClient.customerAddressAPI,
-//                    RetrofitClient.draftOrderAPI
-//                )
-//            )
-//        ),
-//        rememberNavController()
-//    )
-//}
-//
-//
-//
+@Preview(showSystemUi = true)
+@Composable
+fun SettingsPreview() {
+    SettingsScreen(
+        SettingsViewModel(
+            UserDataRepository(
+                UserDataRemoteSource(
+                    RetrofitClient.customerAddressAPI,
+                    RetrofitClient.draftOrderAPI
+                )
+            )
+        ),
+        rememberNavController()
+    )
+}
+
+
+
 
 
 

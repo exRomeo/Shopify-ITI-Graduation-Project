@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.shopify.core.helpers.CART_DRAFT_ORDER
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.KeyFirebase
 import com.example.shopify.core.helpers.UserScreenUISState
@@ -126,7 +125,7 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
     private var _wishlist: MutableStateFlow<List<ProductSample>> = MutableStateFlow(listOf())
     val wishlist = _wishlist.asStateFlow()
     private lateinit var wishlistDraftOrder: DraftOrderBody
-    fun getWishlistItems() {
+    private fun getWishlistItems() {
         if (CurrentUserHelper.hasWishlist())
             viewModelScope.launch {
                 val response =
@@ -147,15 +146,18 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
         }
     }
 
-    suspend fun addWishlistItem(product: ProductSample) {
+    fun addWishlistItem(product: ProductSample) {
         if (!::wishlistDraftOrder.isInitialized)
             getWishlistItems()
-        if (CurrentUserHelper.hasWishlist())
-            addToWishlistDraftOrder(product)
-        else
-            createWishlist(product)
-        updateWishlist()
-        getWishlistItems()
+        viewModelScope.launch {
+            if (CurrentUserHelper.hasWishlist())
+                addToWishlistDraftOrder(product)
+            else
+                createWishlist(product)
+            updateWishlist()
+            getWishlistItems()
+        }
+
     }
 
     private fun updateWishlist() {
@@ -182,16 +184,15 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
         )
     }
 
-    fun removeWishlistItem(product: ProductSample?) {
-        product?.let { item ->
+    fun removeWishlistItem(product: ProductSample) {
+        if (wishlistDraftOrder.draftOrder.lineItems.size > 1) {
             val index: Int =
                 wishlistDraftOrder
                     .draftOrder
                     .lineItems
                     .indexOfFirst {
-                        it.productID == item.id
+                        it.productID == product.id
                     }
-            Log.i(TAG, "removeWishlistItem: $index")
             wishlistDraftOrder
                 .draftOrder
                 .lineItems
@@ -204,35 +205,43 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
                 getWishlistItems()
                 _snackbarMessage.emit("Product Removed")
             }
+        } else {
+            deleteDraftOrder(
+                draftOrder = wishlistDraftOrder.draftOrder,
+                draftOrderType = KeyFirebase.wishlist_id
+            )
+            _wishlist.value = listOf()
         }
-
     }
 
-
-    fun hasWishlist() {
-
+    private fun deleteDraftOrder(draftOrder: DraftOrder, draftOrderType: KeyFirebase) {
+        viewModelScope.launch {
+            userDataRepository.deleteDraftOrder(draftOrder.id)
+            wishlistDraftOrder.draftOrder.lineItems = mutableListOf()
+            CurrentUserHelper.updateListID(listType = draftOrderType, -1)
+        }
     }
 
     private suspend fun createWishlist(product: ProductSample) {
-        val response = userDataRepository.createDraftOrder(
-            DraftOrderBody(
-                DraftOrder(
-                    id = 0L,
-                    note = ">wishlist<",
-                    lineItems = mutableListOf(
-                        LineItem(
-                            productID = product.id,
-                            variantID = product.variants[0].id,
-                            title = product.title,
-                            name = product.variants[0].title ?: "",
-                            price = product.variants[0].price ?: "",
-                            quantity = 1L
-                        )
-                    ),
-                    totalPrice = ""
-                )
+        wishlistDraftOrder = DraftOrderBody(
+            DraftOrder(
+                id = 0L,
+                note = ">wishlist<",
+                lineItems = mutableListOf(
+                    LineItem(
+                        productID = product.id,
+                        variantID = product.variants[0].id,
+                        title = product.title,
+                        name = product.variants[0].title ?: "",
+                        price = product.variants[0].price ?: "",
+                        quantity = 1L
+                    )
+                ),
+                totalPrice = ""
             )
         )
+        val response = userDataRepository
+            .createDraftOrder(wishlistDraftOrder)
 
         CurrentUserHelper.updateListID(
             listType = KeyFirebase.wishlist_id,
@@ -245,11 +254,9 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
      * Cart Functions
      */
 
-    private var _cart: MutableStateFlow<List<ProductSample>> = MutableStateFlow(
-        listOf()
-    )
+    private var _cart: MutableStateFlow<List<ProductSample>> = MutableStateFlow(listOf())
     val cart = _cart.asStateFlow()
-    lateinit var cartDraftOrder: DraftOrderBody
+    private lateinit var cartDraftOrder: DraftOrderBody
     fun getCartItemCount(product: ProductSample): Long {
         var index = cart.value.indexOf(product)
         while (index > cartDraftOrder.draftOrder.lineItems.size) {
@@ -276,36 +283,40 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
         updateCart()
     }
 
-    fun getCartItems() {
-        viewModelScope.launch {
-            val response =
-                userDataRepository.getDraftOrder(CART_DRAFT_ORDER)
-            if (response.isSuccessful && response.body() != null) {
-                cartDraftOrder = response.body()!!
-                val draftOrderItems = cartDraftOrder.draftOrder.lineItems
-                _cart.value = getProductsFromLineItems(draftOrderItems)
+    private fun getCartItems() {
+        if (CurrentUserHelper.hasCart())
+            viewModelScope.launch {
+                val response =
+                    userDataRepository.getDraftOrder(CurrentUserHelper.cartDraftID)
+                if (response.isSuccessful && response.body() != null) {
+                    cartDraftOrder = response.body()!!
+                    val draftOrderItems = cartDraftOrder.draftOrder.lineItems
+                    _cart.value = getProductsFromLineItems(draftOrderItems)
+                }
             }
-        }
     }
 
 
-    fun updateCart() {
+    fun addCartItem(product: ProductSample) {
+        if (!::cartDraftOrder.isInitialized)
+            getCartItems()
+        viewModelScope.launch {
+            if (CurrentUserHelper.hasCart())
+                addToCartDraftOrder(product)
+            else
+                createCart(product)
+            updateCart()
+            getCartItems()
+        }
+    }
+
+    private fun updateCart() {
         viewModelScope.launch {
             userDataRepository.updateDraftOrder(
                 draftOrderID = cartDraftOrder.draftOrder.id,
                 draftOrderBody = DraftOrderBody(cartDraftOrder.draftOrder)
             )
         }
-    }
-
-    fun addCartItem(product: ProductSample) {
-        if (!::cartDraftOrder.isInitialized)
-            getCartItems()
-
-        addToCartDraftOrder(product)
-        updateCart()
-        getCartItems()
-
     }
 
     private fun addToCartDraftOrder(product: ProductSample) {
@@ -323,14 +334,14 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
         )
     }
 
-    fun removeCart(product: ProductSample?) {
-        product?.let { item ->
+    fun removeCart(product: ProductSample) {
+        if (cartDraftOrder.draftOrder.lineItems.size > 1) {
             val index: Int =
                 cartDraftOrder
                     .draftOrder
                     .lineItems
                     .indexOfFirst {
-                        it.productID == item.id
+                        it.productID == product.id
                     }
             cartDraftOrder
                 .draftOrder
@@ -341,12 +352,46 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
                     draftOrderID = cartDraftOrder.draftOrder.id,
                     draftOrderBody = cartDraftOrder
                 )
-                Log.i(TAG, "removeCart: ${cartDraftOrder.draftOrder.id} ")
                 getCartItems()
                 _snackbarMessage.emit("Product Removed")
             }
+        } else {
+            deleteDraftOrder(
+                draftOrder = cartDraftOrder.draftOrder,
+                draftOrderType = KeyFirebase.card_id
+            )
+            _cart.value = listOf()
         }
+
     }
+
+    private suspend fun createCart(product: ProductSample) {
+        cartDraftOrder = DraftOrderBody(
+            DraftOrder(
+                id = 0L,
+                note = ">Cart<",
+                lineItems = mutableListOf(
+                    LineItem(
+                        productID = product.id,
+                        variantID = product.variants[0].id,
+                        title = product.title,
+                        name = product.variants[0].title ?: "",
+                        price = product.variants[0].price ?: "",
+                        quantity = 1L
+                    )
+                ),
+                totalPrice = ""
+            )
+        )
+        val response = userDataRepository
+            .createDraftOrder(cartDraftOrder)
+
+        CurrentUserHelper.updateListID(
+            listType = KeyFirebase.card_id,
+            response.body()?.draftOrder?.id ?: -1L
+        )
+    }
+
 }
 
 

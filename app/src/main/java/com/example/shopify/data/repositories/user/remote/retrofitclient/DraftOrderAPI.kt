@@ -4,6 +4,7 @@ import com.example.shopify.data.models.ProductResponse
 import com.example.shopify.data.models.draftorder.DraftOrderBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
@@ -36,6 +37,14 @@ interface DraftOrderAPI {
         @Body draftOrderBody: DraftOrderBody,
         @Path("draft_order_id") draftOrderID: Long
     ): Response<DraftOrderBody>
+
+
+
+    @DELETE("admin/api/2023-04/draft_orders/{draft_order_id}.json")
+    suspend fun deleteDraftOrder(
+        @Header("X-Shopify-Access-Token") accessToken: String,
+        @Path("draft_order_id") draftOrderID: Long
+    )
 
 @GET("admin/api/2023-04/products/{product_id}.json")
     suspend fun getProductByID(

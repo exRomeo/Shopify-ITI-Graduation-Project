@@ -44,16 +44,16 @@ import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 @Composable
 fun AddressScreenPreview() {
 
-//    val viewModel =
-//        SettingsViewModel(
-//            UserDataRepository(
-//                UserDataRemoteSource(
-//                    RetrofitClient.customerAddressAPI,
-//                    RetrofitClient.draftOrderAPI
-//                )
-//            )
-//        )
-//    AddressScreen(viewModel = viewModel)
+    val viewModel =
+        SettingsViewModel(
+            UserDataRepository(
+                UserDataRemoteSource(
+                    RetrofitClient.customerAddressAPI,
+                    RetrofitClient.draftOrderAPI
+                )
+            )
+        )
+    AddressScreen(viewModel = viewModel)
 }
 
 @Composable
@@ -63,12 +63,9 @@ fun AddressScreen(viewModel: SettingsViewModel) {
 
     LaunchedEffect(Unit) {
         viewModel.snackbarMessage.collect {
-
             snackbarHostState.showSnackbar(
                 message = it
             )
-
-
         }
     }
     Scaffold(bottomBar = {

@@ -28,7 +28,7 @@ data class DraftOrder(
     @field:SerializedName("note")
     val note: String,
     @field:SerializedName("line_items")
-    val lineItems: MutableList<LineItem>,
+    var lineItems: MutableList<LineItem>,
     @field:SerializedName("total_price")
     val totalPrice: String
 )

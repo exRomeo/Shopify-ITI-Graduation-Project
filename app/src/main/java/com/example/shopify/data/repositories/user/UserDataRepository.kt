@@ -81,6 +81,15 @@ class UserDataRepository(private val userDataRemoteSource: IUserDataRemoteSource
                 draftOrderBody = draftOrderBody
             )
 
+    override suspend fun deleteDraftOrder(
+        draftOrderID: Long
+    ) {
+        userDataRemoteSource
+            .deleteDraftOrder(
+                draftOrderID = draftOrderID
+            )
+    }
+
     override suspend fun getProductByID(
         productID: Long
     ): Response<ProductResponse> =
