@@ -35,4 +35,8 @@ class RemoteResource private constructor():IRemoteResource {
         return apiService.getSpecificBrandProducts(id)
     }
 
+    override suspend fun getProductsBySubcategory(id: Long, type: String): Response<Products> {
+        return apiService.getProductsBySubcategory(id,type)
+    }
+
 }

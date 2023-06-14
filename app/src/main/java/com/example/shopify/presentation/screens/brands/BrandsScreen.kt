@@ -41,28 +41,35 @@ import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.data.models.Image
 import com.example.shopify.data.models.Product
+import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.Varient
 import com.example.shopify.data.repositories.product.IProductRepository
+import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.screens.homescreen.CardDesign
 import com.example.shopify.presentation.screens.homescreen.FavoriteButton
 import com.example.shopify.presentation.screens.homescreen.ImageFromNetwork
+import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
+import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModelFactory
 
-
-val list = listOf<Varient>(Varient("adidas", listOf(Product(1,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","120")), Image(src = "")),
-    Varient("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", listOf(Product(1,"","120")), Image(src = "")),
-    Varient("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", listOf(Product(1,"","120")), Image(src = "")),
-    Varient("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", listOf(Product(1,"","120")), Image(src = "")),
-    Varient("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", listOf(Product(1,"","120")), Image(src = "")))
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingValues){
     val repository: IProductRepository = (LocalContext.current.applicationContext as ShopifyApplication) .repository
+   // val repository2: I = (LocalContext.current.applicationContext as ShopifyApplication) .repository
     val viewModel: BrandsViewModel = viewModel(factory = BrandsViewModelFactory(
         repository
     )
     )
+
+    val settingsViewModel: SettingsViewModel = viewModel(
+        factory = SettingsViewModelFactory(
+            (LocalContext.current.applicationContext as ShopifyApplication).userDataRepository
+        )
+    )
+
+
 
     val productsState: UiState by viewModel.brandList.collectAsState()
     var productsList: List<Varient> = listOf()
@@ -78,18 +85,8 @@ fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingVa
    // }
     when (productsState) {
         is UiState.Loading -> {
-            Log.i("menna", "loading")
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            )
-            {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(size = 64.dp),
-                    color = MaterialTheme.colorScheme.primary,
-                    strokeWidth = 6.dp
-                )
-            }
+
+            LottieAnimation(animation = R.raw.loading_animation)
 
         }
 
@@ -107,6 +104,7 @@ fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingVa
         if(productsList.isNotEmpty()){
 
             ProductsCards(
+                viewModel= settingsViewModel,
                 modifier = Modifier.padding(paddingValues = padding),
                 isFavourite = true,
                 onFavouriteClicked = {},
@@ -121,6 +119,7 @@ fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingVa
 
 @Composable
     fun ProductsCards(
+    viewModel: SettingsViewModel,
         modifier: Modifier = Modifier,
         products: List<Varient>,
         isFavourite: Boolean,
@@ -140,7 +139,20 @@ fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingVa
             content = {
                 items(products) { item ->
                 CardDesign(onCardClicked = { /*TODO*/ }) {
-                 ProductItem(isFavourite = isFavourite, onFavouritesClicked =onFavouriteClicked , onAddToCard = onAddToCard , item = item)
+                 ProductItem(isFavourite = isFavourite, onFavouritesClicked ={
+                     var productSample: ProductSample =
+                         ProductSample(
+                             id= item.id,
+                             title=item.title!!,
+                             variants =item.variants!!,
+                             images = listOf(item.image)!! as List<Image>,
+                             image = item.image!!
+                             )
+                     
+                  viewModel.addWishlistItem(productSample)
+
+
+                 }, onAddToCard = onAddToCard , item = item)
 
                 }
                 }
@@ -154,14 +166,14 @@ fun ProductItem(
     modifier: Modifier = Modifier, isFavourite: Boolean,
     onFavouritesClicked: (Boolean) -> Unit, onAddToCard: (item: Product) -> Unit, item: Varient
 ) {
-Card(onClick = {}, modifier = Modifier.height(300.dp)) {
+Card(onClick = {}, modifier = Modifier.height(200.dp)) {
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         item.image?.src?.let {
             ImageFromNetwork(image = it,
                 modifier = Modifier
                     //.fillMaxHeight()
                     // .clip(RoundedCornerShape(15.dp))
-                    .height(300.dp)
+                    .height(200.dp)
                     .background(color = Color.White)
                     //.align(Alignment.CenterHorizontally)
 
@@ -173,7 +185,7 @@ Card(onClick = {}, modifier = Modifier.height(300.dp)) {
                     Text(
                         modifier = Modifier.padding(top =10.dp),
                         text = it,
-                        style = MaterialTheme.typography.headlineMedium,
+                        style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
@@ -222,11 +234,11 @@ Card(onClick = {}, modifier = Modifier.height(300.dp)) {
 @Preview
 @Composable
 fun ProductCardPreview(){
-    ProductsCards(
-    isFavourite = true,
-    onFavouriteClicked = {},
-    onAddToCard = {},
-        products = list,
-    )
+//    ProductsCards(
+//    isFavourite = true,
+//    onFavouriteClicked = {},
+//    onAddToCard = {},
+//        products = list,
+//    )
 }
 

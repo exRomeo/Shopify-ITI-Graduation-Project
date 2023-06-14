@@ -44,10 +44,8 @@ import com.example.shopify.presentation.screens.homescreen.HomeScreen
 
 @Composable
 fun NavGraph(navController: NavHostController = rememberNavController()) {
-    NavHost(
-        navController = navController,
-        startDestination = Screens.Login.route
-    ) {
+    NavHost(navController = navController,
+        startDestination = Screens.Login.route) {
         composable(route = Screens.Home.route) {
 //            HomeScreen(navController)
             Test()

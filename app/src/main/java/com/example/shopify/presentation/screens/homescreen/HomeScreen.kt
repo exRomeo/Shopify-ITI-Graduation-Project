@@ -178,7 +178,7 @@ fun HomeScreen(navController: NavHostController,paddingValues: PaddingValues,mod
         }
     }
 
-}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -291,7 +291,7 @@ fun ItemCardContent(
 }
 
 @Composable
-fun BrandCardContent(modifier: Modifier = Modifier, brand: Brand) {
+fun BrandCardContent(modifier: Modifier = Modifier, brand: Brand,navController:NavHostController) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier

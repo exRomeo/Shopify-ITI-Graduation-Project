@@ -29,4 +29,13 @@ class ProductRepository(val remoteResource: RemoteResource):IProductRepository {
         }
     }
 
+    override suspend fun getProductsBySubcategory(
+        id: Long,
+        type: String
+    ): Flow<Response<Products>> {
+        return flow{
+            emit(remoteResource.getProductsBySubcategory(id,type))
+        }
+    }
+
 }

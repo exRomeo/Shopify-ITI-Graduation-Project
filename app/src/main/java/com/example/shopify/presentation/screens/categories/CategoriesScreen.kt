@@ -1,9 +1,10 @@
-package com.example.shopify.presentation.screens.homescreen
+package com.example.shopify.presentation.screens.categories
 
 import android.R
 import android.util.Log
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -38,11 +39,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.shopify.data.models.Image
+import com.example.shopify.data.models.Product
+import com.example.shopify.data.models.Varient
+import com.example.shopify.presentation.screens.brands.ProductsCards
 import com.example.shopify.ui.theme.ShopifyTheme
 
 
 val mainCategories = listOf("Men", "Women", "Kid", "Sale")
-
+//val list:List<Varient> = listOf(Varient("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", listOf(Product(
+//    1,"adidas","200"),Image(src = null))
+//)
+//
+//
+//@Composable
+//fun CategoriesScreen(){
+//    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+//        MainFilters(items = mainCategories, onItemSelection ={} )
+//        ProductsCards(products = , isFavourite = true, onFavouriteClicked ={} , onAddToCard = {})
+//    }
+//}
 @Composable
 fun MainFilters(
     items: List<String>,
@@ -176,7 +192,7 @@ data class MiniFABItem(
 
 @Composable
 fun MiniFAB(
-    item:MiniFABItem,
+    item: MiniFABItem,
     onMiniFABClicked:(MiniFABItem)->Unit
 ){
     Button(onClick = { onMiniFABClicked.invoke(item) }
@@ -277,7 +293,7 @@ fun Floatingbutton(
                     if (transition.currentState == FloatingButtonState.Collapsed) {
                        floatingButtonState = FloatingButtonState.Expanded
                     } else {
-                        floatingButtonState=   FloatingButtonState.Collapsed
+                        floatingButtonState= FloatingButtonState.Collapsed
 
                     }
               //  )

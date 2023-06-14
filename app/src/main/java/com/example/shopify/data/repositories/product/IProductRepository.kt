@@ -11,4 +11,5 @@ interface IProductRepository {
     suspend fun getBrands(): Flow<Response<SmartCollections>>
     suspend fun getRandomproducts(): Flow<Response<Products>>
     suspend fun getSpecificBrandProducts(id:Long): Flow<Response<Products>>
+    suspend fun getProductsBySubcategory(id:Long,type:String): Flow<Response<Products>>
 }

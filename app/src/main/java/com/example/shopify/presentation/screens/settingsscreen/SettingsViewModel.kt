@@ -85,7 +85,6 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
         }
     }
 
-
     /**
      * Orders Functions
      */
@@ -147,15 +146,17 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
         }
     }
 
-    suspend fun addWishlistItem(product: ProductSample) {
+     fun addWishlistItem(product: ProductSample) {
         if (!::wishlistDraftOrder.isInitialized)
             getWishlistItems()
-        if (CurrentUserHelper.hasWishlist())
-            addToWishlistDraftOrder(product)
-        else
-            createWishlist(product)
-        updateWishlist()
-        getWishlistItems()
+        viewModelScope.launch {
+            if (CurrentUserHelper.hasWishlist())
+                addToWishlistDraftOrder(product)
+            else
+                createWishlist(product)
+            updateWishlist()
+            getWishlistItems()
+        }
     }
 
     private fun updateWishlist() {

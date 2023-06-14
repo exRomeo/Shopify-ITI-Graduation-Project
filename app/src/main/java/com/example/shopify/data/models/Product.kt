@@ -5,6 +5,7 @@ data class Products(
 ) : java.io.Serializable
 
 data class Varient(
+    var id: Long,
     val title: String?,
     val variants: List<Product>?,
     val image: Image?
