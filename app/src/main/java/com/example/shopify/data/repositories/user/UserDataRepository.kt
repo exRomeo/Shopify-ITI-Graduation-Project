@@ -26,7 +26,8 @@ class UserDataRepository(private val userDataRemoteSource: IUserDataRemoteSource
                 userID = userID
             )
 
-    override suspend fun addAddress(userID: Long,
+    override suspend fun addAddress(
+        userID: Long,
         address: Address
     ): Response<NewAddressResponse> =
         userDataRemoteSource.addAddress(
@@ -87,5 +88,4 @@ class UserDataRepository(private val userDataRemoteSource: IUserDataRemoteSource
             .getProductByID(
                 productID = productID
             )
-
 }

@@ -1,5 +1,7 @@
 package com.example.shopify.data.repositories.user
 
+import com.example.shopify.core.helpers.KeyFirebase
+import com.example.shopify.data.models.CustomerFirebase
 import com.example.shopify.data.models.ProductResponse
 import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.models.address.AddressesResponse
@@ -48,4 +50,5 @@ interface IUserDataRepository {
 
 
     suspend fun getProductByID(productID:Long): Response<ProductResponse>
+
 }

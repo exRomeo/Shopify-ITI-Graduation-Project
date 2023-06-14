@@ -4,9 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.shopify.core.helpers.CART_DRAFT_ORDER
+import com.example.shopify.core.helpers.CurrentUserHelper
+import com.example.shopify.core.helpers.KeyFirebase
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.address.Address
+import com.example.shopify.data.models.draftorder.DraftOrder
 import com.example.shopify.data.models.draftorder.DraftOrderBody
 import com.example.shopify.data.models.draftorder.LineItem
 import com.example.shopify.data.repositories.user.IUserDataRepository
@@ -16,24 +20,27 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-const val USER_ID = 7103607996722
-const val WISHLIST_DRAFT_ORDER_ID = 1121329742130
-const val CART_DRAFT_ORDER = 1121338360114
 
 class SettingsViewModel(private val userDataRepository: IUserDataRepository) : ViewModel() {
 
     private var _settingsState: MutableStateFlow<UserScreenUISState> =
-        MutableStateFlow(UserScreenUISState.LoggedIn)
+        MutableStateFlow(UserScreenUISState.Loading)
     val settingsState = _settingsState.asStateFlow()
 
     init {
-        getAddresses()
-        getWishlistItems()
-        getCartItems()
+        if (CurrentUserHelper.isLoggedIn()) {
+            getAddresses()
+            getWishlistItems()
+            getCartItems()
+            _settingsState.value = UserScreenUISState.LoggedIn
+        } else {
+            _settingsState.value = UserScreenUISState.NotLoggedIn
+        }
     }
 
     private var _snackbarMessage: MutableSharedFlow<String> = MutableSharedFlow()
     val snackbarMessage = _snackbarMessage.asSharedFlow()
+
 
     /**
      * Address Functions
@@ -46,7 +53,7 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
 
     private fun getAddresses() {
         viewModelScope.launch {
-            val response = userDataRepository.getAddresses(USER_ID)
+            val response = userDataRepository.getAddresses(CurrentUserHelper.customerID)
             if (response.isSuccessful && response.body() != null)
                 _addresses.value = response.body()!!.addresses
         }
@@ -64,10 +71,8 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
     fun addAddress(address: Address) {
         viewModelScope.launch {
             Log.i(TAG, "addAddress: Called")
-            val response = userDataRepository.addAddress(USER_ID, address)
+            val response = userDataRepository.addAddress(CurrentUserHelper.customerID, address)
             _snackbarMessage.emit(if (response.isSuccessful) "Address has been added" else "Failed to add address")
-            Log.i(TAG, "addAddress: ${response.isSuccessful}")
-            Log.i(TAG, "addAddress: ${address.toString()}")
             getAddresses()
         }
     }
@@ -122,16 +127,16 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
     val wishlist = _wishlist.asStateFlow()
     private lateinit var wishlistDraftOrder: DraftOrderBody
     fun getWishlistItems() {
-        Log.i(TAG, "getWishlistItems: <<<<<<<<<CALLED!")
-        viewModelScope.launch {
-            val response =
-                userDataRepository.getDraftOrder(WISHLIST_DRAFT_ORDER_ID)
-            if (response.isSuccessful && response.body() != null) {
-                wishlistDraftOrder = response.body()!!
-                val draftOrderItems = wishlistDraftOrder.draftOrder.lineItems
-                _wishlist.value = getProductsFromLineItems(draftOrderItems)
+        if (CurrentUserHelper.hasWishlist())
+            viewModelScope.launch {
+                val response =
+                    userDataRepository.getDraftOrder(CurrentUserHelper.wishlistDraftID)
+                if (response.isSuccessful && response.body() != null) {
+                    wishlistDraftOrder = response.body()!!
+                    val draftOrderItems = wishlistDraftOrder.draftOrder.lineItems
+                    _wishlist.value = getProductsFromLineItems(draftOrderItems)
+                }
             }
-        }
     }
 
     private suspend fun getProductsFromLineItems(lineItems: List<LineItem>): List<ProductSample> {
@@ -142,17 +147,18 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
         }
     }
 
-    fun addWishlistItem(product: ProductSample) {
+    suspend fun addWishlistItem(product: ProductSample) {
         if (!::wishlistDraftOrder.isInitialized)
             getWishlistItems()
-
-        addToWishlistDraftOrder(product)
+        if (CurrentUserHelper.hasWishlist())
+            addToWishlistDraftOrder(product)
+        else
+            createWishlist(product)
         updateWishlist()
         getWishlistItems()
-
     }
 
-    fun updateWishlist() {
+    private fun updateWishlist() {
         viewModelScope.launch {
             userDataRepository.updateDraftOrder(
                 draftOrderID = wishlistDraftOrder.draftOrder.id,
@@ -207,8 +213,31 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
 
     }
 
-    fun createWishlist() {
+    private suspend fun createWishlist(product: ProductSample) {
+        val response = userDataRepository.createDraftOrder(
+            DraftOrderBody(
+                DraftOrder(
+                    id = 0L,
+                    note = ">wishlist<",
+                    lineItems = mutableListOf(
+                        LineItem(
+                            productID = product.id,
+                            variantID = product.variants[0].id,
+                            title = product.title,
+                            name = product.variants[0].title ?: "",
+                            price = product.variants[0].price ?: "",
+                            quantity = 1L
+                        )
+                    ),
+                    totalPrice = ""
+                )
+            )
+        )
 
+        CurrentUserHelper.updateListID(
+            listType = KeyFirebase.wishlist_id,
+            response.body()?.draftOrder?.id ?: -1L
+        )
     }
 
 

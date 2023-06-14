@@ -44,16 +44,16 @@ import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 @Composable
 fun AddressScreenPreview() {
 
-    val viewModel =
-        SettingsViewModel(
-            UserDataRepository(
-                UserDataRemoteSource(
-                    RetrofitClient.customerAddressAPI,
-                    RetrofitClient.draftOrderAPI
-                )
-            )
-        )
-    AddressScreen(viewModel = viewModel)
+//    val viewModel =
+//        SettingsViewModel(
+//            UserDataRepository(
+//                UserDataRemoteSource(
+//                    RetrofitClient.customerAddressAPI,
+//                    RetrofitClient.draftOrderAPI
+//                )
+//            )
+//        )
+//    AddressScreen(viewModel = viewModel)
 }
 
 @Composable
