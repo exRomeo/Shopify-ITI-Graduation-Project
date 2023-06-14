@@ -5,6 +5,7 @@ sealed class UserScreenUISState {
     object Loading : UserScreenUISState()
 
     object NotLoggedIn : UserScreenUISState()
+    object LoggedIn : UserScreenUISState()
 
     class Success<UserData>(val data: UserData) : UserScreenUISState()
 

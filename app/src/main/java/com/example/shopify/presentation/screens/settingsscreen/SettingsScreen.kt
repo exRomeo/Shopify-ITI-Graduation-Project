@@ -1,5 +1,6 @@
 package com.example.shopify.presentation.screens.settingsscreen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,12 +43,12 @@ import coil.request.ImageRequest
 import com.example.shopify.R
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.navigation.Screens
-import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.repositories.user.UserDataRepository
 import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
 import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.SettingItemCard
+import com.example.shopify.presentation.screens.homescreen.ScaffoldStructure
 
 const val TAG = "TAG"
 
@@ -59,27 +60,26 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel, settingsNav: NavHostCon
     ScaffoldStructure("Settings", navController = settingsNav) {
 
 
-        val state by settingsViewModel.addresses.collectAsState()
-        when (val currentState = state) {
-            is UserScreenUISState.Loading -> {
-                LottieAnimation(animation = R.raw.loading_animation)
+        Column(modifier = Modifier.padding(it)) {
+            val state by settingsViewModel.settingsState.collectAsState()
+            when (val currentState = state) {
+                is UserScreenUISState.NotLoggedIn -> {
+                    LottieAnimation(animation = R.raw.loading_animation)
+                }
+
+                is UserScreenUISState.LoggedIn -> {
+                    SettingsScreenContent(
+                        settingsViewModel = settingsViewModel,
+                        settingsNav = settingsNav
+                    )
+                }
+
+                is UserScreenUISState.Failure -> {
+
+                }
+
+                else -> {}
             }
-
-            is UserScreenUISState.Success<*> -> {
-                val addresses: List<Address> =
-                    currentState.data as List<Address>
-                SettingsScreenContent(
-                    addresses,
-                    settingsViewModel = settingsViewModel,
-                    settingsNav = settingsNav
-                )
-            }
-
-            is UserScreenUISState.Failure -> {
-
-            }
-
-            else -> {}
         }
     }
 }
@@ -87,7 +87,6 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel, settingsNav: NavHostCon
 
 @Composable
 fun SettingsScreenContent(
-    addresses: List<Address>,
     settingsViewModel: SettingsViewModel,
     settingsNav: NavHostController
 ) {
@@ -99,7 +98,6 @@ fun SettingsScreenContent(
         email = ""
     )
     SettingsItemList(
-        addresses = addresses,
         settingsViewModel = settingsViewModel,
         settingsNav = settingsNav
     )
@@ -160,7 +158,6 @@ fun UserBar(
 
 @Composable
 fun SettingsItemList(
-    addresses: List<Address>,
     settingsViewModel: SettingsViewModel,
     settingsNav: NavHostController
 ) {
@@ -169,6 +166,7 @@ fun SettingsItemList(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
+            val addresses by settingsViewModel.addresses.collectAsState()
             SettingItemCard(
                 mainText = stringResource(id = R.string.addresses),
                 subText = stringResource(id = R.string.you_have) + " ${addresses.size} " + stringResource(
@@ -183,6 +181,7 @@ fun SettingsItemList(
         }
         item {
             val wishlist by settingsViewModel.wishlist.collectAsState()
+            Log.i(TAG, "SettingsItemList: ${wishlist.size}")
             SettingItemCard(
                 mainText = stringResource(id = R.string.wishlist),
                 subText = stringResource(id = R.string.you_have) + " ${wishlist.size} " + stringResource(

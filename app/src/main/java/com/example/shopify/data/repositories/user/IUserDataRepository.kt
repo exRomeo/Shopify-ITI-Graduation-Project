@@ -16,7 +16,7 @@ interface IUserDataRepository {
 
     suspend fun getAddresses(userID: Long): Response<AddressesResponse>
 
-    suspend fun addAddress(
+    suspend fun addAddress(userID: Long,
         address: Address
     ): Response<NewAddressResponse>
 

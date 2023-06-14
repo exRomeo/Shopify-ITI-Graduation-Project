@@ -8,7 +8,6 @@ import com.example.shopify.data.models.address.DeleteResponse
 import com.example.shopify.data.models.address.NewAddressResponse
 import com.example.shopify.data.models.draftorder.DraftOrderBody
 import com.example.shopify.data.repositories.user.remote.IUserDataRemoteSource
-import com.example.shopify.data.repositories.user.remote.retrofitclient.USER_ID
 import retrofit2.Response
 
 class UserDataRepository(private val userDataRemoteSource: IUserDataRemoteSource) :
@@ -27,11 +26,11 @@ class UserDataRepository(private val userDataRemoteSource: IUserDataRemoteSource
                 userID = userID
             )
 
-    override suspend fun addAddress(
+    override suspend fun addAddress(userID: Long,
         address: Address
     ): Response<NewAddressResponse> =
         userDataRemoteSource.addAddress(
-            userID = USER_ID,
+            userID = userID,
             address = AddressBody(address)
         )
 

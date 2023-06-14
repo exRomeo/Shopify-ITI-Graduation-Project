@@ -3,8 +3,7 @@ package com.example.shopify.data.repositories.user.remote.retrofitclient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-const val USER_ID = 7103607996722
-const val DRAFT_ORDER_ID = 1121329742130
+
 
 object RetrofitClient {
     private const val BASE_URL = "https://mad43-alex-and-team2.myshopify.com/"

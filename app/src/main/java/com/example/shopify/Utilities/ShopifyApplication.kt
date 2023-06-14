@@ -12,17 +12,18 @@ import com.example.shopify.data.repositories.authentication.AuthRepository
 import com.example.shopify.data.repositories.authentication.IAuthRepository
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.data.repositories.product.ProductRepository
+import com.example.shopify.data.repositories.user.IUserDataRepository
+import com.example.shopify.data.repositories.user.UserDataRepository
+import com.example.shopify.data.repositories.user.remote.IUserDataRemoteSource
+import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
+import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.runBlocking
 
 private const val BASE_URL = "https://mad43-alex-and-team2.myshopify.com/"
 private const val CUSTOMER_PREF_NAME = "customer"
-import com.example.shopify.data.repositories.user.IUserDataRepository
-import com.example.shopify.data.repositories.user.UserDataRepository
-import com.example.shopify.data.repositories.user.remote.IUserDataRemoteSource
-import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
-import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
+
 
 class ShopifyApplication:Application() {
 

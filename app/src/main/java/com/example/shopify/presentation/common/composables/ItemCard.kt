@@ -145,7 +145,10 @@ fun WishlistItemCard(
                     Spacer(modifier = Modifier.padding(vertical = 4.dp))
                     Text(
                         text = product.variants[0].price ?: "0.00",
-                        style = TextStyle(color = Color.Gray, fontSize = MaterialTheme.typography.bodyLarge.fontSize),
+                        style = TextStyle(
+                            color = Color.Gray,
+                            fontSize = MaterialTheme.typography.bodyLarge.fontSize
+                        ),
                         modifier = Modifier.padding(start = 4.dp)
                     )
                 }
@@ -182,7 +185,7 @@ fun WishlistItemCardPreview() {
         product = ProductSample(
             5,
             "Very Long Product Title1235",
-            listOf(Product(1, 0,"Product TITLE", "10.254")),
+            listOf(Product(1, 0, "Product TITLE", "10.254")),
             listOf(Image("")),
             Image(""),
         ),
@@ -195,6 +198,7 @@ fun WishlistItemCardPreview() {
 fun CartItemCard(
     modifier: Modifier = Modifier,
     product: ProductSample,
+    initialCount: Long,
     increase: () -> Unit,
     decrease: () -> Unit,
     onClick: () -> Unit
@@ -205,7 +209,7 @@ fun CartItemCard(
             .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
-        var count by remember { mutableStateOf(0) }
+        var count by remember { mutableStateOf(initialCount) }
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
@@ -294,10 +298,12 @@ fun CartItemCardPreview() {
         product = ProductSample(
             5,
             "Very Long Product Title1235",
-            listOf(Product(1, 0,"Product TITLE", "10.254")),
+            listOf(Product(1, 0, "Product TITLE", "10.254")),
             listOf(Image("")),
             Image(""),
-        ), increase = {},
+        ),
+        initialCount = 0,
+        increase = {},
         decrease = {},
         onClick = {}
     )
@@ -369,7 +375,7 @@ fun OrderItemCardPreview() {
         product = ProductSample(
             5,
             "Very Long Product Title1235",
-            listOf(Product(1, 0,"Product TITLE", "10.254")),
+            listOf(Product(1, 0, "Product TITLE", "10.254")),
             listOf(Image("")),
             Image(""),
         ),

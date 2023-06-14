@@ -15,7 +15,7 @@ data class LineItem(
     @field:SerializedName("title")
     val title: String,
     @field:SerializedName("quantity")
-    val quantity: Long,
+    var quantity: Long,
     @field:SerializedName("name")
     val name: String,
     @field:SerializedName("price")
