@@ -8,10 +8,10 @@ data class SingleProductResponseBody(
 )
 
 data class SingleProduct(
-    val id : Long?,
+    val id: Long?,
     val title: String?,
     @field:SerializedName("body_html")
-    val description : String?,
-    val variants : List<Product>?,
-    val images : List<Image>?
+    val description: String?,
+    val variants: List<Product>?,
+    val images: List<Image>?
 )

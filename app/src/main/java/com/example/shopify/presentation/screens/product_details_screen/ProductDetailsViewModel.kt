@@ -13,8 +13,11 @@ import kotlinx.coroutines.launch
 class ProductDetailsViewModel(private val productRepository: IProductRepository) : ViewModel() {
 
     private var _productInfoState = MutableStateFlow<UiState>(UiState.Loading)
-    val productInfoState: StateFlow<UiState> = _productInfoState
+    val productInfoState = _productInfoState
 
+    init {
+        getProductInfo(8398828339506)
+    }
     fun getProductInfo(productId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             val response = productRepository.getSingleProductDetails(productId)
