@@ -15,9 +15,6 @@ class ProductDetailsViewModel(private val productRepository: IProductRepository)
     private var _productInfoState = MutableStateFlow<UiState>(UiState.Loading)
     val productInfoState = _productInfoState
 
-    init {
-        getProductInfo(8398828339506)
-    }
     fun getProductInfo(productId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             val response = productRepository.getSingleProductDetails(productId)

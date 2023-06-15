@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.shopify.presentation.screens.product_details_screen.ImageCard
-import com.example.shopify.presentation.screens.product_details_screen.ProductDetailsContentScreen
 import com.example.shopify.presentation.screens.product_details_screen.ProductDetailsScreen
 import com.example.shopify.ui.theme.ShopifyTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -16,7 +14,6 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 
 class MainActivity : ComponentActivity() {
 
-    @OptIn(ExperimentalPagerApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //check network      // Log.i("TAG", "onCreate: ${(applicationContext as ShopifyApplication).currentCustomer})")
