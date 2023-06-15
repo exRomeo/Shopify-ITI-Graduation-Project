@@ -17,14 +17,14 @@ import kotlinx.coroutines.withContext
 class CategoriesViewModel(val repository: IProductRepository): ViewModel() {
     private var _productsList: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val productsList: StateFlow<UiState> = _productsList
-    var id: Long = 0
+    var id: Long = 449428980018
     var type: String = ""
 
     init {
         getProductsBySubcategory()
     }
 
-    private fun getProductsBySubcategory() {
+     fun getProductsBySubcategory() {
         viewModelScope.launch(Dispatchers.IO) {
             val response = repository.getProductsBySubcategory(id, type)
             withContext(Dispatchers.Main) {

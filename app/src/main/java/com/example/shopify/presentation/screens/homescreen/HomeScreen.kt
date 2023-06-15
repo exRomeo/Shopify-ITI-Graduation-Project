@@ -81,6 +81,7 @@ import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
+import com.example.shopify.core.navigation.HomeNavGraph
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.core.navigation.TopBar
 import com.example.shopify.core.navigation.bottomNavItems
@@ -94,7 +95,7 @@ import com.example.shopify.data.models.Varient
 import com.example.shopify.data.repositories.product.IProductRepository
 
 @Composable
-fun HomeScreen(navController: NavHostController,paddingValues: PaddingValues,modifier: Modifier = Modifier) {
+fun HomeScreen(navController: NavHostController,padding:PaddingValues,modifier: Modifier = Modifier) {
 //    ScaffoldStructure(screenTitle = "Home")
 //    {
 //HomeScreen(navController = navController )
@@ -151,10 +152,12 @@ fun HomeScreen(navController: NavHostController,paddingValues: PaddingValues,mod
 
     if (brandList.isNotEmpty() && randomList.isNotEmpty()) {
       //  ScaffoldStructure("home",navController) {
+       // Scaffold (bottomBar = {Bottombar(navController = rememberNavController())}) {
+
             Column(
-                modifier = modifier
+                modifier = modifier.padding(padding)
                     .verticalScroll(rememberScrollState())
-                    .padding(paddingValues = paddingValues)
+                    .padding(paddingValues = PaddingValues(10.dp))
             )
             {
 
@@ -176,7 +179,30 @@ fun HomeScreen(navController: NavHostController,paddingValues: PaddingValues,mod
                 }
             }
         }
+        }
+
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun HomeScaffold(navController: NavHostController = rememberNavController()){
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    Scaffold(
+
+
+        bottomBar = {
+            if (backStackEntry?.destination?.route == "home"||(backStackEntry?.destination?.route == "categories")||
+                backStackEntry?.destination?.route == "settings") {
+                Bottombar(navController = navController)
+            }
+        }
+    )
+
+            {
+        HomeNavGraph(navController = navController)
     }
+
+}
+
 
 
 
@@ -298,7 +324,8 @@ fun BrandCardContent(modifier: Modifier = Modifier, brand: Brand,navController:N
             .padding(15.dp)
             .clickable {
                 Log.i("menna", brand.id.toString())
-                    navController.navigate("${Screens.Brands.route}/${brand.id}")
+
+                navController.navigate("${Screens.Brands.route}/${brand.id}")
 
 
             }

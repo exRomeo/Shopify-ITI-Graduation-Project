@@ -25,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -74,7 +75,7 @@ fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingVa
     val productsState: UiState by viewModel.brandList.collectAsState()
     var productsList: List<Varient> = listOf()
 
-    //LaunchedEffect(key1 = productsState) {
+    LaunchedEffect(Unit) {
 
         if (id != null) {
             viewModel.id = id
@@ -82,7 +83,7 @@ fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingVa
             viewModel.getSpecificBrandProducts()
         }
 
-   // }
+    }
     when (productsState) {
         is UiState.Loading -> {
 
@@ -104,7 +105,7 @@ fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingVa
         if(productsList.isNotEmpty()){
 
             ProductsCards(
-                viewModel= settingsViewModel,
+               // viewModel= settingsViewModel,
                 modifier = Modifier.padding(paddingValues = padding),
                 isFavourite = true,
                 onFavouriteClicked = {},
@@ -119,7 +120,7 @@ fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingVa
 
 @Composable
     fun ProductsCards(
-    viewModel: SettingsViewModel,
+    //viewModel: SettingsViewModel,
         modifier: Modifier = Modifier,
         products: List<Varient>,
         isFavourite: Boolean,
@@ -149,7 +150,7 @@ fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingVa
                              image = item.image!!
                              )
                      
-                  viewModel.addWishlistItem(productSample)
+               //   viewModel.addWishlistItem(productSample)
 
 
                  }, onAddToCard = onAddToCard , item = item)

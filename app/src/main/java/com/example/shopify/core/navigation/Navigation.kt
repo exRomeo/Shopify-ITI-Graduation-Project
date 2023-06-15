@@ -28,32 +28,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
 import com.example.shopify.presentation.screens.authentication.login.LoginScreen
 import com.example.shopify.presentation.screens.authentication.registeration.SignupScreen
 import com.example.shopify.presentation.screens.brands.BrandsScreen
+import com.example.shopify.presentation.screens.homescreen.HomeScaffold
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 
 
 @Composable
 fun NavGraph(navController: NavHostController = rememberNavController()) {
     NavHost(navController = navController,
-        startDestination = Screens.Login.route) {
+        startDestination = Screens.Home.route) {
         composable(route = Screens.Home.route) {
 //            HomeScreen(navController)
             Test()
         }
         composable(route = Screens.Login.route) {
-
-
-            LoginScreen(navController)
 
             LoginScreen(navController)
         }
@@ -61,6 +62,46 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
             SignupScreen(navController)
         }
     }
+}
+@Composable
+fun RootNavigationGraph(navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        route = Graph.ROOT,
+        startDestination = Graph.HOME
+    ) {
+        authNavGraph(navController = navController)
+        composable(route = Graph.HOME) {
+            HomeScaffold()
+        }
+    }
+}
+fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
+    navigation(
+        route = Graph.AUTHENTICATION,
+        startDestination = AuthScreen.Login.route
+    ) {
+        composable(route = AuthScreen.Login.route) {
+            LoginScreen(navController)
+        }
+        composable(route = AuthScreen.SignUp.route) {
+            SignupScreen(navController)
+        }
+
+    }
+}
+
+
+object Graph {
+    const val ROOT = "root_graph"
+    const val AUTHENTICATION = "auth_graph"
+    const val HOME = "home_graph"
+    const val DETAILS = "details_graph"
+}
+
+sealed class AuthScreen(val route: String) {
+    object Login : AuthScreen(route = "LOGIN")
+    object SignUp : AuthScreen(route = "SIGN_UP")
 }
 
 @Composable
@@ -161,39 +202,43 @@ fun Test() {
         bottomBar = {
             val backStackEntry by navController.currentBackStackEntryAsState()
 
-            NavigationBar(containerColor = Color.White) {
-                bottomNavItems.forEach { item ->
-                    val selected = item.route == backStackEntry?.destination?.route
-                    //  val currentRoute = currentRoute(navController)
+            if (backStackEntry?.destination?.route == "home"||(backStackEntry?.destination?.route == "categories")||
+                backStackEntry?.destination?.route == "settings") {
 
-                    NavigationBarItem(
-                        selected = selected,
-                        onClick = {
-                            //  if (currentRoute != item.route) {
-                            Log.i("menna", item.route)
-                            navController.navigate(item.route)
-                            //  }
-                        },
-                        label = {
-                            Text(
-                                text = item.name,
 
+                NavigationBar(containerColor = Color.White) {
+                    bottomNavItems.forEach { item ->
+                        val selected = item.route == backStackEntry?.destination?.route
+                        //  val currentRoute = currentRoute(navController)
+
+                        NavigationBarItem(
+                            selected = selected,
+                            onClick = {
+                                //  if (currentRoute != item.route) {
+                                Log.i("menna", item.route)
+                                navController.navigate(item.route)
+                                //  }
+                            },
+                            label = {
+                                Text(
+                                    text = item.name,
+
+                                    )
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = item.icon,
+                                    contentDescription = "",
+                                    tint = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = item.icon,
-                                contentDescription = "",
-                                tint = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
 
-                        })
+                            })
+
+                    }
+
 
                 }
-
-
-            }
-        }
+            }   }
     ) { padding ->
         NavHost(navController = navController, startDestination = "home") {
             composable(
@@ -249,6 +294,10 @@ fun Bottombar(navController: NavHostController) {
                     //  if (currentRoute != item.route) {
                     Log.i("menna", item.route)
                     navController.navigate(item.route)
+                    {
+                        popUpTo(navController.graph.findStartDestination().id)
+                        launchSingleTop = true
+                    }
                     //  }
                 },
                 label = {

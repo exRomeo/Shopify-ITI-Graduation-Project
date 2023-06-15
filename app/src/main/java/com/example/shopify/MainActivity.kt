@@ -11,7 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.shopify.core.navigation.NavGraph
+import com.example.shopify.core.navigation.RootNavigationGraph
 import com.example.shopify.ui.theme.ShopifyTheme
 
 private const val BASE_URL = "https://mad43-alex-and-team2.myshopify.com/"
@@ -69,6 +71,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
+                  //  RootNavigationGraph(rememberNavController())
                     NavGraph()
                 }
             }
