@@ -69,7 +69,6 @@ import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
-import com.example.shopify.core.navigation.TopBar
 import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.Products
@@ -125,11 +124,9 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
         is UiState.Success<*> -> {
             randomList = (randomsState as UiState.Success<Products>).data.body()?.products!!
 
-
         }
 
         else -> {
-
             Log.i("homepage", (randomsState as UiState.Error).error.toString())
         }
     }
@@ -175,7 +172,7 @@ fun ScaffoldStructure(
 
     Scaffold(
         topBar = {
-            TopBar(title = screenTitle, onSearch = {})
+//            TopBar(title = screenTitle, onSearch = {})
 
         },
         content = {

@@ -56,6 +56,6 @@ object CurrentUserHelper {
     }
 
     fun hasCart(): Boolean {
-        return cartDraftID != -1L
+        return cartDraftID != -1L /*false*/
     }
 }

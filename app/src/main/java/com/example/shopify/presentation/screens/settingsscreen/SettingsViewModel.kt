@@ -391,7 +391,6 @@ class SettingsViewModel(private val userDataRepository: IUserDataRepository) : V
             response.body()?.draftOrder?.id ?: -1L
         )
     }
-
 }
 
 

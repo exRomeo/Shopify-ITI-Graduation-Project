@@ -34,18 +34,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.navigation.Screens
-import com.example.shopify.data.repositories.user.UserDataRepository
-import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
-import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.SettingItemCard
 import com.example.shopify.presentation.screens.homescreen.ScaffoldStructure
@@ -54,10 +49,13 @@ const val TAG = "TAG"
 
 
 @Composable
-fun SettingsScreen(settingsViewModel: SettingsViewModel, settingsNav: NavHostController) {
+fun SettingsScreen(
+    settingsViewModel: SettingsViewModel,
+    bottomNavController: NavHostController, settingsNav: NavHostController
+) {
 
 
-    ScaffoldStructure("Settings", navController = settingsNav) {
+    ScaffoldStructure("Settings", navController = bottomNavController) {
 
 
         Column(modifier = Modifier.padding(it)) {
@@ -225,30 +223,19 @@ fun SettingsItemList(
     }
 }
 
-
-@Preview(showSystemUi = true)
-@Composable
-fun SettingsPreview() {
-    SettingsScreen(
-        SettingsViewModel(
-            UserDataRepository(
-                UserDataRemoteSource(
-                    RetrofitClient.customerAddressAPI,
-                    RetrofitClient.draftOrderAPI
-                )
-            )
-        ),
-        rememberNavController()
-    )
-}
-
-
-
-
-
-
-
-
-
-
-
+//
+//@Preview(showSystemUi = true)
+//@Composable
+//fun SettingsPreview() {
+//    SettingsScreen(
+//        SettingsViewModel(
+//            UserDataRepository(
+//                UserDataRemoteSource(
+//                    RetrofitClient.customerAddressAPI,
+//                    RetrofitClient.draftOrderAPI
+//                )
+//            )
+//        ),
+//        rememberNavController()
+//    )
+//}
