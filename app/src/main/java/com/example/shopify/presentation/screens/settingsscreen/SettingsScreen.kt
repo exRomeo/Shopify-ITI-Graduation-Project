@@ -78,7 +78,8 @@ fun SettingsScreen(
                 actions = {
                     if (state is UserScreenUISState.LoggedIn)
                         IconButton(onClick = {
-                            settingsNav.popBackStack(startDestination = , inclusive = true)
+                            settingsNav.ba
+                            settingsNav.navigate(Screens.Login.route)
                         }) {
                             Icon(Icons.Default.Logout, stringResource(id = R.string.logout))
                         } else IconButton(onClick = { /*TODO: Login action*/ }) {
