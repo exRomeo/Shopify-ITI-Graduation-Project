@@ -1,8 +1,6 @@
 package com.example.shopify.data.repositories.user.remote
 
 import com.example.shopify.BuildConfig
-import com.example.shopify.core.helpers.KeyFirebase
-import com.example.shopify.data.models.CustomerFirebase
 import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.ProductResponse
 import com.example.shopify.data.models.address.AddressBody
@@ -10,7 +8,6 @@ import com.example.shopify.data.models.address.AddressesResponse
 import com.example.shopify.data.models.address.DeleteResponse
 import com.example.shopify.data.models.address.NewAddressResponse
 import com.example.shopify.data.models.draftorder.DraftOrderBody
-import com.example.shopify.data.repositories.authentication.IAuthRepository
 import com.example.shopify.data.repositories.user.remote.retrofitclient.CustomerAddressAPI
 import com.example.shopify.data.repositories.user.remote.retrofitclient.DraftOrderAPI
 import retrofit2.Response
@@ -83,7 +80,7 @@ class UserDataRemoteSource(
     }
 
     /**
-     * Wishlist Functions
+     * Draft Order Functions
      */
 
 
@@ -103,6 +100,15 @@ class UserDataRemoteSource(
             draftOrderID = draftOrderID
         )
 
+    override suspend fun deleteDraftOrder(
+        draftOrderID: Long
+    ) {
+        draftOrderAPI.deleteDraftOrder(
+            accessToken = BuildConfig.ACCESS_TOKEN,
+            draftOrderID = draftOrderID
+        )
+    }
+
 
     override suspend fun createDraftOrder(
         draftOrderBody: DraftOrderBody
@@ -111,6 +117,7 @@ class UserDataRemoteSource(
             accessToken = BuildConfig.ACCESS_TOKEN,
             draftOrderBody = draftOrderBody
         )
+
 
     override suspend fun getProductByID(productID: Long): Response<ProductResponse> =
         draftOrderAPI.getProductByID(

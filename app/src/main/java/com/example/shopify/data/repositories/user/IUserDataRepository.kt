@@ -1,7 +1,5 @@
 package com.example.shopify.data.repositories.user
 
-import com.example.shopify.core.helpers.KeyFirebase
-import com.example.shopify.data.models.CustomerFirebase
 import com.example.shopify.data.models.ProductResponse
 import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.models.address.AddressesResponse
@@ -18,7 +16,8 @@ interface IUserDataRepository {
 
     suspend fun getAddresses(userID: Long): Response<AddressesResponse>
 
-    suspend fun addAddress(userID: Long,
+    suspend fun addAddress(
+        userID: Long,
         address: Address
     ): Response<NewAddressResponse>
 
@@ -32,7 +31,7 @@ interface IUserDataRepository {
 
 
     /**
-     * Wishlist functions
+     * DraftOrder functions
      */
 
     suspend fun getDraftOrder(
@@ -48,7 +47,11 @@ interface IUserDataRepository {
         draftOrderBody: DraftOrderBody
     ): Response<DraftOrderBody>
 
+    suspend fun deleteDraftOrder(
+        draftOrderID: Long
+    )
 
-    suspend fun getProductByID(productID:Long): Response<ProductResponse>
+
+    suspend fun getProductByID(productID: Long): Response<ProductResponse>
 
 }

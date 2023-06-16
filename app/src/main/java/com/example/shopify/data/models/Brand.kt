@@ -1,18 +1,21 @@
 package com.example.shopify.data.models
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
 data class SmartCollections(
-    val smart_collections:List<Brand>
-    ) :java.io.Serializable
+    val smart_collections: List<Brand>
+) : Serializable
+
 data class Brand(
     val id:Long,
     @SerializedName("title")
-    val name:String?,
-    val image:Image?
-):java.io.Serializable
+    val name: String?,
+    val image: Image?
+) : Serializable
 
 data class Image(
-    val src :String?
-):java.io.Serializable
+//    val position: Int?,
+    val src: String?
+) : Serializable

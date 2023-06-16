@@ -1,4 +1,3 @@
-package com.example.shopify.data.remote
 
 import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.Products

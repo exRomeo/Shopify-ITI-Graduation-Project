@@ -1,7 +1,6 @@
-package com.example.shopify.presentation.components
+package com.example.shopify.presentation.common.composables
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,8 +8,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.material.*
 import androidx.compose.material3.*
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
@@ -22,10 +21,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.shopify.R
-import com.example.shopify.presentation.screens.authentication.TextFieldType
-import com.example.shopify.ui.theme.backgroundColor
+import com.example.shopify.presentation.screens.authentication.common_auth_components.TextFieldType
 import com.example.shopify.ui.theme.hintColor
-import java.lang.Error
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -46,7 +46,7 @@ interface IUserDataRemoteSource {
 
 
     /**
-     * Wishlist functions
+     * Draft orders functions
      */
 
 
@@ -62,6 +62,10 @@ interface IUserDataRemoteSource {
         draftOrderID: Long,
         draftOrderBody: DraftOrderBody
     ): Response<DraftOrderBody>
+
+    suspend fun deleteDraftOrder(
+        draftOrderID: Long
+    )
 
     suspend fun getProductByID(productID: Long): Response<ProductResponse>
 

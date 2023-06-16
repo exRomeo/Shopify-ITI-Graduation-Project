@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -34,37 +35,33 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
 import com.example.shopify.core.helpers.UserScreenUISState
+import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.Screens
-import com.example.shopify.data.remote.authentication.AuthenticationClient
-import com.example.shopify.data.repositories.authentication.AuthRepository
-import com.example.shopify.data.repositories.user.UserDataRepository
-import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
-import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.SettingItemCard
-import com.example.shopify.presentation.screens.homescreen.ScaffoldStructure
 
 const val TAG = "TAG"
 
-
 @Composable
-fun SettingsScreen(settingsViewModel: SettingsViewModel, settingsNav: NavHostController) {
+fun SettingsScreen(
+    settingsViewModel: SettingsViewModel,
+    bottomNavController: NavHostController,
+    settingsNav: NavHostController
+) {
 
-
-    ScaffoldStructure("Settings", navController = settingsNav) {
-
-
+    Scaffold(
+        bottomBar = { Bottombar(navController = bottomNavController) }
+    ) {
         Column(modifier = Modifier.padding(it)) {
             val state by settingsViewModel.settingsState.collectAsState()
             when (val currentState = state) {
+
                 is UserScreenUISState.NotLoggedIn -> {
                     LottieAnimation(animation = R.raw.loading_animation)
                 }
@@ -76,11 +73,9 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel, settingsNav: NavHostCon
                     )
                 }
 
-                is UserScreenUISState.Failure -> {
+                else -> {
 
                 }
-
-                else -> {}
             }
         }
     }
@@ -95,15 +90,15 @@ fun SettingsScreenContent(
 
 
     UserBar(
-        imageUrl = "https://louisville.edu/enrollmentmanagement/images/person-icon/image",
+        imageUrl = "",
         userName = "Please Login",
         email = ""
     )
+
     SettingsItemList(
         settingsViewModel = settingsViewModel,
         settingsNav = settingsNav
     )
-
 }
 
 
@@ -240,17 +235,7 @@ fun SettingsItemList(
 //                )
 //            )
 //        ),
+//        rememberNavController(),
 //        rememberNavController()
 //    )
 //}
-//
-//
-//
-
-
-
-
-
-
-
-

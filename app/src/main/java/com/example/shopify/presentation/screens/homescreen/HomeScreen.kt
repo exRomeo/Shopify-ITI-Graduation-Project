@@ -88,7 +88,7 @@ import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.SmartCollections
-import com.example.shopify.data.models.Varient
+import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
 
 @Composable
@@ -103,7 +103,7 @@ fun HomeScreen(navController: NavHostController,padding:PaddingValues,modifier: 
     val brandsState: UiState by viewModel.brandList.collectAsState()
     val randomsState: UiState by viewModel.randomList.collectAsState()
     var brandList: List<Brand> = listOf()
-    var randomList: List<Varient> = listOf()
+    var randomList: List<Variant> = listOf()
     when (brandsState) {
         is UiState.Loading -> {
             Log.i("menna","loading")
@@ -138,11 +138,9 @@ fun HomeScreen(navController: NavHostController,padding:PaddingValues,modifier: 
         is UiState.Success<*> -> {
             randomList = (randomsState as UiState.Success<Products>).data.body()?.products!!
 
-
         }
 
         else -> {
-
             Log.i("homepage", (randomsState as UiState.Error).error.toString())
         }
     }
@@ -157,8 +155,6 @@ fun HomeScreen(navController: NavHostController,padding:PaddingValues,modifier: 
                     .padding(paddingValues = PaddingValues(10.dp))
             )
             {
-
-
                 HomeSection(sectionTitle = R.string.special_offers) {
                     AdsCarousel()
                 }
@@ -183,8 +179,9 @@ fun HomeScreen(navController: NavHostController,padding:PaddingValues,modifier: 
 
 
 
+    }
+}
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScaffoldStructure(
     screenTitle: String,
@@ -194,14 +191,14 @@ fun ScaffoldStructure(
 
     Scaffold(
         topBar = {
-            TopBar(title = screenTitle, onSearch = {})
+
+//            TopBar(title = screenTitle, onSearch = {})
 
         },
         content = {
             screen(it)
         },
         bottomBar = { Bottombar(navController = navController) }
-
     )
 }
 
@@ -232,7 +229,7 @@ fun CardDesign(
 @Composable
 fun ItemCardContent(
     modifier: Modifier = Modifier, isFavourite: Boolean,
-    onFavouritesClicked: (Boolean) -> Unit, onAddToCard: (item: Product) -> Unit, item: Varient
+    onFavouritesClicked: (Boolean) -> Unit, onAddToCard: (item: Product) -> Unit, item: Variant
 ) {
     Column(modifier = modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
         item.image?.src?.let {
@@ -501,7 +498,7 @@ fun BrandCards(modifier: Modifier = Modifier, brands: List<Brand>,navController:
 @Composable
 fun ItemCards(
     modifier: Modifier = Modifier,
-    products: List<Varient>,
+    products: List<Variant>,
     isFavourite: Boolean,
     onFavouriteClicked: (Boolean) -> Unit,
     onAddToCard: (item: Product) -> Unit

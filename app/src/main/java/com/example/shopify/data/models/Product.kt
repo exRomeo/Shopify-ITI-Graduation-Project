@@ -1,16 +1,18 @@
 package com.example.shopify.data.models
 
-data class Products(
-    val products: List<Varient>?,
-) : java.io.Serializable
+import java.io.Serializable
 
-data class Varient(
+
+data class Products(
+    val products:List<Variant>?,
+): Serializable
+
+data class Variant(
     var id: Long,
     val title: String?,
     val variants: List<Product>?,
     val image: Image?
 
-)
 
 data class Product(
     val id: Long,

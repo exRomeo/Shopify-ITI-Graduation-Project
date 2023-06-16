@@ -7,10 +7,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.shopify.R
+import com.example.shopify.data.models.Image
+import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.presentation.common.composables.WishlistItemCard
@@ -37,12 +40,33 @@ fun WishlistScreen(viewModel: SettingsViewModel) {
             snackbarHostState.showSnackbar(it)
         }
     }
-    Scaffold(snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        bottomBar = {
-            BottomAppBar {
-                //this was added as a work around to show my floating action button because the BURNED IN bottom bar was hiding it and there was no way to show it "at this moment" unless i added an empty bottom bar :'(
 
+    Scaffold(snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(onClick = {
+                viewModel.addWishlistItem(
+                    ProductSample(
+                        id = 8398826111282,
+                        title = "",
+                        variants = listOf(
+                            Product(
+                                id = 45344376652082,
+                                product_id = 8398826111282,
+                                title = "",
+                                price = ""
+                            )
+                        ),
+                        image = Image(""),
+                        images = listOf(Image(""))
+                    )
+                )
             }
+            ) {
+                Text(text = "ADD TEST PRODUCT")
+            }
+        },
+        bottomBar = {
+
         }
     ) {
         Column(Modifier.padding(it)) {
@@ -50,7 +74,6 @@ fun WishlistScreen(viewModel: SettingsViewModel) {
         }
     }
 }
-
 
 @Composable
 fun WishlistScreenContent(viewModel: SettingsViewModel) {
@@ -80,7 +103,7 @@ fun WishlistScreenContent(viewModel: SettingsViewModel) {
             message = stringResource(id = R.string.wishlist_item_removal_warning),
             dismissButtonText = stringResource(id = R.string.cancel),
             confirmButtonText = stringResource(id = R.string.remove),
-            onConfirm = { viewModel.removeWishlistItem(productToRemove) }) {
+            onConfirm = { productToRemove?.let { viewModel.removeWishlistItem(it) } }) {
             showDialog = false
         }
     }

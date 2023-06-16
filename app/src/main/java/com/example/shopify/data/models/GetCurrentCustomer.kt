@@ -6,7 +6,6 @@ import com.example.shopify.data.repositories.authentication.IAuthRepository
 data class CollectCurrentCustomerData(
     val customerFirebase: CustomerFirebase?,
     val simpleResponse: SimpleResponse?
-
 )
 object GetCurrentCustomer {
     suspend fun getCurrentCustomer(authRepository: IAuthRepository): CollectCurrentCustomerData{
