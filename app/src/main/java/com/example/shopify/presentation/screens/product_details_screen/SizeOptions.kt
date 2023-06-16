@@ -32,7 +32,7 @@ fun SizeOptions(option: List<Options>) {
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        var selectedIndex by remember { mutableIntStateOf(-1) }
+        var selectedIndex by remember { mutableStateOf(-1) }
         option.forEachIndexed { index, item ->
             if (option[index].name == "Size") {
                 LazyRow {

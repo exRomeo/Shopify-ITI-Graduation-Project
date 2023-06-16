@@ -96,5 +96,10 @@
     <string name="show_reviews">Show reviews</string>
     <string name="review">Reviews..\n</string>
     <string name="close">Close!</string>
+    <string name="product_add_to_fav_success">Product added to favorite, Successfully!</string>
+    <string name="product_add_to_cart_success">Product added to cart, Successfully!</string>
+    <string name="please_enter_quantity_of_product">Please enter quantity you need!</string>
 
+    <string name="product_remove_from_fav_success">Product remove from favorite</string>
+    <string name="product_remove_from_cart_success">Product remove from cart</string>
 </resources>

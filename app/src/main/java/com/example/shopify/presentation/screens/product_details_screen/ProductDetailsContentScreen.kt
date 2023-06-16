@@ -3,12 +3,15 @@ package com.example.shopify.presentation.screens.product_details_screen
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,6 +42,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,13 +69,18 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
+import com.example.shopify.data.models.Image
+import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.SingleProduct
 import com.example.shopify.presentation.common.composables.WarningDialog
+import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 import com.example.shopify.ui.theme.backgroundColor
 import com.example.shopify.ui.theme.hintColor
 import com.example.shopify.ui.theme.ibarraBold
 import com.example.shopify.ui.theme.ibarraRegular
 import com.example.shopify.ui.theme.mainColor
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -79,6 +88,7 @@ import kotlin.random.Random
 @Composable
 fun ProductDetailsContentScreen(
     modifier: Modifier = Modifier,
+    settingsViewModel: SettingsViewModel,
     isFavorite: Boolean,
     onFavoriteChanged: () -> Unit,
     onAcceptFavChanged: () -> Unit,
@@ -88,24 +98,23 @@ fun ProductDetailsContentScreen(
     showDialog: Boolean,
     showFavWarningDialog: Boolean,
     showReviewsDialog: Boolean,
+    showToast: Boolean,
+    @StringRes toastMessage: Int,
     onShowDialogAction: () -> Unit,
     onShowFavDialogAction: () -> Unit,
+    addToCartAction: () -> Unit,
     showReviews: () -> Unit,
     onDismissShowReview: () -> Unit,
     product: SingleProduct
 ) {
     var rating: Double = 2.3
     LaunchedEffect(Unit) { rating = Random.nextDouble(2.0, 5.0) }
+
     Log.i("TAG", "ProductDetailsContentScreen: $product")
     Scaffold { values ->
         LazyColumn(contentPadding = values) {
             items(1) {
-                val pagerState = rememberPagerState(
-                    initialPage = 0,
-                    initialPageOffsetFraction = 0f
-                ) {
-                    product.images?.size ?: 0
-                }
+                val pagerState = rememberPagerState()
                 val colorMatrix = remember { ColorMatrix() }
 
                 Card(
@@ -122,6 +131,7 @@ fun ProductDetailsContentScreen(
                 )
                 {
                     HorizontalPager(
+                        pageCount = product.images?.size ?: 0,
                         state = pagerState
                     ) { index ->
                         val pageOffset =
@@ -245,10 +255,6 @@ fun ProductDetailsContentScreen(
                             ) {
                                 Text(
                                     modifier = Modifier.fillMaxWidth(),
-//                                        .fillMaxWidth()
-//                                        .weight(0.4f),
-//                                        .width(100.dp),
-//                                        .align(Alignment.CenterVertically),
                                     text = stringResource(id = R.string.show_reviews),
                                     style = ibarraBold,
                                     fontWeight = FontWeight.Normal,
@@ -351,6 +357,14 @@ fun ProductDetailsContentScreen(
         }
         if (showReviewsDialog)
             ShowReviews(showReviewsDialog, onDismissShowReview)
+
+        if (showToast) {
+            Toast.makeText(
+                LocalContext.current,
+                stringResource(id = toastMessage),
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
     Box() {
         Row(
@@ -364,7 +378,11 @@ fun ProductDetailsContentScreen(
                     .clip(RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp))
                     .background(Color.LightGray)
                     .width(200.dp)
-                    .clickable { Log.i("TAG", "Add to cart: ") }
+                    .combinedClickable {}
+                    .clickable {
+                       addToCartAction()
+                        Log.i("TAG", "view model to cart: ")
+                    }
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(

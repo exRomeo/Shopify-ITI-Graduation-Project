@@ -32,7 +32,7 @@ import com.example.shopify.data.models.Options
 
 @Composable
 fun ColorOptions(option: List<Options>) {
-    var selectedIndex by remember { mutableIntStateOf(-1) }
+    var selectedIndex by remember { mutableStateOf(-1) }
     val colorList = getColor()
     Row(
         modifier = Modifier
