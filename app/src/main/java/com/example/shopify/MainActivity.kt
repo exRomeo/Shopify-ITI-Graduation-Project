@@ -27,8 +27,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-//                    NavGraph()
-                    ProductDetailsScreen(rememberNavController(),8398820573490)
+                    NavGraph()
+//                    ProductDetailsScreen(rememberNavController(),8398820573490)
                 }
             }
         }
