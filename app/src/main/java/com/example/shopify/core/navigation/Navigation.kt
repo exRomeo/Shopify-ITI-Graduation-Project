@@ -1,5 +1,9 @@
 package com.example.shopify.core.navigation
 
+import android.util.Log
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Favorite
@@ -14,9 +18,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -26,28 +33,26 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
+import com.example.shopify.presentation.screens.authentication.login.LoginScreen
+import com.example.shopify.presentation.screens.authentication.registeration.SignupScreen
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 
-@Composable
-fun NavGraph(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = Screens.SettingsNavigation.route) {
-//
-//        composable(route = Screens.Home.route) {
-//            HomeScreen(navController)
-//        }
-//        composable(route = Screens.Home.route){
-//            HomeScreen(viewModel = viewModel)
-//        }
 
+@Composable
+fun NavGraph(navController: NavHostController = rememberNavController()) {
+    NavHost(
+        navController = navController,
+        startDestination = Screens.Login.route
+    ) {
+        composable(route = Screens.Home.route) {
+//            HomeScreen(navController)
+            Test()
+        }
         composable(route = Screens.Login.route) {
-            //   LoginScreen()
+            LoginScreen(navController)
         }
         composable(route = Screens.Signup.route) {
-            //SignupScreen(viewModel as SignupViewModel)
-        }
-
-        composable(route = Screens.SettingsNavigation.route) {
-            SettingsNavigation()
+            SignupScreen(navController)
         }
     }
 }
@@ -78,7 +83,7 @@ val bottomNavItems = listOf(
     ),
     BottomNavItem(
         name = "Settings",
-        route = "settings",
+        route = Screens.Settings.route,
         icon = Icons.Rounded.Settings,
     ),
 )
@@ -128,19 +133,101 @@ fun TopBar(modifier: Modifier = Modifier, title: String, onSearch: () -> Unit) {
     )
 }
 
-@Composable
-fun Bottombar() {
-    var navController = getNavController()
-    val backStackEntry = getBackStackEntry(navController = navController)
 
+//@Composable
+//private fun currentRoute(navController: NavHostController): String? {
+//    val navBackStackEntry by navController.currentBackStackEntryAsState()
+//    return navBackStackEntry?.arguments?.getString("Settings")
+//}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Test() {
+    val navController = rememberNavController()
+
+    Scaffold(
+        bottomBar = {
+            val backStackEntry by navController.currentBackStackEntryAsState()
+
+            NavigationBar(containerColor = Color.White) {
+                bottomNavItems.forEach { item ->
+                    val selected = item.route == backStackEntry?.destination?.route
+                    //  val currentRoute = currentRoute(navController)
+
+                    NavigationBarItem(
+                        selected = selected,
+                        onClick = {
+                            //  if (currentRoute != item.route) {
+                            Log.i("menna", item.route)
+                            navController.navigate(item.route)
+                            //  }
+                        },
+                        label = {
+                            Text(
+                                text = item.name,
+
+                                )
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = item.icon,
+                                contentDescription = "",
+                                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+
+                        })
+
+                }
+
+
+            }
+        }
+    ) { padding ->
+        NavHost(navController = navController, startDestination = "home") {
+            composable(
+                route = Screens.Home.route
+            ) {
+                HomeScreen(navController)
+            }
+
+            composable(
+                route = "categories"
+            ) {
+                Box(
+                    modifier = Modifier.padding(padding),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(text = "Categories")
+                }
+            }
+
+            composable(
+                route = Screens.Settings.route
+            ) {
+                SettingsNavigation()
+            }
+        }
+    }
+}
+
+@Composable
+fun Bottombar(navController: NavHostController) {
+    //navController.currentBackStackEntryAsState()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+   // return navBackStackEntry?.arguments?.getString("Settings")
+    //val backStackEntry = getBackStackEntry(navController = navController)
     NavigationBar(containerColor = Color.White) {
         bottomNavItems.forEach { item ->
-            val selected = item.route == backStackEntry.value?.destination?.route
+            val selected = item.route == backStackEntry?.destination?.route
+            //  val currentRoute = currentRoute(navController)
 
             NavigationBarItem(
                 selected = selected,
                 onClick = {
-                    // navController.navigate(item.route)
+                    //  if (currentRoute != item.route) {
+                    Log.i("menna", item.route)
+                    navController.navigate(item.route)
+                    //  }
                 },
                 label = {
                     Text(
@@ -160,6 +247,7 @@ fun Bottombar() {
         }
 
 
-    }
+    }}
 
-}
+
+

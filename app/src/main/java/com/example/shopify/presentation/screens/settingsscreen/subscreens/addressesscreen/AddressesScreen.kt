@@ -11,11 +11,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +30,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.shopify.R
-import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.repositories.user.UserDataRepository
 import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
@@ -42,14 +45,34 @@ import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 fun AddressScreenPreview() {
 
     val viewModel =
-        SettingsViewModel(UserDataRepository(UserDataRemoteSource(RetrofitClient.customerAddressAPI)))
+        SettingsViewModel(
+            UserDataRepository(
+                UserDataRemoteSource(
+                    RetrofitClient.customerAddressAPI,
+                    RetrofitClient.draftOrderAPI
+                )
+            )
+        )
     AddressScreen(viewModel = viewModel)
 }
 
 @Composable
 fun AddressScreen(viewModel: SettingsViewModel) {
     var showDialog by remember { mutableStateOf(false) }
-    Scaffold(
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        viewModel.snackbarMessage.collect {
+            snackbarHostState.showSnackbar(
+                message = it
+            )
+        }
+    }
+    Scaffold(bottomBar = {
+        BottomAppBar {
+            //this was added as a work around to show my floating action button because the BURNED IN bottom bar was hiding it and there was no way to show it "at this moment" unless i added an empty bottom bar :'(
+        }
+    },
         floatingActionButton = {
             FloatingActionButton(onClick = { showDialog = true }) {
                 Icon(
@@ -71,24 +94,14 @@ fun AddressScreen(viewModel: SettingsViewModel) {
                 }
 
             }
-        }) {
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        }
+    ) {
         Column(modifier = Modifier.padding(it)) {
-            val state by viewModel.addresses.collectAsState()
-            when (val currentState = state) {
-                is UserScreenUISState.Loading -> {}
-                is UserScreenUISState.Success<*> -> {
-                    val addresses: List<Address> =
-                        currentState.data as List<Address>
-                    AddressScreenContent(addresses = addresses, viewModel = viewModel)
-
-                }
-
-                is UserScreenUISState.Failure -> {
-
-                }
-
-                else -> {}
-            }
+            val addresses by viewModel.addresses.collectAsState()
+            AddressScreenContent(addresses = addresses, viewModel = viewModel)
         }
     }
 }

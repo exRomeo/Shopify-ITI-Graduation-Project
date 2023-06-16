@@ -53,7 +53,8 @@ fun AuthenticationTextField(
             onValueChange = onValueChange,
             color = backgroundColor,
             cornerRadius = 20.dp,
-            textFieldType = textFieldType
+            textFieldType = textFieldType,
+            isError = text == ""
         )
         if (text == "") {
             Spacer(modifier = Modifier.height(4.dp))
