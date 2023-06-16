@@ -139,8 +139,6 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
                     .padding(paddingValues = PaddingValues(vertical = 70.dp))
             )
             {
-
-
                 HomeSection(sectionTitle = R.string.special_offers) {
                     AdsCarousel()
                 }
@@ -159,10 +157,8 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
             }
         }
     }
-
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScaffoldStructure(
     screenTitle: String,
