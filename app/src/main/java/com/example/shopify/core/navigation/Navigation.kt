@@ -63,53 +63,6 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         }
     }
 }
-@Composable
-fun RootNavigationGraph(navController: NavHostController) {
-    NavHost(
-        navController = navController,
-        route = Graph.ROOT,
-        startDestination = Graph.HOME
-    ) {
-        authNavGraph(navController = navController)
-        composable(route = Graph.HOME) {
-            HomeScaffold()
-        }
-    }
-}
-fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
-    navigation(
-        route = Graph.AUTHENTICATION,
-        startDestination = AuthScreen.Login.route
-    ) {
-        composable(route = AuthScreen.Login.route) {
-            LoginScreen(navController)
-        }
-        composable(route = AuthScreen.SignUp.route) {
-            SignupScreen(navController)
-        }
-
-    }
-}
-
-
-object Graph {
-    const val ROOT = "root_graph"
-    const val AUTHENTICATION = "auth_graph"
-    const val HOME = "home_graph"
-    const val DETAILS = "details_graph"
-}
-
-sealed class AuthScreen(val route: String) {
-    object Login : AuthScreen(route = "LOGIN")
-    object SignUp : AuthScreen(route = "SIGN_UP")
-}
-
-@Composable
-fun getNavController() = rememberNavController()
-
-@Composable
-fun getBackStackEntry(navController: NavHostController) =
-    navController.currentBackStackEntryAsState()
 
 data class BottomNavItem(
     val name: String,
