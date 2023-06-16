@@ -56,26 +56,3 @@ class CategoriesViewModelFactory(private val repository: IProductRepository) : V
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

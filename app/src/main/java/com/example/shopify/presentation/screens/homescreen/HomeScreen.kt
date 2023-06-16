@@ -81,12 +81,9 @@ import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
-import com.example.shopify.core.navigation.HomeNavGraph
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.core.navigation.TopBar
-import com.example.shopify.core.navigation.bottomNavItems
-import com.example.shopify.core.navigation.getNavController
-import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
+
 import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.Products
@@ -182,26 +179,7 @@ fun HomeScreen(navController: NavHostController,padding:PaddingValues,modifier: 
         }
 
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@Composable
-fun HomeScaffold(navController: NavHostController = rememberNavController()){
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    Scaffold(
 
-
-        bottomBar = {
-            if (backStackEntry?.destination?.route == "home"||(backStackEntry?.destination?.route == "categories")||
-                backStackEntry?.destination?.route == "settings") {
-                Bottombar(navController = navController)
-            }
-        }
-    )
-
-            {
-        HomeNavGraph(navController = navController)
-    }
-
-}
 
 
 

@@ -1,6 +1,7 @@
 package com.example.shopify.presentation.screens.categories
 
 import android.util.Log
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
@@ -27,14 +28,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -45,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.shopify.R
@@ -85,7 +86,11 @@ val items = listOf(
     MiniFABItem(
         icon = R.drawable.sneakers,
         label = "SHOES",
-    )
+    ),
+            MiniFABItem(
+            icon = R.drawable.close,
+           label = "CLOSE",
+)
 
 )
 
@@ -99,19 +104,47 @@ fun CategoriesScreen() {
         )
     )
 
-    val productsState: UiState by viewModel.productsList.collectAsState()
+    val productsState: UiState by viewModel.productsList.collectAsStateWithLifecycle()
     var productsList: List<Varient> = listOf()
+    var filteredList:List<Varient> = listOf()
+     var state:String = "fail"
+   // var FABIcon = R.drawable.ic_category
+    var FABIcon by rememberSaveable {
+        mutableStateOf( R.drawable.app)
+
+    }
+
+
+    var p = 0f
+    var productPrice by rememberSaveable {
+        mutableStateOf(p)
+    }
+    var filteredState by rememberSaveable {
+        mutableStateOf(filteredList)
+
+    }
+
+    var floatingButtonState by rememberSaveable {
+        mutableStateOf(FloatingButtonState.Collapsed)
+    }
+
     when (productsState) {
         is UiState.Loading -> {
-
             LottieAnimation(animation = R.raw.loading_animation)
-
         }
 
         is UiState.Success<*> -> {
+            state = "success"
             productsList =
                 (productsState as UiState.Success<Products>).data.body()?.products!!
-            Log.i("menna", productsList.toString())
+            filteredState =  productsList.filter { item ->
+                //  item.variants?.get(0)?.price?.let { it1 -> Log.i("hla", it1) }
+                item.variants?.get(0)?.price?.toFloat()!! >= productPrice
+            }
+            Log.i("hala",productPrice.toString())
+
+           // filteredState = productsList
+         //   Log.i("menna", productsList.toString())
         }
 
         else -> {
@@ -127,8 +160,37 @@ fun CategoriesScreen() {
 
                 viewModel.type = it
                 viewModel.getProductsBySubcategory()
+                floatingButtonState = FloatingButtonState.Collapsed
+                FABIcon = when (it){
+                    "ACCESSORIES" -> {
+                        R.drawable.hat
+                    }
 
-            })
+                    "T-SHIRTS" -> {
+                        R.drawable.shirt
+                    }
+
+                    "SHOES" ->{
+                        R.drawable.sneakers
+                    }
+
+                    else -> {
+                        viewModel.type = ""
+                        R.drawable.app
+                    }
+                }
+
+
+
+
+            }, onFABCLicked =
+            {
+
+                    floatingButtonState = FloatingButtonState.Expanded
+
+
+                },FABIcon,floatingButtonState
+            )
         }
 
 
@@ -145,12 +207,11 @@ fun CategoriesScreen() {
                     0 -> {
                         Log.i("menna", "index 0")
                         viewModel.id = 449428980018
-                        viewModel.getProductsBySubcategory()
+
                     }
 
                     1 -> {
                         viewModel.id = 449429012786
-
                     }
 
                     2 -> {
@@ -165,18 +226,53 @@ fun CategoriesScreen() {
 
                 viewModel.getProductsBySubcategory()
             }
+
             )
-            if (productsList.isNotEmpty()) {
-                viewModel.type = ""
+
+            SliderComponent { price ->
+
+                p = price
+                    productPrice = p
+                Log.i("hala",productPrice.toString())
+
+                filteredState =  productsList.filter { item->
+                  //  item.variants?.get(0)?.price?.let { it1 -> Log.i("hla", it1) }
+                    item.variants?.get(0)?.price?.toFloat()!! >= price
+
+                }
+
+              //  viewModel.getProductsBySubcategory()
+               // Log.i("hla", price.toString())
+                Log.i("hla",filteredList.toString())
+                filteredState
+            }
+            if (filteredState.isNotEmpty()) {
+               // viewModel.type = ""
                 ProductsCards(
                     modifier = Modifier.height(600.dp),
-                    products = productsList,
+                    products = filteredState,
                     isFavourite = true,
                     onFavouriteClicked = {},
                     onAddToCard = {})
             }
             else{
-                Text(text = "No results")
+
+                if(state == "success" &&filteredState.isEmpty()){
+                    Column {
+                        Image(
+                            modifier = Modifier.size(200.dp),
+                            painter = painterResource(R.drawable.search),
+                            contentDescription = "content description"
+                        )
+
+                        Text(text = "No results Found")
+
+                    }
+
+                }
+                else {
+                    LottieAnimation(animation = R.raw.loading_animation)
+                }
             }
 
         }
@@ -252,7 +348,7 @@ fun CategoriesScreen() {
 
 
     @Composable
-    fun SliderComponent(onPriceValueChanged: (Float) -> Unit) {
+    fun SliderComponent(onPriceValueChanged: (Float) -> List<Varient>) {
         var sliderValue by remember {
             mutableStateOf(0f)
         }
@@ -262,11 +358,10 @@ fun CategoriesScreen() {
                 sliderValue = sliderValue_
             },
             onValueChangeFinished = { onPriceValueChanged(sliderValue) },
-            valueRange = 0f..1000f,
-            steps = 9
+            valueRange = 0f..250f,
+            steps = 4
         )
-
-        Text(text = sliderValue.toString())
+        Text(text = "> $sliderValue")
     }
 
     @Composable
@@ -324,7 +419,8 @@ fun CategoriesScreen() {
     ) {
         FloatingActionButton(
             modifier = modifier.size(40.dp),
-            onClick = { onMiniFABClicked(item.label) },
+            onClick = { onMiniFABClicked(item.label)
+                      Log.i("hla","mini clicked")},
             //  border = BorderStroke(1.dp, Color.Red),
             shape = CircleShape,
             //RoundedCornerShape(80), // = 50% percent
@@ -349,11 +445,13 @@ fun CategoriesScreen() {
     @Composable
     fun FloatingButton(
         items:List<MiniFABItem>,
-          onMiniFABClicked: (String) -> Unit
+          onMiniFABClicked: (String) -> Unit,
+         onFABCLicked:()->Unit,
+        @DrawableRes resId: Int,
+        floatingButtonState:FloatingButtonState
+
     ) {
-        var floatingButtonState by remember {
-            mutableStateOf(FloatingButtonState.Collapsed)
-        }
+
 
 
         val transition = updateTransition(targetState = floatingButtonState, label = "transition")
@@ -364,31 +462,40 @@ fun CategoriesScreen() {
         Column(
             //modifier = Modifier.alpha(if (transition.currentState == FloatingButtonState.Expanded) 1f else 0f)
             ) {
-          //  if (transition.currentState == FloatingButtonState.Expanded) {
+            if (transition.currentState == FloatingButtonState.Expanded) {
                 items.forEach {
 
-                    MiniFAB(modifier = Modifier.alpha(if (transition.currentState == FloatingButtonState.Expanded) 1f else 0f),
-                        item = it, onMiniFABClicked = onMiniFABClicked)
+                    MiniFAB(
+                        modifier = Modifier
+                        //   .alpha(if (transition.currentState == FloatingButtonState.Expanded) 1f else 0f
+                        ,
+                        item = it, onMiniFABClicked = onMiniFABClicked
+                    )
 
                     Spacer(modifier = Modifier.size(16.dp))
                 }
+            }
 
 
 
 
 
             FloatingActionButton(
+                containerColor = MaterialTheme.colorScheme.primary,
                 shape = CircleShape,
-                onClick = {
-                    Log.i("menna", "clicked")
+                onClick =
+                //{
+                   // Log.i("menna", "clicked")
+                     onFABCLicked
                     //  onFloatingButtonStateChange(
-                    if (transition.currentState == FloatingButtonState.Collapsed) {
-                        floatingButtonState = FloatingButtonState.Expanded
-                    } else {
-                        floatingButtonState = FloatingButtonState.Collapsed
-
-                    }
-                },
+//                    if (transition.currentState == FloatingButtonState.Collapsed) {
+//                        floatingButtonState = FloatingButtonState.Expanded
+//                    } else {
+//                        floatingButtonState = FloatingButtonState.Collapsed
+//
+//                    }
+              //  }
+        ,
                 modifier = Modifier
                     .rotate(rotate)
                 // .padding(20.dp)
@@ -396,7 +503,7 @@ fun CategoriesScreen() {
             {
                 Image(
                     modifier = Modifier.size(50.dp),
-                    painter = painterResource(R.drawable.app),
+                    painter = painterResource(resId),
                     contentDescription = "content description"
                 )
 
@@ -404,10 +511,6 @@ fun CategoriesScreen() {
             }        }
 
     }
-
-
-
-
 
 
 @Preview

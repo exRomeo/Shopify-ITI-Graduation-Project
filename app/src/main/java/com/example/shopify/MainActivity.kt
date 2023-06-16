@@ -13,7 +13,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.shopify.core.navigation.NavGraph
-import com.example.shopify.core.navigation.RootNavigationGraph
 import com.example.shopify.ui.theme.ShopifyTheme
 
 private const val BASE_URL = "https://mad43-alex-and-team2.myshopify.com/"

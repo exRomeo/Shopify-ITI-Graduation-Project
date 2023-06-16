@@ -23,6 +23,7 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,14 +36,14 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
 import com.example.shopify.presentation.screens.authentication.login.LoginScreen
 import com.example.shopify.presentation.screens.authentication.registeration.SignupScreen
 import com.example.shopify.presentation.screens.brands.BrandsScreen
-import com.example.shopify.presentation.screens.homescreen.HomeScaffold
+import com.example.shopify.presentation.screens.categories.CategoriesScreen
+
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 
 
@@ -169,8 +170,9 @@ fun Test() {
                             onClick = {
                                 //  if (currentRoute != item.route) {
                                 Log.i("menna", item.route)
-                                navController.navigate(item.route)
-                                //  }
+
+                                    navController.navigate(item.route)
+
                             },
                             label = {
                                 Text(
@@ -213,12 +215,14 @@ fun Test() {
             composable(
                 route = "categories"
             ) {
-                Box(
-                    modifier = Modifier.padding(padding),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(text = "Categories")
-                }
+//                Box(
+//                    modifier = Modifier.padding(padding),
+//                    contentAlignment = Alignment.Center,
+//                ) {
+//                    Text(text = "Categories")
+//                }
+
+                CategoriesScreen()
             }
 
             composable(
