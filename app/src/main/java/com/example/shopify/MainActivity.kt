@@ -7,10 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import com.example.shopify.core.navigation.NavGraph
 import com.example.shopify.presentation.screens.product_details_screen.ProductDetailsScreen
 import com.example.shopify.ui.theme.ShopifyTheme
-import com.google.accompanist.pager.ExperimentalPagerApi
 
 
 class MainActivity : ComponentActivity() {
@@ -27,9 +28,6 @@ class MainActivity : ComponentActivity() {
                 ) {
 //                    NavGraph()
 //                    ProductDetailsScreen()
-//                    SliderLayout()
-                    ProductDetailsScreen()
-//                    ImageCard("Title", "Description")
                 }
             }
         }

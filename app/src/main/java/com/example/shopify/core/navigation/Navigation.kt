@@ -2,31 +2,20 @@ package com.example.shopify.core.navigation
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.List
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -40,11 +29,13 @@ import com.example.shopify.presentation.screens.homescreen.HomeScreen
 
 @Composable
 fun NavGraph(navController: NavHostController = rememberNavController()) {
-    NavHost(navController = navController,
-        startDestination = Screens.Login.route) {
+
+    NavHost(
+        navController = navController,
+        startDestination = Screens.Login.route
+    ) {
         composable(route = Screens.Home.route) {
-//            HomeScreen(navController)
-            Test()
+            HomeScreenNavigation()
         }
         composable(route = Screens.Login.route) {
             LoginScreen(navController)
@@ -54,13 +45,6 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         }
     }
 }
-
-@Composable
-fun getNavController() = rememberNavController()
-
-@Composable
-fun getBackStackEntry(navController: NavHostController) =
-    navController.currentBackStackEntryAsState()
 
 data class BottomNavItem(
     val name: String,
@@ -86,151 +70,62 @@ val bottomNavItems = listOf(
     ),
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(modifier: Modifier = Modifier, title: String, onSearch: () -> Unit) {
-    CenterAlignedTopAppBar(
-        colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceTint
-        ),
-        title = {
-            Text(
-                text = title,
-                color = MaterialTheme.colorScheme.onPrimary
-            )
-
-
-        },
-        navigationIcon = {
-            IconButton(onClick = onSearch) {
-                Icon(
-                    imageVector = Icons.Filled.Search, contentDescription = "Navigation icon",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-            }
-        },
-        actions = {
-            //navigate to carts
-            IconButton(onClick = {
-            }) {
-                Icon(
-                    imageVector = Icons.Outlined.ShoppingCart, contentDescription = "shopping cart",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-            }
-            //navigate to favourites
-            IconButton(onClick = {
-            }) {
-                Icon(
-                    imageVector = Icons.Outlined.Favorite, contentDescription = "Favourite",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-            }
-
-        }
-    )
-}
-
-
-//@Composable
-//private fun currentRoute(navController: NavHostController): String? {
-//    val navBackStackEntry by navController.currentBackStackEntryAsState()
-//    return navBackStackEntry?.arguments?.getString("Settings")
-//}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Test() {
+fun HomeScreenNavigation() {
     val navController = rememberNavController()
 
-    Scaffold(
-        bottomBar = {
-            val backStackEntry by navController.currentBackStackEntryAsState()
+    NavHost(navController = navController, startDestination = "home") {
 
-            NavigationBar(containerColor = Color.White) {
-                bottomNavItems.forEach { item ->
-                    val selected = item.route == backStackEntry?.destination?.route
-                    //  val currentRoute = currentRoute(navController)
+        composable(
+            route = Screens.Home.route
+        ) {
+            HomeScreen(navController)
+        }
 
-                    NavigationBarItem(
-                        selected = selected,
-                        onClick = {
-                            //  if (currentRoute != item.route) {
-                            Log.i("menna", item.route)
-                            navController.navigate(item.route)
-                            //  }
-                        },
-                        label = {
-                            Text(
-                                text = item.name,
-
-                                )
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = item.icon,
-                                contentDescription = "",
-                                tint = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-
-                        })
-
-                }
-
-
+        composable(
+            route = "categories"
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(text = "Categories")
             }
         }
-    ) { padding ->
-        NavHost(navController = navController, startDestination = "home") {
-            composable(
-                route = Screens.Home.route
-            ) {
-                HomeScreen(navController)
-            }
 
-            composable(
-                route = "categories"
-            ) {
-                Box(
-                    modifier = Modifier.padding(padding),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(text = "Categories")
-                }
-            }
-
-            composable(
-                route = Screens.Settings.route
-            ) {
-                SettingsNavigation()
-            }
+        composable(
+            route = Screens.Settings.route
+        ) {
+            SettingsNavigation(bottomNavController = navController)
         }
     }
 }
 
+
 @Composable
 fun Bottombar(navController: NavHostController) {
-    //navController.currentBackStackEntryAsState()
+
     val backStackEntry by navController.currentBackStackEntryAsState()
-   // return navBackStackEntry?.arguments?.getString("Settings")
-    //val backStackEntry = getBackStackEntry(navController = navController)
+
     NavigationBar(containerColor = Color.White) {
         bottomNavItems.forEach { item ->
             val selected = item.route == backStackEntry?.destination?.route
-            //  val currentRoute = currentRoute(navController)
-
             NavigationBarItem(
                 selected = selected,
                 onClick = {
-                    //  if (currentRoute != item.route) {
                     Log.i("menna", item.route)
-                    navController.navigate(item.route)
-                    //  }
+                    if (!selected)
+                        navController.navigate(
+                            item.route, builder = {
+                                launchSingleTop = true
+                                popUpTo(Screens.Home.route) {
+                                    inclusive = false
+                                }
+                            }
+                        )
                 },
                 label = {
                     Text(
-                        text = item.name,
-
+                        text = item.name
                         )
                 },
                 icon = {
@@ -240,12 +135,11 @@ fun Bottombar(navController: NavHostController) {
                         tint = MaterialTheme.colorScheme.onSecondaryContainer
                     )
 
-                })
-
+                }
+            )
         }
-
-
-    }}
+    }
+}
 
 
 

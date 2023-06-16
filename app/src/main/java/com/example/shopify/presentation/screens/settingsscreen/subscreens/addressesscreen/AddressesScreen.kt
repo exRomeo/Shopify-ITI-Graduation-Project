@@ -15,7 +15,10 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,32 +26,43 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.shopify.R
-import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.data.models.address.Address
-import com.example.shopify.data.repositories.user.UserDataRepository
-import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
-import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
 import com.example.shopify.presentation.common.composables.EditAddressDialog
 import com.example.shopify.presentation.common.composables.SettingItemCard
 import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 
 
-@Preview(showSystemUi = true)
-@Composable
-fun AddressScreenPreview() {
-
-    val viewModel =
-        SettingsViewModel(UserDataRepository(UserDataRemoteSource(RetrofitClient.customerAddressAPI)))
-    AddressScreen(viewModel = viewModel)
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//fun AddressScreenPreview() {
+//
+//    val viewModel =
+//        SettingsViewModel(
+//            UserDataRepository(
+//                UserDataRemoteSource(
+//                    RetrofitClient.customerAddressAPI,
+//                    RetrofitClient.draftOrderAPI
+//                )
+//            )
+//        )
+//    AddressScreen(viewModel = viewModel)
+//}
 
 @Composable
 fun AddressScreen(viewModel: SettingsViewModel) {
     var showDialog by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        viewModel.snackbarMessage.collect {
+            snackbarHostState.showSnackbar(
+                message = it
+            )
+        }
+    }
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = { showDialog = true }) {
@@ -71,24 +85,14 @@ fun AddressScreen(viewModel: SettingsViewModel) {
                 }
 
             }
-        }) {
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        }
+    ) {
         Column(modifier = Modifier.padding(it)) {
-            val state by viewModel.addresses.collectAsState()
-            when (val currentState = state) {
-                is UserScreenUISState.Loading -> {}
-                is UserScreenUISState.Success<*> -> {
-                    val addresses: List<Address> =
-                        currentState.data as List<Address>
-                    AddressScreenContent(addresses = addresses, viewModel = viewModel)
-
-                }
-
-                is UserScreenUISState.Failure -> {
-
-                }
-
-                else -> {}
-            }
+            val addresses by viewModel.addresses.collectAsState()
+            AddressScreenContent(addresses = addresses, viewModel = viewModel)
         }
     }
 }
@@ -148,7 +152,6 @@ fun AddressList(
                         onClick = {
                             addressToRemove = it
                             showRemoveConfirmationDialog = true
-
                         }
                     ) {
                         Icon(
@@ -158,7 +161,6 @@ fun AddressList(
                     }
                 }
             )
-
         }
     }
 

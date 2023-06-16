@@ -1,18 +1,14 @@
 package com.example.shopify.core.navigation.settingsnavigation
 
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.navigation.Screens
-import com.example.shopify.data.repositories.user.UserDataRepository
-import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
-import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
 import com.example.shopify.presentation.screens.settingsscreen.SettingsScreen
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModelFactory
@@ -23,20 +19,23 @@ import com.example.shopify.presentation.screens.settingsscreen.subscreens.wishli
 
 @Composable
 fun SettingsNavigation(
-    navController: NavHostController = rememberNavController(),
+    settingsNavController: NavHostController = rememberNavController(),
+    bottomNavController: NavHostController,
     settingsViewModel: SettingsViewModel = viewModel(
         factory = SettingsViewModelFactory(
-            UserDataRepository(
-                UserDataRemoteSource(
-                    RetrofitClient.customerAddressAPI
-                )
-            )
+            (LocalContext.current.applicationContext as ShopifyApplication).userDataRepository,
+            (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager,
+            (LocalContext.current.applicationContext as ShopifyApplication).cartManager
         )
     )
 ) {
-    NavHost(navController = navController, startDestination = Screens.Settings.route) {
+    NavHost(navController = settingsNavController, startDestination = Screens.Settings.route) {
         composable(route = Screens.Settings.route) {
-            SettingsScreen(settingsViewModel, navController)
+            SettingsScreen(
+                settingsViewModel = settingsViewModel,
+                bottomNavController = bottomNavController,
+                settingsNav = settingsNavController
+            )
         }
         composable(route = Screens.Addresses.route) {
             AddressScreen(settingsViewModel)
@@ -50,7 +49,9 @@ fun SettingsNavigation(
         }
 
         composable(route = Screens.Cart.route) {
-            CartScreen(viewModel = settingsViewModel, navController = navController)
+            CartScreen(viewModel = settingsViewModel, navController = settingsNavController)
         }
     }
+
+
 }

@@ -1,7 +1,6 @@
 package com.example.shopify.presentation.screens.homescreen
 
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.animation.ContentTransform
@@ -70,7 +69,6 @@ import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
-import com.example.shopify.core.navigation.TopBar
 import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.Products
@@ -79,13 +77,14 @@ import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
 
 @Composable
-fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
+fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
 //    ScaffoldStructure(screenTitle = "Home")
 //    {
 //HomeScreen(navController = navController )
 //    }
-  val repository: IProductRepository = (LocalContext.current.applicationContext as ShopifyApplication) .repository
-     val viewModel: HomeViewModel = viewModel(factory =  HomeViewModelFactory(repository))
+    val repository: IProductRepository =
+        (LocalContext.current.applicationContext as ShopifyApplication).repository
+    val viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(repository))
 
     val brandsState: UiState by viewModel.brandList.collectAsState()
     val randomsState: UiState by viewModel.randomList.collectAsState()
@@ -93,7 +92,7 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
     var randomList: List<Variant> = listOf()
     when (brandsState) {
         is UiState.Loading -> {
-            Log.i("menna","loading")
+            Log.i("menna", "loading")
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -125,25 +124,21 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
         is UiState.Success<*> -> {
             randomList = (randomsState as UiState.Success<Products>).data.body()?.products!!
 
-
         }
 
         else -> {
-
             Log.i("homepage", (randomsState as UiState.Error).error.toString())
         }
     }
 
     if (brandList.isNotEmpty() && randomList.isNotEmpty()) {
-        ScaffoldStructure("home",navController) {
+        ScaffoldStructure("home", navController) {
             Column(
                 modifier = modifier
                     .verticalScroll(rememberScrollState())
                     .padding(paddingValues = PaddingValues(vertical = 70.dp))
             )
             {
-
-
                 HomeSection(sectionTitle = R.string.special_offers) {
                     AdsCarousel()
                 }
@@ -162,27 +157,27 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
             }
         }
     }
-
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScaffoldStructure(screenTitle: String,navController: NavHostController, screen: @Composable () -> Unit) {
+fun ScaffoldStructure(
+    screenTitle: String,
+    navController: NavHostController,
+    screen: @Composable (PaddingValues) -> Unit
+) {
 
     Scaffold(
         topBar = {
-            TopBar(title = screenTitle, onSearch = {})
+
+//            TopBar(title = screenTitle, onSearch = {})
 
         },
         content = {
-            screen()
+            screen(it)
         },
         bottomBar = { Bottombar(navController = navController) }
-
     )
 }
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -333,6 +328,7 @@ fun AdsCarousel() {
             items[index].also { item ->
                 CarouselItem(
                     background = {
+
                         AsyncImage(
                             model = items[index],
                             contentDescription = null,
@@ -496,3 +492,10 @@ fun ItemCards(
         }
     }
 }
+
+
+
+
+
+
+
