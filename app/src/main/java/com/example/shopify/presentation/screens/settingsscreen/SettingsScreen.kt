@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -40,27 +41,27 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
 import com.example.shopify.core.helpers.UserScreenUISState
+import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.SettingItemCard
-import com.example.shopify.presentation.screens.homescreen.ScaffoldStructure
 
 const val TAG = "TAG"
-
 
 @Composable
 fun SettingsScreen(
     settingsViewModel: SettingsViewModel,
-    bottomNavController: NavHostController, settingsNav: NavHostController
+    bottomNavController: NavHostController,
+    settingsNav: NavHostController
 ) {
 
-
-    ScaffoldStructure("Settings", navController = bottomNavController) {
-
-
+    Scaffold(
+        bottomBar = { Bottombar(navController = bottomNavController) }
+    ) {
         Column(modifier = Modifier.padding(it)) {
             val state by settingsViewModel.settingsState.collectAsState()
             when (val currentState = state) {
+
                 is UserScreenUISState.NotLoggedIn -> {
                     LottieAnimation(animation = R.raw.loading_animation)
                 }
@@ -72,11 +73,9 @@ fun SettingsScreen(
                     )
                 }
 
-                is UserScreenUISState.Failure -> {
+                else -> {
 
                 }
-
-                else -> {}
             }
         }
     }
@@ -91,15 +90,15 @@ fun SettingsScreenContent(
 
 
     UserBar(
-        imageUrl = "https://louisville.edu/enrollmentmanagement/images/person-icon/image",
+        imageUrl = "",
         userName = "Please Login",
         email = ""
     )
+
     SettingsItemList(
         settingsViewModel = settingsViewModel,
         settingsNav = settingsNav
     )
-
 }
 
 
@@ -223,7 +222,7 @@ fun SettingsItemList(
     }
 }
 
-//
+
 //@Preview(showSystemUi = true)
 //@Composable
 //fun SettingsPreview() {
@@ -236,6 +235,7 @@ fun SettingsItemList(
 //                )
 //            )
 //        ),
+//        rememberNavController(),
 //        rememberNavController()
 //    )
 //}

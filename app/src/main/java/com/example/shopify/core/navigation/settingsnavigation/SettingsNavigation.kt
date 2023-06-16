@@ -9,6 +9,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.navigation.Screens
+import com.example.shopify.data.managers.CartManager
+import com.example.shopify.data.managers.WishlistManager
+import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
 import com.example.shopify.presentation.screens.settingsscreen.SettingsScreen
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModelFactory
@@ -23,7 +26,9 @@ fun SettingsNavigation(
     bottomNavController: NavHostController,
     settingsViewModel: SettingsViewModel = viewModel(
         factory = SettingsViewModelFactory(
-            (LocalContext.current.applicationContext as ShopifyApplication).userDataRepository
+            (LocalContext.current.applicationContext as ShopifyApplication).userDataRepository,
+            WishlistManager(RetrofitClient.draftOrderAPI),
+            CartManager(RetrofitClient.draftOrderAPI)
         )
     )
 ) {

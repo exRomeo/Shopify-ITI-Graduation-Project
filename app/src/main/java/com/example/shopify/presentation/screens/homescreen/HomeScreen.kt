@@ -172,6 +172,7 @@ fun ScaffoldStructure(
 
     Scaffold(
         topBar = {
+
 //            TopBar(title = screenTitle, onSearch = {})
 
         },
@@ -179,7 +180,6 @@ fun ScaffoldStructure(
             screen(it)
         },
         bottomBar = { Bottombar(navController = navController) }
-
     )
 }
 
