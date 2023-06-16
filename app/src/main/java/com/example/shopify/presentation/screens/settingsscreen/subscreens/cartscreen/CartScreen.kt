@@ -60,6 +60,7 @@ import com.example.shopify.ui.theme.ShopifyTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(viewModel: SettingsViewModel, navController: NavHostController) {
+    val cartItems by viewModel.cart.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -70,30 +71,31 @@ fun CartScreen(viewModel: SettingsViewModel, navController: NavHostController) {
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                modifier = Modifier.fillMaxWidth(0.92f), onClick = {
-                    //TODO payment and checkout
-                }
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
+            if (cartItems.isNotEmpty())
+                ExtendedFloatingActionButton(
+                    modifier = Modifier.fillMaxWidth(0.92f), onClick = {
+                        //TODO payment and checkout
+                    }
                 ) {
-                    Text(
-                        text = "CHECKOUT",
-                        style = TextStyle(
-                            fontSize = MaterialTheme.typography.titleMedium.fontSize,
-                            fontWeight = FontWeight.Bold
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "CHECKOUT",
+                            style = TextStyle(
+                                fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                fontWeight = FontWeight.Bold
+                            )
                         )
-                    )
-                    Icon(
-                        modifier = Modifier.size(30.dp),
-                        imageVector = Icons.Default.ShoppingCartCheckout,
-                        contentDescription = ""
-                    )
+                        Icon(
+                            modifier = Modifier.size(30.dp),
+                            imageVector = Icons.Default.ShoppingCartCheckout,
+                            contentDescription = ""
+                        )
+                    }
                 }
-            }
         },
         topBar = {
             CenterAlignedTopAppBar(
@@ -104,7 +106,7 @@ fun CartScreen(viewModel: SettingsViewModel, navController: NavHostController) {
                 },
                 actions = {
                     IconButton(onClick = {
-                        viewModel.addWishlistItem(
+                        viewModel.addCartItem(
                             ProductSample(
                                 id = 8398826111282,
                                 title = "",
@@ -140,7 +142,7 @@ fun CartScreen(viewModel: SettingsViewModel, navController: NavHostController) {
     ) {
         Column(Modifier.padding(it)) {
             CartScreenContent(
-                viewModel = viewModel, navController = navController
+                viewModel = viewModel, cartItems = cartItems, navController = navController
             )
         }
     }
@@ -149,9 +151,12 @@ fun CartScreen(viewModel: SettingsViewModel, navController: NavHostController) {
 
 
 @Composable
-fun CartScreenContent(viewModel: SettingsViewModel, navController: NavHostController) {
+fun CartScreenContent(
+    viewModel: SettingsViewModel,
+    cartItems: List<ProductSample>,
+    navController: NavHostController
+) {
     var showDialog by remember { mutableStateOf(false) }
-    val cartItems by viewModel.cart.collectAsState()
     var itemToRemove by remember { mutableStateOf<ProductSample?>(null) }
     LazyColumn(
         contentPadding = PaddingValues(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)

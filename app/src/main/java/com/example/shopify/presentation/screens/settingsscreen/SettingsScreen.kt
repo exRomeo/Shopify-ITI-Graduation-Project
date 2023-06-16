@@ -122,71 +122,11 @@ fun SettingsScreenContent(
     settingsNav: NavHostController
 ) {
 
-
-    /*    UserBar(
-            imageUrl = "",
-            userName = "Please Login",
-            email = ""
-        )*/
-
     SettingsItemList(
         settingsViewModel = settingsViewModel,
         settingsNav = settingsNav
     )
 }
-
-
-/*
-@Composable
-fun UserBar(
-    modifier: Modifier = Modifier,
-    imageUrl: String = "",
-    userName: String,
-    email: String
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(4.dp), verticalAlignment = Alignment.CenterVertically
-    ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl)
-                .placeholder(R.drawable.profile_picture_placehodler)
-                .error(R.drawable.profile_picture_placehodler)
-                .crossfade(true)
-                .build(),
-            placeholder = painterResource(R.drawable.profile_picture_placehodler),
-            contentDescription = stringResource(R.string.profile_picture),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .clip(CircleShape)
-                .width(65.dp)
-                .height(65.dp)
-        )
-        Spacer(modifier = Modifier.width(32.dp))
-        Column {
-            Text(
-                text = userName,
-                style = TextStyle(
-                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                    textAlign = TextAlign.Center
-                )
-            )
-            Text(
-                modifier = Modifier.padding(start = 16.dp),
-                text = email,
-                style = TextStyle(
-                    fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                    textAlign = TextAlign.Center,
-                    color = Color.Gray
-                )
-            )
-        }
-    }
-    Divider(Modifier.padding(vertical = 8.dp))
-}
-*/
 
 
 @Composable
