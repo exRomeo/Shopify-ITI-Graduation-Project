@@ -18,16 +18,17 @@ import kotlinx.coroutines.flow.asSharedFlow
 class WishlistManager(
     private val draftOrderAPI: DraftOrderAPI
 ) {
-    private var _wishlist: MutableSharedFlow<List<ProductSample>> = MutableSharedFlow()
+    private var _wishlist: MutableSharedFlow<List<ProductSample>> = MutableSharedFlow(1)
     val wishlist: SharedFlow<List<ProductSample>> = _wishlist.asSharedFlow()
     private lateinit var wishlistDraftOrder: DraftOrderBody
 
     suspend fun getWishlistItems() {
         if (CurrentUserHelper.hasWishlist()) {
-            val response = draftOrderAPI.getDraftOrder(
-                accessToken = BuildConfig.ACCESS_TOKEN,
-                draftOrderID = CurrentUserHelper.wishlistDraftID
-            )
+            val response =
+                draftOrderAPI.getDraftOrder(
+                    accessToken = BuildConfig.ACCESS_TOKEN,
+                    draftOrderID = CurrentUserHelper.wishlistDraftID
+                )
             if (response.isSuccessful && response.body() != null) {
                 wishlistDraftOrder = response.body()!!
                 val draftOrderItems = wishlistDraftOrder.draftOrder.lineItems
@@ -62,8 +63,8 @@ class WishlistManager(
 
     private suspend fun updateWishlist() {
         draftOrderAPI.updateDraftOrder(
-            draftOrderID = wishlistDraftOrder.draftOrder.id,
             accessToken = BuildConfig.ACCESS_TOKEN,
+            draftOrderID = wishlistDraftOrder.draftOrder.id,
             draftOrderBody = DraftOrderBody(wishlistDraftOrder.draftOrder)
         )
     }
