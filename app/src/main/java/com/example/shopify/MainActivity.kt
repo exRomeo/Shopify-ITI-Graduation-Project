@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import com.example.shopify.core.navigation.NavGraph
 import com.example.shopify.presentation.screens.product_details_screen.ProductDetailsScreen
 import com.example.shopify.ui.theme.ShopifyTheme
 import com.google.accompanist.pager.ExperimentalPagerApi

@@ -333,7 +333,6 @@ fun AdsCarousel() {
             items[index].also { item ->
                 CarouselItem(
                     background = {
-
                         AsyncImage(
                             model = items[index],
                             contentDescription = null,

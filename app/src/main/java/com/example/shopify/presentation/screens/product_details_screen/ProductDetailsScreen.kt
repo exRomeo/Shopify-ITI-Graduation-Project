@@ -38,7 +38,7 @@ fun ProductDetailsScreen(/*productId : Long*/) {
     val productState by productDetailsViewModel.productInfoState.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     var showFavWarningDialog by remember { mutableStateOf(false) }
-    var showReviewsDialog by remember { mutableStateOf(true) }
+    var showReviewsDialog by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         productDetailsViewModel.getProductInfo(8398820573490/*productId*/)
     }
@@ -76,9 +76,9 @@ fun ProductDetailsScreen(/*productId : Long*/) {
             itemCount = itemCount,
             increase = { if (itemCount < 10) itemCount++ },
             decrease = {
-                if (itemCount > 1) itemCount--
-                else if (itemCount == 1) showDialog = true
-                else if(itemCount == 0)showDialog = false
+                if (itemCount >= 1) itemCount--
+//                else if (itemCount == 1) showDialog = true
+//                else if(itemCount == 0)showDialog = false
             },
             showDialog = showDialog,
             showFavWarningDialog = showFavWarningDialog,
@@ -91,6 +91,7 @@ fun ProductDetailsScreen(/*productId : Long*/) {
                 showFavWarningDialog = false
             },
             showReviews = { showReviewsDialog = true },
+            onDismissShowReview ={showReviewsDialog = false},
             it
         )
     }

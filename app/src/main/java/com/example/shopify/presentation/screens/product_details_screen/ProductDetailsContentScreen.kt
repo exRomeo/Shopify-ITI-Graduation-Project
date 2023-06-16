@@ -5,9 +5,11 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,10 +30,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -48,6 +48,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
@@ -65,9 +66,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
 import com.example.shopify.data.models.SingleProduct
-import com.example.shopify.presentation.common.composables.CustomCornerButton
 import com.example.shopify.presentation.common.composables.WarningDialog
-import com.example.shopify.ui.theme.IbarraFont
+import com.example.shopify.ui.theme.backgroundColor
 import com.example.shopify.ui.theme.hintColor
 import com.example.shopify.ui.theme.ibarraBold
 import com.example.shopify.ui.theme.ibarraRegular
@@ -87,12 +87,15 @@ fun ProductDetailsContentScreen(
     decrease: () -> Unit,
     showDialog: Boolean,
     showFavWarningDialog: Boolean,
-    showReviewsDialog : Boolean,
+    showReviewsDialog: Boolean,
     onShowDialogAction: () -> Unit,
     onShowFavDialogAction: () -> Unit,
-    showReviews: ()->Unit,
+    showReviews: () -> Unit,
+    onDismissShowReview: () -> Unit,
     product: SingleProduct
 ) {
+    var rating: Double = 2.3
+    LaunchedEffect(Unit) { rating = Random.nextDouble(2.0, 5.0) }
     Log.i("TAG", "ProductDetailsContentScreen: $product")
     Scaffold { values ->
         LazyColumn(contentPadding = values) {
@@ -106,14 +109,16 @@ fun ProductDetailsContentScreen(
                 val colorMatrix = remember { ColorMatrix() }
 
                 Card(
-                    modifier = modifier.padding(bottom = 50.dp),
+                    modifier = modifier
+                        .padding(bottom = 50.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
                     ),
                     shape = MaterialTheme.shapes.large,
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 10.dp
-                    ),
+
+//                    elevation = CardDefaults.cardElevation(
+//                        defaultElevation = 10.dp
+//                    ),
                 )
                 {
                     HorizontalPager(
@@ -148,7 +153,7 @@ fun ProductDetailsContentScreen(
                                     .placeholder(R.drawable.product_image_placeholder)
                                     .error(R.drawable.product_image_placeholder)
                                     .build(),
-                                contentDescription = "Image",
+                                contentDescription = stringResource(id = R.string.product_image),
                                 contentScale = ContentScale.FillBounds,
                                 colorFilter = ColorFilter.colorMatrix(colorMatrix)
                             )
@@ -223,22 +228,31 @@ fun ProductDetailsContentScreen(
                             )
                         }
                         Spacer(modifier = Modifier.height(8.dp))
-                        Row(modifier.fillMaxWidth()) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
                             RatingBar(
-                                rating = Random.nextDouble(3.0, 5.0),
+                                modifier = Modifier,
+                                rating = rating,
                                 stars = 5,
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            IconButton(onClick = { showReviews
-                                Log.i("TAG", "Show Review: ")}) {
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Surface(
+                                onClick = showReviews,
+                                color = Color.Transparent,
+                            ) {
                                 Text(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .align(Alignment.CenterVertically),
+                                    modifier = Modifier.fillMaxWidth(),
+//                                        .fillMaxWidth()
+//                                        .weight(0.4f),
+//                                        .width(100.dp),
+//                                        .align(Alignment.CenterVertically),
                                     text = stringResource(id = R.string.show_reviews),
                                     style = ibarraBold,
                                     fontWeight = FontWeight.Normal,
-                                    color = hintColor,
+                                    color = MaterialTheme.colorScheme.outline,
                                     fontSize = 16.sp,
                                 )
                             }
@@ -246,7 +260,7 @@ fun ProductDetailsContentScreen(
                         }
 
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             text = stringResource(id = R.string.size),
                             style = ibarraBold,
@@ -335,19 +349,20 @@ fun ProductDetailsContentScreen(
             )
 
         }
-        if(showReviewsDialog)
-            ShowReviews()
+        if (showReviewsDialog)
+            ShowReviews(showReviewsDialog, onDismissShowReview)
     }
     Box() {
         Row(
             modifier = Modifier
-                .align(Alignment.BottomCenter),
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp))
-                    .background(mainColor)
+                    .background(Color.LightGray)
                     .width(200.dp)
                     .clickable { Log.i("TAG", "Add to cart: ") }
             ) {

@@ -19,6 +19,7 @@ interface IAuthenticationClient {
     ): AuthenticationResponseState
 
     suspend fun loginUserFirebase(email: String, password: String): AuthenticationResponseState
+    suspend fun signOutFirebase(): AuthenticationResponseState
     suspend fun googleSignIn(credential: AuthCredential): AuthenticationResponseState
     fun checkedLoggedIn(responseBody: CustomerResponseBody? = null): AuthenticationResponseState
     suspend fun retrieveCustomerIDs(): CustomerFirebase

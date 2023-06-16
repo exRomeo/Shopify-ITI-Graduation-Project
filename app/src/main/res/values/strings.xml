@@ -94,5 +94,7 @@
     <string name="is_fav">is favorite</string>
     <string name="is_not_fav">is not favorite</string>
     <string name="show_reviews">Show reviews</string>
+    <string name="review">Reviews..\n</string>
+    <string name="close">Close!</string>
 
 </resources>

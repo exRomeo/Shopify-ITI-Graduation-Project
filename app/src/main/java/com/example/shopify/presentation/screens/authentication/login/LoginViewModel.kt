@@ -3,6 +3,7 @@ package com.example.shopify.presentation.screens.authentication.login
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.data.models.GoogleSignInState
 import com.example.shopify.data.repositories.authentication.IAuthRepository
@@ -18,10 +19,14 @@ class LoginViewModel(private val authRepository: IAuthRepository) : ViewModel() 
     private var _authResponse: MutableStateFlow<AuthenticationResponseState> =
         MutableStateFlow(AuthenticationResponseState.Loading)
     val authResponse get() = _authResponse.asStateFlow()
+
     private val _googleState: MutableStateFlow<GoogleSignInState> =
         MutableStateFlow(GoogleSignInState())
     val googleState get() = _googleState.asStateFlow()
 
+    private val _logoutState: MutableStateFlow<AuthenticationResponseState> =
+        MutableStateFlow(AuthenticationResponseState.Loading)
+    val logoutState get() = _logoutState.asStateFlow()
     fun loginUser(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             viewModelScope.launch(Dispatchers.IO) {
@@ -32,6 +37,21 @@ class LoginViewModel(private val authRepository: IAuthRepository) : ViewModel() 
         }
     }
 
+    fun logoutUser(){
+        viewModelScope.launch {
+           _logoutState.value = authRepository.signOutFirebase()
+        }
+        when(_logoutState.value){
+            is AuthenticationResponseState.Success ->{
+                Log.i("TAG", "logoutUser success: ")}
+            is AuthenticationResponseState.Error->{
+                Log.i("TAG", "logoutUser: Failed")
+            }
+            else->{
+                Log.i("TAG", "NOT ")
+            }
+        }
+    }
     fun googleSignIn(credential: AuthCredential) {
         viewModelScope.launch(Dispatchers.IO) {
             val response = authRepository.googleSignIn(credential)

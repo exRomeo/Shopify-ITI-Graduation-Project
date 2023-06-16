@@ -66,6 +66,16 @@ class AuthenticationClient(
             AuthenticationResponseState.Error(ex)
         }
 
+    override suspend fun signOutFirebase(): AuthenticationResponseState {
+        return try {
+            authenticationFirebase.signOut()
+            Log.i("TAG", "${authenticationFirebase.currentUser} is signout:")
+            AuthenticationResponseState.Success(null)
+        } catch (ex: Exception) {
+            AuthenticationResponseState.Error(ex)
+        }
+    }
+
     override suspend fun googleSignIn(credential: AuthCredential): AuthenticationResponseState =
         try {
             val response = authenticationFirebase.signInWithCredential(credential).await()
