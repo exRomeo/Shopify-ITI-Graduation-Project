@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
@@ -31,7 +32,7 @@ import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModelFactory
 
 @Composable
-fun ProductDetailsScreen(/*productId : Long*/) {
+fun ProductDetailsScreen(navController: NavController, productId: Long) {
     var isFavorite by remember {
         mutableStateOf(false)
     }
@@ -67,6 +68,7 @@ fun ProductDetailsScreen(/*productId : Long*/) {
             )
         )
 
+    var productAddedToCart by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     var showToast by remember { mutableStateOf(false) }
     var showFavWarningDialog by remember { mutableStateOf(false) }
@@ -74,7 +76,7 @@ fun ProductDetailsScreen(/*productId : Long*/) {
     var toastMessage by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
-        productDetailsViewModel.getProductInfo(8398820573490/*productId*/)
+        productDetailsViewModel.getProductInfo(productId/*8398820573490*/)
     }
     when (val state = productState) {
         is UiState.Success<*> -> {
@@ -102,8 +104,8 @@ fun ProductDetailsScreen(/*productId : Long*/) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            settingsViewModel = settingsViewModel,
             isFavorite = isFavorite,
+            productNavController = navController,
             onFavoriteChanged = {
                 showFavWarningDialog = true
                 showToast = false
@@ -126,15 +128,15 @@ fun ProductDetailsScreen(/*productId : Long*/) {
                 if (itemCount < 10) itemCount++
             },
             decrease = {
-                if (itemCount >= 1) {
+                if (itemCount > 1) {
                     itemCount--
                     showToast = false
-                }
-//                else if (itemCount == 1) showDialog = true
+                } else if (itemCount == 1) showDialog = true
 //                if (itemCount == 0) {
 //                    showToast = true
 //                    toastMessage = R.string.product_remove_from_cart_success
 //                }
+
 
             },
             showDialog = showDialog,
@@ -145,6 +147,13 @@ fun ProductDetailsScreen(/*productId : Long*/) {
             onShowDialogAction = {
                 showDialog = false
                 itemCount = 0
+                if (productAddedToCart){
+                    settingsViewModel.removeCart(productSample)
+                    toastMessage = R.string.product_remove_from_cart_success
+                    showToast = true
+                    productAddedToCart = false
+                }
+
             },
             onShowFavDialogAction = {
                 showFavWarningDialog = false
@@ -160,6 +169,7 @@ fun ProductDetailsScreen(/*productId : Long*/) {
                             image = Image(product?.images?.get(0)?.src ?: "")
                         )
                     )
+                    productAddedToCart = true
                     R.string.product_add_to_cart_success
                 } else {
                     R.string.please_enter_quantity_of_product

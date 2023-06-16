@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.shopify.core.navigation.NavGraph
 import com.example.shopify.presentation.screens.product_details_screen.ProductDetailsScreen
 import com.example.shopify.ui.theme.ShopifyTheme
@@ -26,8 +27,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    NavGraph()
-//                    ProductDetailsScreen()
+//                    NavGraph()
+                    ProductDetailsScreen(rememberNavController(),8398820573490)
                 }
             }
         }

@@ -66,6 +66,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
@@ -88,8 +89,8 @@ import kotlin.random.Random
 @Composable
 fun ProductDetailsContentScreen(
     modifier: Modifier = Modifier,
-    settingsViewModel: SettingsViewModel,
     isFavorite: Boolean,
+    productNavController: NavController,
     onFavoriteChanged: () -> Unit,
     onAcceptFavChanged: () -> Unit,
     itemCount: Int,
@@ -176,6 +177,7 @@ fun ProductDetailsContentScreen(
                             ) {
                                 IconButton(onClick = {
                                     Log.i("TAG", "back to previous screen")
+//                                    productNavController.popBackStack()
                                 }) {
                                     Icon(
                                         Icons.Default.ArrowBack,
@@ -380,7 +382,7 @@ fun ProductDetailsContentScreen(
                     .width(200.dp)
                     .combinedClickable {}
                     .clickable {
-                       addToCartAction()
+                        addToCartAction()
                         Log.i("TAG", "view model to cart: ")
                     }
             ) {
