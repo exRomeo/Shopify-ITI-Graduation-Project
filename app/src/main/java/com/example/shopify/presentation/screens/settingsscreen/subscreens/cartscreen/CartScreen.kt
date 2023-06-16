@@ -3,11 +3,16 @@ package com.example.shopify.presentation.screens.settingsscreen.subscreens.carts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ShoppingCartCheckout
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -27,9 +32,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -59,31 +67,32 @@ fun CartScreen(viewModel: SettingsViewModel, navController: NavHostController) {
             snackbarHostState.showSnackbar(context.getString(it))
         }
     }
-    Scaffold(snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         floatingActionButton = {
-            ExtendedFloatingActionButton(onClick = {
-                viewModel.addCartItem(
-                    ProductSample(
-                        id = 8398826111282,
-                        title = "",
-                        variants = listOf(
-                            Product(
-                                id = 45344376652082,
-                                product_id = 8398826111282,
-                                title = "",
-                                price = "",
-                                availableAmount = 10L
-                            )
-                        ),
-                        image = Image(""),
-                        images = listOf(Image(""))
-                    )
-                )
-            }
+            ExtendedFloatingActionButton(
+                modifier = Modifier.fillMaxWidth(0.92f), onClick = {
+                    //TODO payment and checkout
+                }
             ) {
-                Text(
-                    text = "ADD TEST PRODUCT"
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "CHECKOUT",
+                        style = TextStyle(
+                            fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                    Icon(
+                        modifier = Modifier.size(30.dp),
+                        imageVector = Icons.Default.ShoppingCartCheckout,
+                        contentDescription = ""
+                    )
+                }
             }
         },
         topBar = {
@@ -91,6 +100,29 @@ fun CartScreen(viewModel: SettingsViewModel, navController: NavHostController) {
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, "")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        viewModel.addWishlistItem(
+                            ProductSample(
+                                id = 8398826111282,
+                                title = "",
+                                variants = listOf(
+                                    Product(
+                                        id = 45344376652082,
+                                        product_id = 8398826111282,
+                                        title = "",
+                                        price = "",
+                                        availableAmount = 10L
+                                    )
+                                ),
+                                image = Image(""),
+                                images = listOf(Image(""))
+                            )
+                        )
+                    }) {
+                        Icon(Icons.Default.Add, "")
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -102,8 +134,9 @@ fun CartScreen(viewModel: SettingsViewModel, navController: NavHostController) {
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                })
-        }
+                }
+            )
+        },
     ) {
         Column(Modifier.padding(it)) {
             CartScreenContent(
@@ -176,5 +209,6 @@ fun CartPreview() {
 
         )
     }
-
 }
+
+

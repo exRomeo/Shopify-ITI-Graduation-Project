@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,35 +56,34 @@ fun WishlistScreen(viewModel: SettingsViewModel, navController: NavHostControlle
         }
     }
     Scaffold(snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(onClick = {
-                viewModel.addWishlistItem(
-                    ProductSample(
-                        id = 8398826111282,
-                        title = "",
-                        variants = listOf(
-                            Product(
-                                id = 45344376652082,
-                                product_id = 8398826111282,
-                                title = "",
-                                price = "",
-                                availableAmount = 10L
-                            )
-                        ),
-                        image = Image(""),
-                        images = listOf(Image(""))
-                    )
-                )
-            }
-            ) {
-                Text(text = "ADD TEST PRODUCT")
-            }
-        },
         topBar = {
             CenterAlignedTopAppBar(
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, "")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        viewModel.addWishlistItem(
+                            ProductSample(
+                                id = 8398826111282,
+                                title = "",
+                                variants = listOf(
+                                    Product(
+                                        id = 45344376652082,
+                                        product_id = 8398826111282,
+                                        title = "",
+                                        price = "",
+                                        availableAmount = 10L
+                                    )
+                                ),
+                                image = Image(""),
+                                images = listOf(Image(""))
+                            )
+                        )
+                    }) {
+                        Icon(Icons.Default.Add, "")
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(

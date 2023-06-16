@@ -10,7 +10,6 @@ data class Varient(
     val title: String?,
     val variants: List<Product>?,
     val image: Image?
-
 )
 
 data class Product(
@@ -21,7 +20,6 @@ data class Product(
     @field:SerializedName("inventory_quantity")
     val availableAmount: Long?
 )
-
 
 data class ProductSample(
     var id: Long,

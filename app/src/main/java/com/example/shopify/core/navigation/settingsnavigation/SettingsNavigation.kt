@@ -31,6 +31,7 @@ fun SettingsNavigation(
     )
 ) {
     NavHost(navController = settingsNavController, startDestination = Screens.Settings.route) {
+
         composable(route = Screens.Settings.route) {
             SettingsScreen(
                 settingsViewModel = settingsViewModel,
@@ -38,9 +39,11 @@ fun SettingsNavigation(
                 settingsNav = settingsNavController
             )
         }
+
         composable(route = Screens.Addresses.route) {
             AddressScreen(settingsViewModel, navController = settingsNavController)
         }
+
         composable(route = Screens.Orders.route) {
             OrdersScreen(settingsViewModel, navController = settingsNavController)
         }
@@ -52,11 +55,5 @@ fun SettingsNavigation(
         composable(route = Screens.Cart.route) {
             CartScreen(viewModel = settingsViewModel, navController = settingsNavController)
         }
-
-        composable(route = Screens.Login.route){
-            NavGraph()
-        }
     }
-
-
 }

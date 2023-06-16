@@ -27,19 +27,34 @@ import com.example.shopify.presentation.screens.authentication.registeration.Sig
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 
 @Composable
-fun NavGraph(navController: NavHostController = rememberNavController()) {
+fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = Screens.Login.route
     ) {
-        composable(route = Screens.Home.route) {
-            HomeScreenNavigation()
-        }
+
         composable(route = Screens.Login.route) {
             LoginScreen(navController)
         }
         composable(route = Screens.Signup.route) {
             SignupScreen(navController)
+        }
+        composable(route = Screens.Home.route) {
+            HomeScreen(navController)
+        }
+
+        composable(
+            route = "categories"
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(text = "Categories")
+            }
+        }
+
+        composable(route = Screens.Settings.route) {
+            SettingsNavigation(bottomNavController = navController)
         }
     }
 }
@@ -68,36 +83,6 @@ val bottomNavItems = listOf(
     ),
 )
 
-@Composable
-fun HomeScreenNavigation() {
-    val navController = rememberNavController()
-
-    NavHost(navController = navController, startDestination = "home") {
-
-        composable(
-            route = Screens.Home.route
-        ) {
-            HomeScreen(navController)
-        }
-
-        composable(
-            route = "categories"
-        ) {
-            Box(
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(text = "Categories")
-            }
-        }
-
-        composable(
-            route = Screens.Settings.route
-        ) {
-            SettingsNavigation(bottomNavController = navController)
-        }
-    }
-}
-
 
 @Composable
 fun Bottombar(navController: NavHostController) {
@@ -124,7 +109,7 @@ fun Bottombar(navController: NavHostController) {
                 label = {
                     Text(
                         text = item.name
-                        )
+                    )
                 },
                 icon = {
                     Icon(
