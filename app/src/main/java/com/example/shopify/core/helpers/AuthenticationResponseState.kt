@@ -8,5 +8,5 @@ sealed interface AuthenticationResponseState{
     class Success(val responseBody : CustomerResponseBody?) : AuthenticationResponseState
     class GoogleSuccess(val auth : AuthResult?) : AuthenticationResponseState
     object NotLoggedIn : AuthenticationResponseState
-    class Error(val message : String?): AuthenticationResponseState
+    class Error(val message : Throwable?): AuthenticationResponseState
 }

@@ -9,7 +9,7 @@ import com.example.shopify.data.managers.CartManager
 import com.example.shopify.data.managers.WishlistManager
 import com.example.shopify.data.models.CollectCurrentCustomerData
 import com.example.shopify.data.models.GetCurrentCustomer.getCurrentCustomer
-import com.example.shopify.data.remote.RemoteResource
+import com.example.shopify.data.remote.product.RemoteResource
 import com.example.shopify.data.remote.authentication.AuthenticationClient
 import com.example.shopify.data.remote.authentication.IAuthenticationClient
 import com.example.shopify.data.repositories.authentication.AuthRepository
@@ -64,7 +64,6 @@ class ShopifyApplication : Application() {
                 cartManager.getCartItems()
                 wishlistManager.getWishlistItems()
             }
-
             else -> {  //IsNot LoggedIn
                 currentCustomer = null
             }

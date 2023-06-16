@@ -73,7 +73,7 @@ import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.SmartCollections
-import com.example.shopify.data.models.Varient
+import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
 
 @Composable
@@ -89,7 +89,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
     val brandsState: UiState by viewModel.brandList.collectAsState()
     val randomsState: UiState by viewModel.randomList.collectAsState()
     var brandList: List<Brand> = listOf()
-    var randomList: List<Varient> = listOf()
+    var randomList: List<Variant> = listOf()
     when (brandsState) {
         is UiState.Loading -> {
             Log.i("menna", "loading")
@@ -108,7 +108,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
         }
 
         is UiState.Success<*> -> {
-            Log.i("menna", "success")
+            Log.i("menna","success")
             brandList =
                 (brandsState as UiState.Success<SmartCollections>).data.body()?.smart_collections!!
         }
@@ -205,7 +205,7 @@ fun CardDesign(
 @Composable
 fun ItemCardContent(
     modifier: Modifier = Modifier, isFavourite: Boolean,
-    onFavouritesClicked: (Boolean) -> Unit, onAddToCard: (item: Product) -> Unit, item: Varient
+    onFavouritesClicked: (Boolean) -> Unit, onAddToCard: (item: Product) -> Unit, item: Variant
 ) {
     Column(modifier = modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
         item.image?.src?.let {
@@ -470,7 +470,7 @@ fun BrandCards(modifier: Modifier = Modifier, brands: List<Brand>) {
 @Composable
 fun ItemCards(
     modifier: Modifier = Modifier,
-    products: List<Varient>,
+    products: List<Variant>,
     isFavourite: Boolean,
     onFavouriteClicked: (Boolean) -> Unit,
     onAddToCard: (item: Product) -> Unit

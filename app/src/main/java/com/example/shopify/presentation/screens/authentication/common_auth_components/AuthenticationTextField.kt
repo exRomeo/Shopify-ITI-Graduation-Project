@@ -1,4 +1,4 @@
-package com.example.shopify.presentation.screens.authentication
+package com.example.shopify.presentation.screens.authentication.common_auth_components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
@@ -14,7 +14,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.shopify.presentation.components.CustomTextField
+import com.example.shopify.presentation.common.composables.CustomTextField
 import com.example.shopify.ui.theme.IbarraFont
 import com.example.shopify.ui.theme.backgroundColor
 import com.example.shopify.ui.theme.hintColor

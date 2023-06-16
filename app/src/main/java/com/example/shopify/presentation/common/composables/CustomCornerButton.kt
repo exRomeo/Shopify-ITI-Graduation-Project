@@ -1,4 +1,4 @@
-package com.example.shopify.presentation.components
+package com.example.shopify.presentation.common.composables
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
