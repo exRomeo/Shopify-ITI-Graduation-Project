@@ -141,9 +141,7 @@ class SettingsViewModel(
         viewModelScope.launch {
             wishlistManager.getWishlistItems()
             wishlistManager.wishlist.collect {
-
                 _wishlist.value = it
-
             }
         }
     }
