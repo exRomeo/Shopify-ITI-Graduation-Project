@@ -28,7 +28,7 @@ class CartManager(
     }
 
     suspend fun increaseCartItemCount(product: ProductSample) {
-        if (getCartItemCount(product) < 10) {
+        if (getCartItemCount(product) < product.variants[0].availableAmount!!) {
             cartDraftOrder.draftOrder.lineItems[cart.replayCache.first().indexOf(product)].quantity++
             updateCart()
         }

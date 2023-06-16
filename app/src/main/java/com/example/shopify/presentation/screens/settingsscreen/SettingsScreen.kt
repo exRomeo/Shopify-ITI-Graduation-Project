@@ -4,50 +4,60 @@ import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Login
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Divider
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import androidx.navigation.compose.rememberNavController
 import com.example.shopify.R
+import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.Screens
-import com.example.shopify.presentation.common.composables.LottieAnimation
+import com.example.shopify.data.managers.CartManager
+import com.example.shopify.data.managers.WishlistManager
+import com.example.shopify.data.repositories.user.UserDataRepository
+import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
+import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
 import com.example.shopify.presentation.common.composables.SettingItemCard
+import com.example.shopify.ui.theme.ShopifyTheme
 
 const val TAG = "TAG"
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     settingsViewModel: SettingsViewModel,
@@ -55,16 +65,35 @@ fun SettingsScreen(
     settingsNav: NavHostController
 ) {
 
+    val state by settingsViewModel.settingsState.collectAsState()
     Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp)
+                ),
+                title = {
+                    Text(
+                        text = "Welcome ${CurrentUserHelper.customerName}",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                actions = {
+                    if(state is UserScreenUISState.LoggedIn)
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(Icons.Default.Logout, "")
+                    } else IconButton(onClick = { /*TODO*/ }) {
+                        Icon(Icons.Default.Login, "")
+                    }
+                }
+            )
+        },
         bottomBar = { Bottombar(navController = bottomNavController) }
     ) {
         Column(modifier = Modifier.padding(it)) {
-            val state by settingsViewModel.settingsState.collectAsState()
-            when (val currentState = state) {
-
-                is UserScreenUISState.NotLoggedIn -> {
-                    LottieAnimation(animation = R.raw.loading_animation)
-                }
+//            val state by settingsViewModel.settingsState.collectAsState()
+            when (state) {
 
                 is UserScreenUISState.LoggedIn -> {
                     SettingsScreenContent(
@@ -74,8 +103,9 @@ fun SettingsScreen(
                 }
 
                 else -> {
-
+                    NotLoggedInSettings()
                 }
+
             }
         }
     }
@@ -89,11 +119,11 @@ fun SettingsScreenContent(
 ) {
 
 
-    UserBar(
-        imageUrl = "",
-        userName = "Please Login",
-        email = ""
-    )
+    /*    UserBar(
+            imageUrl = "",
+            userName = "Please Login",
+            email = ""
+        )*/
 
     SettingsItemList(
         settingsViewModel = settingsViewModel,
@@ -102,6 +132,7 @@ fun SettingsScreenContent(
 }
 
 
+/*
 @Composable
 fun UserBar(
     modifier: Modifier = Modifier,
@@ -151,6 +182,7 @@ fun UserBar(
     }
     Divider(Modifier.padding(vertical = 8.dp))
 }
+*/
 
 
 @Composable
@@ -223,19 +255,46 @@ fun SettingsItemList(
 }
 
 
-//@Preview(showSystemUi = true)
-//@Composable
-//fun SettingsPreview() {
-//    SettingsScreen(
-//        SettingsViewModel(
-//            UserDataRepository(
-//                UserDataRemoteSource(
-//                    RetrofitClient.customerAddressAPI,
-//                    RetrofitClient.draftOrderAPI
-//                )
-//            )
-//        ),
-//        rememberNavController(),
-//        rememberNavController()
-//    )
-//}
+@Preview(showSystemUi = true)
+@Composable
+fun SettingsPreview() {
+    ShopifyTheme() {
+
+
+        SettingsScreen(
+            SettingsViewModel(
+                UserDataRepository(
+                    UserDataRemoteSource(
+                        RetrofitClient.customerAddressAPI,
+                        RetrofitClient.draftOrderAPI
+                    )
+                ),
+                wishlistManager = WishlistManager(
+                    RetrofitClient.draftOrderAPI
+                ),
+                cartManager = CartManager(
+                    RetrofitClient.draftOrderAPI
+                )
+            ),
+            rememberNavController(),
+            rememberNavController()
+        )
+    }
+}
+
+@Composable
+fun NotLoggedInSettings(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = stringResource(id = R.string.login_request_message), color = Color.Gray)
+        TextButton(onClick = { /*TODO*/ }) {
+            Text(
+                text = stringResource(id = R.string.login),
+                style = TextStyle(textDecoration = TextDecoration.Underline)
+            )
+        }
+    }
+}

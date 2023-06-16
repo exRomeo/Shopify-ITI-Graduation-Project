@@ -38,14 +38,14 @@ fun SettingsNavigation(
             )
         }
         composable(route = Screens.Addresses.route) {
-            AddressScreen(settingsViewModel)
+            AddressScreen(settingsViewModel, navController = settingsNavController)
         }
         composable(route = Screens.Orders.route) {
-            OrdersScreen(settingsViewModel)
+            OrdersScreen(settingsViewModel, navController = settingsNavController)
         }
 
         composable(route = Screens.Wishlist.route) {
-            WishlistScreen(settingsViewModel)
+            WishlistScreen(settingsViewModel, navController = settingsNavController)
         }
 
         composable(route = Screens.Cart.route) {

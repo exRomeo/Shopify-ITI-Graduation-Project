@@ -23,7 +23,6 @@ import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
 import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 
 private const val BASE_URL = "https://mad43-alex-and-team2.myshopify.com/"
@@ -63,6 +62,9 @@ class ShopifyApplication : Application() {
                 CurrentUserHelper.initialize(authRepository)
                 cartManager.getCartItems()
                 wishlistManager.getWishlistItems()
+                val userData = userDataRepository.getAddresses(CurrentUserHelper.customerID)
+                    .body()?.addresses?.get(0)
+                CurrentUserHelper.customerName = ("${userData?.firstName} ${userData?.lastName}") ?: ""
             }
 
             else -> {  //IsNot LoggedIn

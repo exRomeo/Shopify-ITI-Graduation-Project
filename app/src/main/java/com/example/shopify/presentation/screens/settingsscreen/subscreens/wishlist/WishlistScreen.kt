@@ -7,11 +7,20 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,8 +29,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.shopify.R
 import com.example.shopify.data.models.Image
 import com.example.shopify.data.models.Product
@@ -32,15 +44,16 @@ import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 import com.example.shopify.presentation.screens.settingsscreen.TAG
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WishlistScreen(viewModel: SettingsViewModel) {
+fun WishlistScreen(viewModel: SettingsViewModel, navController: NavHostController) {
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         viewModel.snackbarMessage.collect {
-            snackbarHostState.showSnackbar(it)
+            snackbarHostState.showSnackbar(context.getString(it))
         }
     }
-
     Scaffold(snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         floatingActionButton = {
             ExtendedFloatingActionButton(onClick = {
@@ -53,7 +66,8 @@ fun WishlistScreen(viewModel: SettingsViewModel) {
                                 id = 45344376652082,
                                 product_id = 8398826111282,
                                 title = "",
-                                price = ""
+                                price = "",
+                                availableAmount = 10L
                             )
                         ),
                         image = Image(""),
@@ -65,8 +79,24 @@ fun WishlistScreen(viewModel: SettingsViewModel) {
                 Text(text = "ADD TEST PRODUCT")
             }
         },
-        bottomBar = {
-
+        topBar = {
+            CenterAlignedTopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, "")
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp)
+                ),
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.wishlist),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            )
         }
     ) {
         Column(Modifier.padding(it)) {
