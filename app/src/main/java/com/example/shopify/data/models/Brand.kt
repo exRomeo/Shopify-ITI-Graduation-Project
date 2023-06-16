@@ -15,6 +15,6 @@ data class Brand(
 ) : Serializable
 
 data class Image(
-    val position: Int?,
+//    val position: Int?,
     val src: String?
 ) : Serializable
