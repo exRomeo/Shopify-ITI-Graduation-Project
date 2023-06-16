@@ -5,6 +5,8 @@ import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.RetrofitHelper
 import com.example.shopify.core.utils.SharedPreference
+import com.example.shopify.data.managers.CartManager
+import com.example.shopify.data.managers.WishlistManager
 import com.example.shopify.data.models.CollectCurrentCustomerData
 import com.example.shopify.data.models.GetCurrentCustomer.getCurrentCustomer
 import com.example.shopify.data.remote.RemoteResource
@@ -21,6 +23,7 @@ import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
 import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 
 private const val BASE_URL = "https://mad43-alex-and-team2.myshopify.com/"
@@ -33,6 +36,8 @@ class ShopifyApplication : Application() {
         ProductRepository(
             RemoteResource.getInstance(context = applicationContext)
         )
+
+
     }
     private val authenticationClient: IAuthenticationClient by lazy {
         AuthenticationClient(
@@ -56,6 +61,8 @@ class ShopifyApplication : Application() {
             is AuthenticationResponseState.Success -> { //Is loggedIn
                 currentCustomer = getCurrentCustomer(authRepository)
                 CurrentUserHelper.initialize(authRepository)
+                cartManager.getCartItems()
+                wishlistManager.getWishlistItems()
             }
 
             else -> {  //IsNot LoggedIn
@@ -65,6 +72,13 @@ class ShopifyApplication : Application() {
 
     }
 
+    val cartManager: CartManager by lazy {
+        CartManager(RetrofitClient.draftOrderAPI)
+    }
+
+    val wishlistManager: WishlistManager by lazy {
+        WishlistManager(RetrofitClient.draftOrderAPI)
+    }
 
     private val userDataRemoteSource: IUserDataRemoteSource by lazy {
         UserDataRemoteSource(

@@ -19,16 +19,23 @@ import com.example.shopify.presentation.screens.settingsscreen.subscreens.wishli
 
 @Composable
 fun SettingsNavigation(
-    navController: NavHostController = rememberNavController(),
+    settingsNavController: NavHostController = rememberNavController(),
+    bottomNavController: NavHostController,
     settingsViewModel: SettingsViewModel = viewModel(
         factory = SettingsViewModelFactory(
-            (LocalContext.current.applicationContext as ShopifyApplication).userDataRepository
+            (LocalContext.current.applicationContext as ShopifyApplication).userDataRepository,
+            (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager,
+            (LocalContext.current.applicationContext as ShopifyApplication).cartManager
         )
     )
 ) {
-    NavHost(navController = navController, startDestination = Screens.Settings.route) {
+    NavHost(navController = settingsNavController, startDestination = Screens.Settings.route) {
         composable(route = Screens.Settings.route) {
-            SettingsScreen(settingsViewModel, navController)
+            SettingsScreen(
+                settingsViewModel = settingsViewModel,
+                bottomNavController = bottomNavController,
+                settingsNav = settingsNavController
+            )
         }
         composable(route = Screens.Addresses.route) {
             AddressScreen(settingsViewModel)
@@ -42,7 +49,7 @@ fun SettingsNavigation(
         }
 
         composable(route = Screens.Cart.route) {
-            CartScreen(viewModel = settingsViewModel, navController = navController)
+            CartScreen(viewModel = settingsViewModel, navController = settingsNavController)
         }
     }
 

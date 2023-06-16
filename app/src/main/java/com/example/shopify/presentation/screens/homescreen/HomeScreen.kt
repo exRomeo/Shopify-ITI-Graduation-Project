@@ -69,7 +69,6 @@ import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
-import com.example.shopify.core.navigation.TopBar
 import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.Products
@@ -125,11 +124,9 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
         is UiState.Success<*> -> {
             randomList = (randomsState as UiState.Success<Products>).data.body()?.products!!
 
-
         }
 
         else -> {
-
             Log.i("homepage", (randomsState as UiState.Error).error.toString())
         }
     }
@@ -142,8 +139,6 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
                     .padding(paddingValues = PaddingValues(vertical = 70.dp))
             )
             {
-
-
                 HomeSection(sectionTitle = R.string.special_offers) {
                     AdsCarousel()
                 }
@@ -162,10 +157,8 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
             }
         }
     }
-
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScaffoldStructure(
     screenTitle: String,
@@ -175,14 +168,14 @@ fun ScaffoldStructure(
 
     Scaffold(
         topBar = {
-            TopBar(title = screenTitle, onSearch = {})
+
+//            TopBar(title = screenTitle, onSearch = {})
 
         },
         content = {
             screen(it)
         },
         bottomBar = { Bottombar(navController = navController) }
-
     )
 }
 
