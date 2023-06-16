@@ -26,7 +26,6 @@ import com.example.shopify.presentation.screens.authentication.login.LoginScreen
 import com.example.shopify.presentation.screens.authentication.registeration.SignupScreen
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 
-
 @Composable
 fun NavGraph(navController: NavHostController = rememberNavController()) {
 

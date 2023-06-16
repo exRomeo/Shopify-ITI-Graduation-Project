@@ -8,16 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Login
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -80,11 +76,13 @@ fun SettingsScreen(
                     )
                 },
                 actions = {
-                    if(state is UserScreenUISState.LoggedIn)
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(Icons.Default.Logout, "")
-                    } else IconButton(onClick = { /*TODO*/ }) {
-                        Icon(Icons.Default.Login, "")
+                    if (state is UserScreenUISState.LoggedIn)
+                        IconButton(onClick = {
+                            settingsNav.popBackStack(startDestination = , inclusive = true)
+                        }) {
+                            Icon(Icons.Default.Logout, stringResource(id = R.string.logout))
+                        } else IconButton(onClick = { /*TODO: Login action*/ }) {
+                        Icon(Icons.Default.Login, stringResource(id = R.string.login))
                     }
                 }
             )
@@ -92,9 +90,7 @@ fun SettingsScreen(
         bottomBar = { Bottombar(navController = bottomNavController) }
     ) {
         Column(modifier = Modifier.padding(it)) {
-//            val state by settingsViewModel.settingsState.collectAsState()
             when (state) {
-
                 is UserScreenUISState.LoggedIn -> {
                     SettingsScreenContent(
                         settingsViewModel = settingsViewModel,
@@ -103,7 +99,7 @@ fun SettingsScreen(
                 }
 
                 else -> {
-                    NotLoggedInSettings()
+                    NotLoggedInSettings(navController = settingsNav)
                 }
 
             }
@@ -255,12 +251,32 @@ fun SettingsItemList(
 }
 
 
+@Composable
+fun NotLoggedInSettings(modifier: Modifier = Modifier, navController: NavHostController) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = stringResource(id = R.string.login_request_message), color = Color.Gray)
+        TextButton(onClick = {
+            navController.navigate(Screens.Login.route, builder = {
+                popUpToRoute
+            })
+        }
+        ) {
+            Text(
+                text = stringResource(id = R.string.login),
+                style = TextStyle(textDecoration = TextDecoration.Underline)
+            )
+        }
+    }
+}
+
 @Preview(showSystemUi = true)
 @Composable
 fun SettingsPreview() {
     ShopifyTheme() {
-
-
         SettingsScreen(
             SettingsViewModel(
                 UserDataRepository(
@@ -279,22 +295,5 @@ fun SettingsPreview() {
             rememberNavController(),
             rememberNavController()
         )
-    }
-}
-
-@Composable
-fun NotLoggedInSettings(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = stringResource(id = R.string.login_request_message), color = Color.Gray)
-        TextButton(onClick = { /*TODO*/ }) {
-            Text(
-                text = stringResource(id = R.string.login),
-                style = TextStyle(textDecoration = TextDecoration.Underline)
-            )
-        }
     }
 }
