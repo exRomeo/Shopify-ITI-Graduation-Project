@@ -1,13 +1,11 @@
 package com.example.shopify.presentation.screens.product_details_screen
 
 
-import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,12 +28,12 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomNavigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -43,7 +41,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,7 +50,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
@@ -67,23 +63,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
-import com.example.shopify.data.models.Image
-import com.example.shopify.data.models.ProductSample
+import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.data.models.SingleProduct
 import com.example.shopify.presentation.common.composables.WarningDialog
-import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
-import com.example.shopify.ui.theme.backgroundColor
-import com.example.shopify.ui.theme.hintColor
 import com.example.shopify.ui.theme.ibarraBold
 import com.example.shopify.ui.theme.ibarraRegular
 import com.example.shopify.ui.theme.mainColor
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -103,7 +92,9 @@ fun ProductDetailsContentScreen(
     showToast: Boolean,
     @StringRes toastMessage: Int,
     onShowDialogAction: () -> Unit,
-    onShowFavDialogAction: () -> Unit,
+    onDismissDialogAction: () -> Unit,
+    onAcceptRemoveCart: () -> Unit,
+    onDismissRemoveCart: () -> Unit,
     addToCartAction: () -> Unit,
     showReviews: () -> Unit,
     onDismissShowReview: () -> Unit,
@@ -113,7 +104,15 @@ fun ProductDetailsContentScreen(
     LaunchedEffect(Unit) { rating = Random.nextDouble(2.0, 5.0) }
 
     Log.i("TAG", "ProductDetailsContentScreen: $product")
-    Scaffold() { values ->
+    Scaffold(bottomBar =
+    {
+        BottomNavigation(
+            modifier = Modifier.fillMaxWidth()
+                .background(Color.Transparent),
+        ) {
+            AddToCartBottom(addToCartAction, increase, decrease, itemCount)
+        }
+    }) { values ->
         LazyColumn(
             contentPadding = values,
             modifier = Modifier.padding(paddingValues = PaddingValues(0.dp))
@@ -181,7 +180,7 @@ fun ProductDetailsContentScreen(
                             ) {
                                 IconButton(onClick = {
                                     Log.i("TAG", "back to previous screen")
-//                                    productNavController.popBackStack()
+                                    productNavController.popBackStack()
                                 }) {
                                     Icon(
                                         Icons.Default.ArrowBack,
@@ -333,8 +332,14 @@ fun ProductDetailsContentScreen(
                 message = stringResource(id = R.string.cart_item_removal_warning),
                 dismissButtonText = stringResource(id = R.string.cancel),
                 confirmButtonText = stringResource(id = R.string.remove),
-                onConfirm = onShowDialogAction,
-                onDismiss = decrease
+                onConfirm = {
+                    onShowDialogAction()
+                    onAcceptRemoveCart()
+                },
+                onDismiss = {
+                    decrease()
+                    onDismissRemoveCart()
+                }
 
             )
         }
@@ -357,7 +362,7 @@ fun ProductDetailsContentScreen(
                 dismissButtonText = stringResource(id = R.string.cancel),
                 confirmButtonText = confirmButtonText,
                 onConfirm = onAcceptFavChanged,
-                onDismiss = onShowFavDialogAction
+                onDismiss = onDismissDialogAction
             )
 
         }
@@ -372,83 +377,89 @@ fun ProductDetailsContentScreen(
             ).show()
         }
     }
-    Box() {
-        Row(
+}
+@Composable
+fun AddToCartBottom(
+    addToCartAction : ()->Unit,
+    increase : ()->Unit,
+    decrease: () -> Unit,
+    itemCount : Int
+){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 10.dp)
+            .background(Color.Transparent),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .clip(RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp))
+                .background(Color.LightGray)
+                .align(Alignment.CenterVertically)
+                .width(200.dp)
+                .clickable {
+                    addToCartAction()
+                    Log.i("TAG", "view model to cart: ")
+                }
         ) {
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp))
-                    .background(Color.LightGray)
-                    .width(200.dp)
-                    .combinedClickable {}
-                    .clickable {
-                        addToCartAction()
-                        Log.i("TAG", "view model to cart: ")
-                    }
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(
-                        onClick = { Log.i("TAG", "Add to cart: ") }
-                    ) {
-                        Icon(
-                            Icons.Filled.ShoppingCart,
-                            stringResource(id = R.string.add_to_cart),
-                            tint = Color.White
-                        )
-                    }
-                    Text(
-                        text = stringResource(id = R.string.add_to_cart),
-                        style = TextStyle(
-                            fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                            textAlign = TextAlign.Center,
-                            color = Color.White
-                        )
-
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(
+                    onClick = { Log.i("TAG", "Add to cart: ") }
+                ) {
+                    Icon(
+                        Icons.Filled.ShoppingCart,
+                        stringResource(id = R.string.add_to_cart),
+                        tint = Color.White
                     )
                 }
+                Text(
+                    text = stringResource(id = R.string.add_to_cart),
+                    style = TextStyle(
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                        textAlign = TextAlign.Center,
+                        color = Color.White
+                    )
+
+                )
             }
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))
-                    .background(MaterialTheme.colorScheme.onPrimary)
-                    .width(125.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(
-                        onClick = increase
-                    ) {
-                        Icon(
-                            Icons.Default.Add,
-                            stringResource(id = R.string.add)
-                        )
-                    }
-                    Text(
-                        text = itemCount.toString(),
-                        style = TextStyle(
-                            fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                            textAlign = TextAlign.Center
-                        )
-
+        }
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))
+                .background(Color.Transparent)
+                .width(125.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(
+                    onClick = increase
+                ) {
+                    Icon(
+                        Icons.Default.Add,
+                        stringResource(id = R.string.add)
                     )
-                    Log.i("TAG", "ProductDetailsContentScreen: $itemCount")
-                    IconButton(
-                        onClick = decrease
+                }
+                Text(
+                    text = itemCount.toString(),
+                    style = TextStyle(
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                        textAlign = TextAlign.Center
+                    )
 
-                    ) {
-                        Icon(
-                            painterResource(id = R.drawable.remove),
-                            stringResource(id = R.string.remove)
-                        )
+                )
+                Log.i("TAG", "ProductDetailsContentScreen: $itemCount")
+                IconButton(
+                    onClick = decrease
 
-                    }
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.remove),
+                        stringResource(id = R.string.remove)
+                    )
 
                 }
+
             }
         }
     }
-
 }

@@ -26,7 +26,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -37,9 +40,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.List
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -49,8 +49,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
@@ -63,19 +61,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import androidx.tv.material3.Carousel
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import coil.compose.AsyncImage
@@ -107,10 +100,27 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
 
     val brandsState: UiState by viewModel.brandList.collectAsState()
     val randomsState: UiState by viewModel.randomList.collectAsState()
+    var brandList: List<Brand> by remember { mutableStateOf(listOf()) }
+    var randomList: List<Variant> = listOf()
     var searchText by remember { mutableStateOf("") }
     var stateOfSearchBar by remember { mutableStateOf(false) }
-    var brandList: List<Brand> = listOf()
-    var randomList: List<Variant> = listOf()
+    val filteredList by remember {
+        derivedStateOf {
+            if (searchText.isEmpty()) {
+                brandList
+            } else {
+                Log.i(
+                    "TAG", "Filtered List: ${
+                        brandList.filter {
+                            it.name?.contains(searchText, ignoreCase = true) ?: false
+                        }
+                    }"
+                )
+                Log.i("TAG", "Brand List : ${brandList}")
+                brandList.filter { it.name?.contains(searchText, ignoreCase = true) ?: false }
+            }
+        }
+    }
     when (brandsState) {
         is UiState.Loading -> {
             Log.i("menna", "loading")
@@ -158,11 +168,17 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
     Scaffold(
         bottomBar = { Bottombar(navController = navController) }
     ) {
+
+        Spacer(modifier = Modifier.height(16.dp))
         SearchBar(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             query = searchText,
             onQueryChange = { searchText = it },
-            onSearch = { stateOfSearchBar = false },
+            onSearch = {
+                stateOfSearchBar = false
+            },
             active = stateOfSearchBar,
             onActiveChange = { stateOfSearchBar = it },
             placeholder = { Text(text = stringResource(id = R.string.search_brands)) },
@@ -174,10 +190,14 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
                 )
             },
             trailingIcon = {
-                if(stateOfSearchBar){
+                if (stateOfSearchBar) {
                     Icon(
-                        modifier = Modifier.clickable { searchText = ""},
-                        imageVector = Icons.Default.Close, contentDescription = stringResource(
+                        modifier = Modifier.clickable {
+                            searchText = ""
+                            stateOfSearchBar = false
+                        },
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(
                             id = R.string.close
                         )
                     )
@@ -185,10 +205,21 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
 
             }
         ) {
-
+            /*LazyColumn (modifier.padding(16.dp)){
+                items(1) { obj ->
+                    BrandCards(brands = filteredList, navController = navController)
+                }
+            }*/
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(minSize = 15.dp)
+            ) {
+                items(1) {
+                    BrandCards(brands = filteredList, navController = navController)
+                }
+            }
         }
-        Spacer(modifier = Modifier.height(16.dp))
         if (brandList.isNotEmpty() && randomList.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(32.dp))
             Column(
                 modifier = modifier
                     .padding(it)
@@ -196,6 +227,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
                     .padding(paddingValues = PaddingValues(10.dp))
             )
             {
+
 
                 HomeSection(sectionTitle = R.string.special_offers) {
                     AdsCarousel()

@@ -2,6 +2,7 @@ package com.example.shopify.data.models
 
 import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.data.repositories.authentication.IAuthRepository
+import kotlinx.coroutines.coroutineScope
 
 data class CollectCurrentCustomerData(
     val customerFirebase: CustomerFirebase?,
@@ -9,6 +10,7 @@ data class CollectCurrentCustomerData(
 )
 object GetCurrentCustomer {
     suspend fun getCurrentCustomer(authRepository: IAuthRepository): CollectCurrentCustomerData{
+
         val simpleResponse : SimpleResponse?
         val customerFirebase = authRepository.retrieveCustomerIDs()
         val customerShopify = customerFirebase.customer_id?.let { authRepository.getSingleCustomerFromShopify(it) }
