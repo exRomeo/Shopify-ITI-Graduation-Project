@@ -27,4 +27,19 @@ class ProductRepository(private val remoteResource: RemoteResource) : IProductRe
         remoteResource.getProductInfo(productId)
 
 
+    override suspend fun getSpecificBrandProducts(id:Long): Flow<Response<Products>> {
+        return flow{
+            emit(remoteResource.getSpecificBrandProducts(id))
+        }
+    }
+
+    override suspend fun getProductsBySubcategory(
+        id: Long,
+        type: String
+    ): Flow<Response<Products>> {
+        return flow{
+            emit(remoteResource.getProductsBySubcategory(id,type))
+        }
+    }
+
 }

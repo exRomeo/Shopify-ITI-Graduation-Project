@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
@@ -32,7 +33,7 @@ import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModelFactory
 
 @Composable
-fun ProductDetailsScreen(navController: NavController, productId: Long) {
+fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
     var isFavorite by remember {
         mutableStateOf(false)
     }

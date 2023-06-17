@@ -8,11 +8,12 @@ data class Products(
 ): Serializable
 
 data class Variant(
-    val title:String?,
-    val variants:List<Product>?,
-    val image:Image?
-
+    var id: Long,
+    val title: String?,
+    val variants: List<Product>?,
+    val image: Image?
 )
+
 
 data class Product(
     val id: Long,

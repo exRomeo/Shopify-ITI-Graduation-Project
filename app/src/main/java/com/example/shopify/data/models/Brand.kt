@@ -9,6 +9,7 @@ data class SmartCollections(
 ) : Serializable
 
 data class Brand(
+    val id:Long,
     @SerializedName("title")
     val name: String?,
     val image: Image?

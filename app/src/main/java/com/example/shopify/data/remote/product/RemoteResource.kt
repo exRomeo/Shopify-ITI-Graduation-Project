@@ -39,4 +39,12 @@ class RemoteResource private constructor() : IRemoteResource /*ProductSource*/ {
             UiState.Error(ex)
         }
 
+    override suspend fun getSpecificBrandProducts(id:Long): Response<Products> {
+        return apiService.getSpecificBrandProducts(id)
+    }
+
+    override suspend fun getProductsBySubcategory(id: Long, type: String): Response<Products> {
+        return apiService.getProductsBySubcategory(id,type)
+    }
+
 }
