@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.shopify.core.helpers.UiState
+import com.example.shopify.data.managers.CartManager
+import com.example.shopify.data.managers.WishlistManager
+import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.screens.homescreen.HomeViewModel
 import kotlinx.coroutines.Dispatchers
@@ -14,14 +17,15 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class BrandsViewModel( val repository: IProductRepository):ViewModel() {
+class BrandsViewModel(
+    private val repository: IProductRepository,
+    private val wishlistManager: WishlistManager,
+    private val cartManager: CartManager
+    ):ViewModel() {
     private var _products: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val brandList: StateFlow<UiState> = _products
     var id:Long = 0
 
-    init{
-        getSpecificBrandProducts()
-    }
 
      fun getSpecificBrandProducts() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -41,12 +45,33 @@ class BrandsViewModel( val repository: IProductRepository):ViewModel() {
         }
     }
 
+    fun addWishlistItem(product: ProductSample) {
+        viewModelScope.launch(Dispatchers.IO) {
+            wishlistManager.addWishlistItem(product)
+        }
+    }
+
+    fun removeWishlistItem(product: ProductSample) {
+        viewModelScope.launch(Dispatchers.IO) {
+            wishlistManager.removeWishlistItem(product)
+        }
+    }
+
+    fun addItemToCart(product: ProductSample) {
+        viewModelScope.launch(Dispatchers.IO) {
+            cartManager.addCartItem(product)
+        }
+
+    }
+
 }
 
 
-    class BrandsViewModelFactory(private val repository: IProductRepository) : ViewModelProvider.Factory {
+    class BrandsViewModelFactory( private val repository: IProductRepository,
+                                  private val wishlistManager: WishlistManager,
+                                  private val cartManager: CartManager) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return if (modelClass.isAssignableFrom(BrandsViewModel::class.java))
-                BrandsViewModel(repository) as T else throw IllegalArgumentException("View Model Class Not Found !!!")
+                BrandsViewModel(repository, wishlistManager,cartManager) as T else throw IllegalArgumentException("View Model Class Not Found !!!")
         }
     }
