@@ -50,13 +50,13 @@ class WishlistManager(
         }
     }
 
-    suspend fun addWishlistItem(product: ProductSample) {
+    suspend fun addWishlistItem(productID: Long, variantID: Long) {
         if (!::wishlistDraftOrder.isInitialized)
             getWishlistItems()
         if (CurrentUserHelper.hasWishlist())
-            addToWishlistDraftOrder(product = product)
+            addToWishlistDraftOrder(productID = productID, variantID = variantID)
         else
-            createWishlist(product = product)
+            createWishlist(productID = productID, variantID = variantID)
         updateWishlist()
         getWishlistItems()
     }
@@ -69,34 +69,34 @@ class WishlistManager(
         )
     }
 
-    private suspend fun addToWishlistDraftOrder(product: ProductSample) {
+    private suspend fun addToWishlistDraftOrder(productID: Long, variantID: Long) {
         if (!::wishlistDraftOrder.isInitialized)
             getWishlistItems()
         wishlistDraftOrder.draftOrder.lineItems.add(
             element = LineItem(
-                variantID = product.variants[0].id,
-                productID = product.id,
-                title = product.title,
+                variantID = variantID,
+                productID = productID,
+                title = "product.title",
                 quantity = 1,
-                name = product.title,
-                price = product.variants[0].price ?: "0.00"
+                name = "product.title",
+                price = ""
             )
         )
     }
 
-    private suspend fun createWishlist(product: ProductSample) {
+    private suspend fun createWishlist(productID: Long, variantID: Long) {
         wishlistDraftOrder = DraftOrderBody(
             DraftOrder(
                 id = 0L,
                 note = ">wishlist<",
                 lineItems = mutableListOf(
                     LineItem(
-                        productID = product.id,
-                        variantID = product.variants[0].id,
-                        title = product.title,
-                        name = product.variants[0].title ?: "",
-                        price = product.variants[0].price ?: "",
-                        quantity = 1L
+                        variantID = variantID,
+                        productID = productID,
+                        title = "product.title",
+                        quantity = 1,
+                        name = "product.title",
+                        price = ""
                     )
                 ),
                 totalPrice = ""
@@ -114,10 +114,10 @@ class WishlistManager(
         )
     }
 
-    suspend fun removeWishlistItem(product: ProductSample) {
+    suspend fun removeWishlistItem(productID: Long) {
         if (wishlistDraftOrder.draftOrder.lineItems.size > 1) {
             val index: Int = wishlistDraftOrder.draftOrder.lineItems.indexOfFirst {
-                it.productID == product.id
+                it.productID == productID
             }
             wishlistDraftOrder.draftOrder.lineItems.removeAt(index)
             draftOrderAPI.updateDraftOrder(

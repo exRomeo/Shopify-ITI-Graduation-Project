@@ -1,7 +1,7 @@
 package com.example.shopify.data.models
 
 import java.io.Serializable
-
+import com.google.gson.annotations.SerializedName
 
 data class Products(
     val products:List<Variant>?,
@@ -19,7 +19,9 @@ data class Product(
     val id: Long,
     val product_id: Long?,
     val title: String?,
-    val price: String?
+    val price: String?,
+    @field:SerializedName("inventory_quantity")
+    val availableAmount: Long?
 )
 
 

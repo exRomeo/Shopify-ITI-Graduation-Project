@@ -12,15 +12,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
-import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.data.managers.CartManager
 import com.example.shopify.data.managers.WishlistManager
 import com.example.shopify.data.models.Image
@@ -31,6 +28,7 @@ import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.data.repositories.user.IUserDataRepository
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModelFactory
+import com.example.shopify.presentation.screens.settingsscreen.TAG
 
 @Composable
 fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
@@ -114,11 +112,11 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
             onAcceptFavChanged = {
                 isFavorite = !isFavorite
                 if (isFavorite) {
-                    settingsViewModel.addWishlistItem(productSample)
+//                    settingsViewModel.addWishlistItem(productSample)
                     toastMessage = R.string.product_add_to_fav_success
                 }
                 if (!isFavorite) {
-                    settingsViewModel.removeWishlistItem(productSample)
+//                    settingsViewModel.removeWishlistItem(productSample)
                     toastMessage = R.string.product_remove_from_fav_success
                 }
                 showToast = true
@@ -148,8 +146,8 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
             onShowDialogAction = {
                 showDialog = false
                 itemCount = 0
-                if (productAddedToCart){
-                    settingsViewModel.removeCart(productSample)
+                if (productAddedToCart) {
+//                    settingsViewModel.removeCart(productSample)
                     toastMessage = R.string.product_remove_from_cart_success
                     showToast = true
                     productAddedToCart = false
@@ -161,17 +159,18 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
             },
             addToCartAction = {
                 toastMessage = if (itemCount != 0) {
-                    settingsViewModel.addCartItem(
-                        product = ProductSample(
-                            id = product?.id ?: 0,
-                            title = product?.title ?: "",
-                            variants = product?.variants ?: listOf(),
-                            images = product?.images ?: listOf(),
-                            image = Image(product?.images?.get(0)?.src ?: "")
-                        )
-                    )
-                    productAddedToCart = true
-                    R.string.product_add_to_cart_success
+//                    settingsViewModel.addCartItem(
+//                        product = ProductSample(
+//                            id = product?.id ?: 0,
+//                            title = product?.title ?: "",
+//                            variants = product?.variants ?: listOf(),
+//                            images = product?.images ?: listOf(),
+//                            image = Image(product?.images?.get(0)?.src ?: "")
+//                        )
+//                    )
+//                    productAddedToCart = true
+//                    R.string.product_add_to_cart_success
+                    Log.i(TAG, "ProductDetailsScreen: ")
                 } else {
                     R.string.please_enter_quantity_of_product
                 }

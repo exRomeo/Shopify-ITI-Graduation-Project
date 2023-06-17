@@ -28,7 +28,7 @@ class CartManager(
     }
 
     suspend fun increaseCartItemCount(product: ProductSample) {
-        if (getCartItemCount(product) < 10) {
+        if (getCartItemCount(product) < product.variants[0].availableAmount!!) {
             cartDraftOrder.draftOrder.lineItems[cart.replayCache.first().indexOf(product)].quantity++
             updateCart()
         }
@@ -68,13 +68,13 @@ class CartManager(
         }
     }
 
-    suspend fun addCartItem(product: ProductSample) {
+    suspend fun addCartItem(productID: Long, variantID: Long) {
         if (!::cartDraftOrder.isInitialized)
             getCartItems()
         if (CurrentUserHelper.hasCart())
-            addToCartDraftOrder(product)
+            addToCartDraftOrder(productID = productID, variantID = variantID)
         else
-            createCart(product = product)
+            createCart(productID = productID, variantID = variantID)
         updateCart()
         getCartItems()
     }
@@ -87,35 +87,35 @@ class CartManager(
         )
     }
 
-    private suspend fun addToCartDraftOrder(product: ProductSample) {
+    private suspend fun addToCartDraftOrder(productID: Long, variantID: Long) {
         if (!::cartDraftOrder.isInitialized)
             getCartItems()
         cartDraftOrder.draftOrder.lineItems.add(
             element = LineItem(
-                variantID = product.variants[0].id,
-                productID = product.id,
-                title = product.title,
+                variantID = variantID,
+                productID = productID,
+                title = "product.title",
                 quantity = 1,
-                name = product.title,
-                price = product.variants[0].price ?: "0.00"
+                name = "product.title",
+                price = ""
             )
         )
     }
 
 
-    private suspend fun createCart(product: ProductSample) {
+    private suspend fun createCart(productID: Long, variantID: Long) {
         cartDraftOrder = DraftOrderBody(
             DraftOrder(
                 id = 0L,
                 note = ">Cart<",
                 lineItems = mutableListOf(
                     LineItem(
-                        productID = product.id,
-                        variantID = product.variants[0].id,
-                        title = product.title,
-                        name = product.variants[0].title ?: "",
-                        price = product.variants[0].price ?: "",
-                        quantity = 1L
+                        variantID = variantID,
+                        productID = productID,
+                        title = "product.title",
+                        quantity = 1,
+                        name = "product.title",
+                        price = ""
                     )
                 ),
                 totalPrice = ""
@@ -134,10 +134,10 @@ class CartManager(
     }
 
 
-    suspend fun removeCart(product: ProductSample) {
+    suspend fun removeCart(productID: Long) {
         if (cartDraftOrder.draftOrder.lineItems.size > 1) {
             val index: Int = cartDraftOrder.draftOrder.lineItems.indexOfFirst {
-                it.productID == product.id
+                it.productID == productID
             }
             cartDraftOrder.draftOrder.lineItems.removeAt(index)
             draftOrderAPI.updateDraftOrder(
