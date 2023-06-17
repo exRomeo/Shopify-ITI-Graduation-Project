@@ -161,7 +161,6 @@ fun WishlistItemCard(
                     contentAlignment = Alignment.Center
                 ) {
                     IconButton(
-
                         onClick = {
                             onRemoveItem()
                         }

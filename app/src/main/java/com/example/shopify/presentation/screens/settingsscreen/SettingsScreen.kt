@@ -229,8 +229,7 @@ fun SettingsPreview() {
             SettingsViewModel(
                 UserDataRepository(
                     UserDataRemoteSource(
-                        RetrofitClient.customerAddressAPI,
-                        RetrofitClient.draftOrderAPI
+                        RetrofitClient.customerAddressAPI
                     )
                 ),
                 wishlistManager = WishlistManager(

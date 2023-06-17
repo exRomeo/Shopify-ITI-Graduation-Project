@@ -8,7 +8,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.shopify.Utilities.ShopifyApplication
-import com.example.shopify.core.navigation.NavGraph
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.presentation.screens.settingsscreen.SettingsScreen
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
@@ -49,11 +48,17 @@ fun SettingsNavigation(
         }
 
         composable(route = Screens.Wishlist.route) {
-            WishlistScreen(settingsViewModel, navController = settingsNavController)
+            WishlistScreen(
+                settingsViewModel,
+                settingsNavController = settingsNavController,
+                mainNavController = bottomNavController
+            )
         }
 
         composable(route = Screens.Cart.route) {
-            CartScreen(viewModel = settingsViewModel, navController = settingsNavController)
+            CartScreen(viewModel = settingsViewModel,
+                settingsNavController = settingsNavController,
+                mainNavController = bottomNavController)
         }
     }
 }

@@ -1,8 +1,6 @@
 package com.example.shopify.data.models
 
 import java.io.Serializable
-
-
 import com.google.gson.annotations.SerializedName
 
 data class Products(

@@ -1,7 +1,6 @@
 package com.example.shopify.presentation.screens.settingsscreen
 
 import android.util.Log
-import androidx.compose.animation.core.estimateAnimationDurationMillis
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -156,15 +155,15 @@ class SettingsViewModel(
         }
     }
 
-    fun addWishlistItem(product: ProductSample) {
+    fun addWishlistItem(productID: Long, variantID: Long) {
         viewModelScope.launch {
-            wishlistManager.addWishlistItem(product)
+            wishlistManager.addWishlistItem(productID = productID, variantID = variantID)
         }
     }
 
-    fun removeWishlistItem(product: ProductSample) {
+    fun removeWishlistItem(productID: Long) {
         viewModelScope.launch {
-            wishlistManager.removeWishlistItem(product)
+            wishlistManager.removeWishlistItem(productID = productID)
         }
     }
 
@@ -205,16 +204,16 @@ class SettingsViewModel(
         }
     }
 
-    fun addCartItem(product: ProductSample) {
+    fun addCartItem(productID: Long, variantID: Long) {
         viewModelScope.launch {
-            cartManager.addCartItem(product)
+            cartManager.addCartItem(productID = productID, variantID = variantID)
         }
 
     }
 
-    fun removeCart(product: ProductSample) {
+    fun removeCart(productID: Long) {
         viewModelScope.launch {
-            cartManager.removeCart(product)
+            cartManager.removeCart(productID = productID)
         }
     }
 }

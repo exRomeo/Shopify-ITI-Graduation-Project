@@ -1,12 +1,10 @@
 package com.example.shopify.data.repositories.user.remote
 
 import com.example.shopify.data.models.Product
-import com.example.shopify.data.models.ProductResponse
 import com.example.shopify.data.models.address.AddressBody
 import com.example.shopify.data.models.address.AddressesResponse
 import com.example.shopify.data.models.address.DeleteResponse
 import com.example.shopify.data.models.address.NewAddressResponse
-import com.example.shopify.data.models.draftorder.DraftOrderBody
 import retrofit2.Response
 
 interface IUserDataRemoteSource {
@@ -43,31 +41,6 @@ interface IUserDataRemoteSource {
     suspend fun updateOrderItem(product: Product)
 
     suspend fun removeOrderItem(product: Product)
-
-
-    /**
-     * Draft orders functions
-     */
-
-
-    suspend fun getDraftOrder(
-        draftOrderID: Long
-    ): Response<DraftOrderBody>
-
-    suspend fun createDraftOrder(
-        draftOrderBody: DraftOrderBody
-    ): Response<DraftOrderBody>
-
-    suspend fun updateDraftOrder(
-        draftOrderID: Long,
-        draftOrderBody: DraftOrderBody
-    ): Response<DraftOrderBody>
-
-    suspend fun deleteDraftOrder(
-        draftOrderID: Long
-    )
-
-    suspend fun getProductByID(productID: Long): Response<ProductResponse>
 
 
 }

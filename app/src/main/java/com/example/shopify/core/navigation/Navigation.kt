@@ -1,7 +1,6 @@
 package com.example.shopify.core.navigation
 
 import android.util.Log
-import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.List
@@ -13,7 +12,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
@@ -21,12 +19,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
 import com.example.shopify.presentation.screens.authentication.login.LoginScreen
 import com.example.shopify.presentation.screens.authentication.registeration.SignupScreen
 import com.example.shopify.presentation.screens.brands.BrandsScreen
+import com.example.shopify.presentation.screens.categories.CategoriesScreen
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 import com.example.shopify.presentation.screens.product_details_screen.ProductDetailsScreen
 
@@ -50,13 +48,9 @@ fun NavGraph(navController: NavHostController) {
         }
 
         composable(
-            route = "categories"
+            route = Screens.Categories.route
         ) {
-            Box(
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(text = "Categories")
-            }
+            CategoriesScreen(navController)
         }
 
         composable(route = Screens.Settings.route) {

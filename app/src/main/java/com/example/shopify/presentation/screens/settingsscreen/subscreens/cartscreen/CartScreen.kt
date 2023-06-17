@@ -44,10 +44,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.shopify.R
+import com.example.shopify.core.navigation.Screens
 import com.example.shopify.data.managers.CartManager
 import com.example.shopify.data.managers.WishlistManager
-import com.example.shopify.data.models.Image
-import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.repositories.user.UserDataRepository
 import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
@@ -59,7 +58,11 @@ import com.example.shopify.ui.theme.ShopifyTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CartScreen(viewModel: SettingsViewModel, navController: NavHostController) {
+fun CartScreen(
+    viewModel: SettingsViewModel,
+    settingsNavController: NavHostController,
+    mainNavController: NavHostController
+) {
     val cartItems by viewModel.cart.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -100,28 +103,15 @@ fun CartScreen(viewModel: SettingsViewModel, navController: NavHostController) {
         topBar = {
             CenterAlignedTopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { settingsNavController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, "")
                     }
                 },
                 actions = {
                     IconButton(onClick = {
                         viewModel.addCartItem(
-                            ProductSample(
-                                id = 8398826111282,
-                                title = "",
-                                variants = listOf(
-                                    Product(
-                                        id = 45344376652082,
-                                        product_id = 8398826111282,
-                                        title = "",
-                                        price = "",
-                                        availableAmount = 10L
-                                    )
-                                ),
-                                image = Image(""),
-                                images = listOf(Image(""))
-                            )
+                            productID = 8398826111282,
+                            variantID = 45344376652082
                         )
                     }) {
                         Icon(Icons.Default.Add, "")
@@ -142,7 +132,7 @@ fun CartScreen(viewModel: SettingsViewModel, navController: NavHostController) {
     ) {
         Column(Modifier.padding(it)) {
             CartScreenContent(
-                viewModel = viewModel, cartItems = cartItems, navController = navController
+                viewModel = viewModel, cartItems = cartItems, mainNavController = mainNavController
             )
         }
     }
@@ -154,7 +144,7 @@ fun CartScreen(viewModel: SettingsViewModel, navController: NavHostController) {
 fun CartScreenContent(
     viewModel: SettingsViewModel,
     cartItems: List<ProductSample>,
-    navController: NavHostController
+    mainNavController: NavHostController
 ) {
     var showDialog by remember { mutableStateOf(false) }
     var itemToRemove by remember { mutableStateOf<ProductSample?>(null) }
@@ -180,7 +170,9 @@ fun CartScreenContent(
                         showDialog = true
                     }
                 }) {
-                /*TODO: Navigation to item detail Page*/
+                mainNavController.navigate(Screens.Details.route + "/${it.id}", builder = {
+                    launchSingleTop = true
+                })
             }
         }
     }
@@ -190,7 +182,7 @@ fun CartScreenContent(
             message = stringResource(id = R.string.cart_item_removal_warning),
             dismissButtonText = stringResource(id = R.string.cancel),
             confirmButtonText = stringResource(id = R.string.remove),
-            onConfirm = { itemToRemove?.let { viewModel.removeCart(it) } }) {
+            onConfirm = { itemToRemove?.let { viewModel.removeCart(it.id) } }) {
             showDialog = false
         }
     }
@@ -204,13 +196,14 @@ fun CartPreview() {
             viewModel = SettingsViewModel(
                 UserDataRepository(
                     UserDataRemoteSource(
-                        customerAddressAPI = RetrofitClient.customerAddressAPI,
-                        draftOrderAPI = RetrofitClient.draftOrderAPI
+                        customerAddressAPI = RetrofitClient.customerAddressAPI
                     )
                 ),
                 cartManager = CartManager(RetrofitClient.draftOrderAPI),
                 wishlistManager = WishlistManager(RetrofitClient.draftOrderAPI)
-            ), navController = rememberNavController()
+            ),
+            settingsNavController = rememberNavController(),
+            mainNavController = rememberNavController()
 
         )
     }

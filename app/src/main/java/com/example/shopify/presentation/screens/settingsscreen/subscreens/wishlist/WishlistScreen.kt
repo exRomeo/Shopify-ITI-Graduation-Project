@@ -35,8 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.shopify.R
-import com.example.shopify.data.models.Image
-import com.example.shopify.data.models.Product
+import com.example.shopify.core.navigation.Screens
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.presentation.common.composables.WishlistItemCard
@@ -46,7 +45,11 @@ import com.example.shopify.presentation.screens.settingsscreen.TAG
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WishlistScreen(viewModel: SettingsViewModel, navController: NavHostController) {
+fun WishlistScreen(
+    viewModel: SettingsViewModel,
+    settingsNavController: NavHostController,
+    mainNavController: NavHostController
+) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -58,28 +61,15 @@ fun WishlistScreen(viewModel: SettingsViewModel, navController: NavHostControlle
         topBar = {
             CenterAlignedTopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
+                    IconButton(onClick = { settingsNavController.navigateUp() }) {
                         Icon(Icons.Default.ArrowBack, "")
                     }
                 },
                 actions = {
                     IconButton(onClick = {
                         viewModel.addWishlistItem(
-                            ProductSample(
-                                id = 8398826111282,
-                                title = "",
-                                variants = listOf(
-                                    Product(
-                                        id = 45344376652082,
-                                        product_id = 8398826111282,
-                                        title = "",
-                                        price = "",
-                                        availableAmount = 10L
-                                    )
-                                ),
-                                image = Image(""),
-                                images = listOf(Image(""))
-                            )
+                            productID = 8398826111282,
+                            variantID = 45344376652082
                         )
                     }) {
                         Icon(Icons.Default.Add, "")
@@ -99,13 +89,13 @@ fun WishlistScreen(viewModel: SettingsViewModel, navController: NavHostControlle
         }
     ) {
         Column(Modifier.padding(it)) {
-            WishlistScreenContent(viewModel = viewModel)
+            WishlistScreenContent(viewModel = viewModel, mainNavController = mainNavController)
         }
     }
 }
 
 @Composable
-fun WishlistScreenContent(viewModel: SettingsViewModel) {
+fun WishlistScreenContent(viewModel: SettingsViewModel, mainNavController: NavHostController) {
     var productToRemove by remember { mutableStateOf<ProductSample?>(null) }
     var showDialog by remember { mutableStateOf(false) }
     val wishlistItems by viewModel.wishlist.collectAsState()
@@ -121,7 +111,11 @@ fun WishlistScreenContent(viewModel: SettingsViewModel) {
                     productToRemove = it
                     showDialog = true
                 }) {
-                /*TODO: Navigation to item detail Page*/
+                mainNavController.navigate(Screens.Details.route + "/${it.id}",
+                    builder = {
+                        launchSingleTop = true
+                    }
+                )
             }
         }
     }
@@ -132,7 +126,7 @@ fun WishlistScreenContent(viewModel: SettingsViewModel) {
             message = stringResource(id = R.string.wishlist_item_removal_warning),
             dismissButtonText = stringResource(id = R.string.cancel),
             confirmButtonText = stringResource(id = R.string.remove),
-            onConfirm = { productToRemove?.let { viewModel.removeWishlistItem(it) } }) {
+            onConfirm = { productToRemove?.let { viewModel.removeWishlistItem(it.id) } }) {
             showDialog = false
         }
     }
