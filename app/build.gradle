@@ -127,8 +127,16 @@ dependencies {
     implementation 'androidx.tv:tv-foundation:1.0.0-alpha04'
     implementation 'androidx.tv:tv-material:1.0.0-alpha04'
 
+
+    //custom floating action button
     implementation "io.github.jisungbin:multifab:1.0.0"
 
+    //for pager image
+    implementation "com.google.accompanist:accompanist-pager: 0.13.0"
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.13.0"
+
+
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.0"
 }
 
 kapt {

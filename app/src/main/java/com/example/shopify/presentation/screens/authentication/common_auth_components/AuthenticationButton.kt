@@ -1,4 +1,4 @@
-package com.example.shopify.presentation.screens.authentication
+package com.example.shopify.presentation.screens.authentication.common_auth_components
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.shopify.presentation.components.CustomCornerButton
+import com.example.shopify.presentation.common.composables.CustomCornerButton
 
 @Composable
 fun AuthenticationButton(

@@ -1,14 +1,14 @@
 package com.example.shopify.data.repositories.product
 
-import com.example.shopify.data.models.Brand
+import com.example.shopify.core.helpers.UiState
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.SmartCollections
-import com.example.shopify.data.remote.RemoteResource
+import com.example.shopify.data.remote.product.RemoteResource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 
-class ProductRepository(val remoteResource: RemoteResource):IProductRepository {
+class ProductRepository(private val remoteResource: RemoteResource) : IProductRepository {
 
 
     override suspend fun getBrands(): Flow<Response<SmartCollections>> {
@@ -17,9 +17,28 @@ class ProductRepository(val remoteResource: RemoteResource):IProductRepository {
         }
     }
 
-    override suspend fun getRandomproducts(): Flow<Response<Products>> {
+    override suspend fun getRandomProducts(): Flow<Response<Products>> {
         return flow {
             emit(remoteResource.getRandomProducts())
+        }
+    }
+
+    override suspend fun getSingleProductDetails(productId: Long): UiState =
+        remoteResource.getProductInfo(productId)
+
+
+    override suspend fun getSpecificBrandProducts(id:Long): Flow<Response<Products>> {
+        return flow{
+            emit(remoteResource.getSpecificBrandProducts(id))
+        }
+    }
+
+    override suspend fun getProductsBySubcategory(
+        id: Long,
+        type: String
+    ): Flow<Response<Products>> {
+        return flow{
+            emit(remoteResource.getProductsBySubcategory(id,type))
         }
     }
 

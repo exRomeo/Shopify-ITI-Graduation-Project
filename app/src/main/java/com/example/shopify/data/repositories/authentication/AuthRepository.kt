@@ -34,6 +34,8 @@ class AuthRepository(
         password: String
     ): AuthenticationResponseState = authenticationClient.loginUserFirebase(email, password)
 
+    override suspend fun signOutFirebase(): AuthenticationResponseState = authenticationClient.signOutFirebase()
+
 
     override suspend fun googleSignIn(credential: AuthCredential): AuthenticationResponseState =
         authenticationClient.googleSignIn(credential)
