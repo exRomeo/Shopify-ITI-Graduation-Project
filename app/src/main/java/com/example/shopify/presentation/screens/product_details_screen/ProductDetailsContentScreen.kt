@@ -15,6 +15,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -85,7 +86,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProductDetailsContentScreen(
@@ -113,8 +113,11 @@ fun ProductDetailsContentScreen(
     LaunchedEffect(Unit) { rating = Random.nextDouble(2.0, 5.0) }
 
     Log.i("TAG", "ProductDetailsContentScreen: $product")
-    Scaffold { values ->
-        LazyColumn(contentPadding = values) {
+    Scaffold() { values ->
+        LazyColumn(
+            contentPadding = values,
+            modifier = Modifier.padding(paddingValues = PaddingValues(0.dp))
+        ) {
             items(1) {
                 val pagerState = rememberPagerState()
                 val colorMatrix = remember { ColorMatrix() }

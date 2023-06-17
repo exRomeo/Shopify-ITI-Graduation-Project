@@ -102,4 +102,6 @@
 
     <string name="product_remove_from_fav_success">Product remove from favorite</string>
     <string name="product_remove_from_cart_success">Product remove from cart</string>
+    <string name="search_brands">Search On Brands</string>
+    <string name="search">Search</string>
 </resources>

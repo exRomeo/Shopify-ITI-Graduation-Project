@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,8 +33,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.List
 import androidx.compose.material.icons.rounded.Settings
@@ -49,6 +52,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -90,22 +94,26 @@ import com.example.shopify.data.models.SmartCollections
 import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
+fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
 //    ScaffoldStructure(screenTitle = "Home")
 //    {
 //HomeScreen(navController = navController )
 //    }
-  val repository: IProductRepository = (LocalContext.current.applicationContext as ShopifyApplication) .repository
-     val viewModel: HomeViewModel = viewModel(factory =  HomeViewModelFactory(repository))
+    val repository: IProductRepository =
+        (LocalContext.current.applicationContext as ShopifyApplication).repository
+    val viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(repository))
 
     val brandsState: UiState by viewModel.brandList.collectAsState()
     val randomsState: UiState by viewModel.randomList.collectAsState()
+    var searchText by remember { mutableStateOf("") }
+    var stateOfSearchBar by remember { mutableStateOf(false) }
     var brandList: List<Brand> = listOf()
     var randomList: List<Variant> = listOf()
     when (brandsState) {
         is UiState.Loading -> {
-            Log.i("menna","loading")
+            Log.i("menna", "loading")
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -121,7 +129,7 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
         }
 
         is UiState.Success<*> -> {
-            Log.i("menna","success")
+            Log.i("menna", "success")
             brandList =
                 (brandsState as UiState.Success<SmartCollections>).data.body()?.smart_collections!!
         }
@@ -145,45 +153,69 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
     }
 
 
-      //  ScaffoldStructure("home",navController) {
-       // Scaffold (bottomBar = {Bottombar(navController = rememberNavController())}) {
-Scaffold(
-    bottomBar = { Bottombar(navController = navController)}
-) {
-    if (brandList.isNotEmpty() && randomList.isNotEmpty()) {
-    Column(
-        modifier = modifier
-            .padding(it)
-            .verticalScroll(rememberScrollState())
-            .padding(paddingValues = PaddingValues(10.dp))
-    )
-    {
-        HomeSection(sectionTitle = R.string.special_offers) {
-            AdsCarousel()
+    //  ScaffoldStructure("home",navController) {
+    // Scaffold (bottomBar = {Bottombar(navController = rememberNavController())}) {
+    Scaffold(
+        bottomBar = { Bottombar(navController = navController) }
+    ) {
+        SearchBar(
+            modifier = Modifier.fillMaxWidth(),
+            query = searchText,
+            onQueryChange = { searchText = it },
+            onSearch = { stateOfSearchBar = false },
+            active = stateOfSearchBar,
+            onActiveChange = { stateOfSearchBar = it },
+            placeholder = { Text(text = stringResource(id = R.string.search_brands)) },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search, contentDescription = stringResource(
+                        id = R.string.search
+                    )
+                )
+            },
+            trailingIcon = {
+                if(stateOfSearchBar){
+                    Icon(
+                        modifier = Modifier.clickable { searchText = ""},
+                        imageVector = Icons.Default.Close, contentDescription = stringResource(
+                            id = R.string.close
+                        )
+                    )
+                }
+
+            }
+        ) {
+
         }
+        Spacer(modifier = Modifier.height(16.dp))
+        if (brandList.isNotEmpty() && randomList.isNotEmpty()) {
+            Column(
+                modifier = modifier
+                    .padding(it)
+                    .verticalScroll(rememberScrollState())
+                    .padding(paddingValues = PaddingValues(10.dp))
+            )
+            {
 
-        HomeSection(sectionTitle = R.string.brands) {
+                HomeSection(sectionTitle = R.string.special_offers) {
+                    AdsCarousel()
+                }
 
-            //  (brandsState as UiState.Success).data.body()?.let {
-            BrandCards(brands = brandList, navController = navController)
-        }
+                HomeSection(sectionTitle = R.string.brands) {
 
-        HomeSection(sectionTitle = R.string.trending_products) {
-            ItemCards(products = randomList,
-                isFavourite = true, onFavouriteClicked = {}, onAddToCard = {})
+                    //  (brandsState as UiState.Success).data.body()?.let {
+                    BrandCards(brands = brandList, navController = navController)
+                }
 
+                HomeSection(sectionTitle = R.string.trending_products) {
+                    ItemCards(products = randomList,
+                        isFavourite = true, onFavouriteClicked = {}, onAddToCard = {})
+
+                }
+            }
         }
     }
 }
-        }
-        }
-
-
-
-
-
-
-
 
 
 @Composable
@@ -205,7 +237,6 @@ fun ScaffoldStructure(
         bottomBar = { Bottombar(navController = navController) }
     )
 }
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -296,7 +327,11 @@ fun ItemCardContent(
 }
 
 @Composable
-fun BrandCardContent(modifier: Modifier = Modifier, brand: Brand,navController:NavHostController) {
+fun BrandCardContent(
+    modifier: Modifier = Modifier,
+    brand: Brand,
+    navController: NavHostController
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -485,7 +520,11 @@ fun HomeSection(
 }
 
 @Composable
-fun BrandCards(modifier: Modifier = Modifier, brands: List<Brand>,navController:NavHostController) {
+fun BrandCards(
+    modifier: Modifier = Modifier,
+    brands: List<Brand>,
+    navController: NavHostController
+) {
     LazyRow(
         modifier = modifier.padding(start = 6.dp, end = 6.dp)
     ) {
