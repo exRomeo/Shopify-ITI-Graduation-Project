@@ -29,7 +29,8 @@ class CartManager(
 
     suspend fun increaseCartItemCount(product: ProductSample) {
         if (getCartItemCount(product) < product.variants[0].availableAmount!!) {
-            cartDraftOrder.draftOrder.lineItems[cart.replayCache.first().indexOf(product)].quantity++
+            cartDraftOrder.draftOrder.lineItems[cart.replayCache.first()
+                .indexOf(product)].quantity++
             updateCart()
         }
     }
@@ -68,13 +69,13 @@ class CartManager(
         }
     }
 
-    suspend fun addCartItem(productID: Long, variantID: Long) {
+    suspend fun addCartItem(productID: Long, variantID: Long, quantity: Long = 1) {
         if (!::cartDraftOrder.isInitialized)
             getCartItems()
         if (CurrentUserHelper.hasCart())
-            addToCartDraftOrder(productID = productID, variantID = variantID)
+            addToCartDraftOrder(productID = productID, variantID = variantID, quantity = quantity)
         else
-            createCart(productID = productID, variantID = variantID)
+            createCart(productID = productID, variantID = variantID, quantity = quantity)
         updateCart()
         getCartItems()
     }
@@ -87,7 +88,7 @@ class CartManager(
         )
     }
 
-    private suspend fun addToCartDraftOrder(productID: Long, variantID: Long) {
+    private suspend fun addToCartDraftOrder(productID: Long, variantID: Long, quantity: Long = 1) {
         if (!::cartDraftOrder.isInitialized)
             getCartItems()
         cartDraftOrder.draftOrder.lineItems.add(
@@ -95,7 +96,7 @@ class CartManager(
                 variantID = variantID,
                 productID = productID,
                 title = "product.title",
-                quantity = 1,
+                quantity = quantity,
                 name = "product.title",
                 price = ""
             )
@@ -103,7 +104,7 @@ class CartManager(
     }
 
 
-    private suspend fun createCart(productID: Long, variantID: Long) {
+    private suspend fun createCart(productID: Long, variantID: Long, quantity: Long = 1) {
         cartDraftOrder = DraftOrderBody(
             DraftOrder(
                 id = 0L,
@@ -113,7 +114,7 @@ class CartManager(
                         variantID = variantID,
                         productID = productID,
                         title = "product.title",
-                        quantity = 1,
+                        quantity = quantity,
                         name = "product.title",
                         price = ""
                     )
