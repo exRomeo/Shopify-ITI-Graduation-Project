@@ -17,14 +17,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
 import com.example.shopify.presentation.screens.authentication.login.LoginScreen
 import com.example.shopify.presentation.screens.authentication.registeration.SignupScreen
+import com.example.shopify.presentation.screens.brands.BrandsScreen
+import com.example.shopify.presentation.screens.categories.CategoriesScreen
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
+import com.example.shopify.presentation.screens.product_details_screen.ProductDetailsScreen
 
 
 @Composable
@@ -32,7 +37,7 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
 
     NavHost(
         navController = navController,
-        startDestination = Screens.Login.route
+        startDestination = Screens.Home.route
     ) {
         composable(route = Screens.Home.route) {
             HomeScreenNavigation()
@@ -43,6 +48,7 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
         composable(route = Screens.Signup.route) {
             SignupScreen(navController)
         }
+
     }
 }
 
@@ -82,14 +88,32 @@ fun HomeScreenNavigation() {
             HomeScreen(navController)
         }
 
+        composable(route = "${Screens.Brands.route}/{collectionId}",
+            arguments = listOf(navArgument("collectionId") {
+                type = NavType.LongType
+            })
+        ) {
+            BrandsScreen(navController, it.arguments?.getLong("collectionId"))
+        }
+
+        composable(route = "${Screens.Details.route}/{productId}",
+            arguments = listOf(navArgument("productId") {
+                type = NavType.LongType
+            })
+        ) {
+            it.arguments?.getLong("productId")
+                ?.let { it1 -> ProductDetailsScreen(navController, it1) }
+        }
+
         composable(
             route = "categories"
         ) {
-            Box(
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(text = "Categories")
-            }
+            CategoriesScreen(navController)
+//            Box(
+//                contentAlignment = Alignment.Center,
+//            ) {
+//                Text(text = "Categories")
+//            }
         }
 
         composable(

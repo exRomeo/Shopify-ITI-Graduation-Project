@@ -47,16 +47,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
-import com.example.shopify.core.navigation.TopBar
+
 import com.example.shopify.data.models.Image
 import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.Products
-import com.example.shopify.data.models.Varient
+import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.screens.brands.ProductsCards
@@ -64,11 +65,11 @@ import com.example.shopify.ui.theme.ShopifyTheme
 
 
 val mainCategories = listOf("Men", "Women", "Kid", "Sale")
-val list:List<Varient> = listOf(Varient(1,"ppp", listOf(Product(
-    1,1,"adidas","200")),Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png")),(Varient(1,"ppp", listOf(Product(
-    1,1,"adidas","200")),Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png"))),(Varient(1,"ppp", listOf(Product(
-    1,1,"adidas","200")),Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png"))),(Varient(1,"ppp", listOf(Product(
-    1,1,"adidas","200")),Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png"))),(Varient(1,"ppp", listOf(Product(
+val list:List<Variant> = listOf(Variant(1,"ppp", listOf(Product(
+    1,1,"adidas","200")),Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png")),(Variant(1,"ppp", listOf(Product(
+    1,1,"adidas","200")),Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png"))),(Variant(1,"ppp", listOf(Product(
+    1,1,"adidas","200")),Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png"))),(Variant(1,"ppp", listOf(Product(
+    1,1,"adidas","200")),Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png"))),(Variant(1,"ppp", listOf(Product(
     1,1,"adidas","200")),Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png"))))
 
 val items = listOf(
@@ -95,7 +96,7 @@ val items = listOf(
 )
 
 @Composable
-fun CategoriesScreen() {
+fun CategoriesScreen(navController:NavHostController) {
     val repository: IProductRepository =
         (LocalContext.current.applicationContext as ShopifyApplication).repository
     val viewModel: CategoriesViewModel = viewModel(
@@ -105,8 +106,8 @@ fun CategoriesScreen() {
     )
 
     val productsState: UiState by viewModel.productsList.collectAsStateWithLifecycle()
-    var productsList: List<Varient> = listOf()
-    var filteredList:List<Varient> = listOf()
+    var productsList: List<Variant> = listOf()
+    var filteredList:List<Variant> = listOf()
      var state:String = "fail"
    // var FABIcon = R.drawable.ic_category
     var FABIcon by rememberSaveable {
@@ -152,8 +153,7 @@ fun CategoriesScreen() {
         }
     }
     Scaffold(
-        topBar = { TopBar(title = "bb", onSearch = {}) },
-        bottomBar = { Bottombar(navController = rememberNavController())},
+        bottomBar = { Bottombar(navController = navController)},
         //floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
             FloatingButton(items = items, onMiniFABClicked = {
@@ -249,6 +249,7 @@ fun CategoriesScreen() {
             if (filteredState.isNotEmpty()) {
                // viewModel.type = ""
                 ProductsCards(
+                    navController = navController,
                     modifier = Modifier.height(600.dp),
                     products = filteredState,
                     isFavourite = true,
@@ -348,7 +349,7 @@ fun CategoriesScreen() {
 
 
     @Composable
-    fun SliderComponent(onPriceValueChanged: (Float) -> List<Varient>) {
+    fun SliderComponent(onPriceValueChanged: (Float) -> List<Variant>) {
         var sliderValue by remember {
             mutableStateOf(0f)
         }
@@ -518,7 +519,7 @@ fun CategoriesScreen() {
 fun MainFiltersPreview() {
     ShopifyTheme {
 
-        CategoriesScreen()
+     //   CategoriesScreen()
        // Floatingbutton()
 
             }

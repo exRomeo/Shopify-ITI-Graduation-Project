@@ -82,7 +82,6 @@ import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.Screens
-import com.example.shopify.core.navigation.TopBar
 
 import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.Product
@@ -92,7 +91,7 @@ import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
 
 @Composable
-fun HomeScreen(navController: NavHostController,padding:PaddingValues,modifier: Modifier = Modifier) {
+fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
 //    ScaffoldStructure(screenTitle = "Home")
 //    {
 //HomeScreen(navController = navController )
@@ -145,42 +144,47 @@ fun HomeScreen(navController: NavHostController,padding:PaddingValues,modifier: 
         }
     }
 
-    if (brandList.isNotEmpty() && randomList.isNotEmpty()) {
+
       //  ScaffoldStructure("home",navController) {
        // Scaffold (bottomBar = {Bottombar(navController = rememberNavController())}) {
-
-            Column(
-                modifier = modifier.padding(padding)
-                    .verticalScroll(rememberScrollState())
-                    .padding(paddingValues = PaddingValues(10.dp))
-            )
-            {
-                HomeSection(sectionTitle = R.string.special_offers) {
-                    AdsCarousel()
-                }
-
-                HomeSection(sectionTitle = R.string.brands) {
-
-                    //  (brandsState as UiState.Success).data.body()?.let {
-                    BrandCards(brands = brandList, navController = navController)
-                }
-
-                HomeSection(sectionTitle = R.string.trending_products) {
-                    ItemCards(products = randomList,
-                        isFavourite = true, onFavouriteClicked = {}, onAddToCard = {})
-
-                }
-            }
-        }
+Scaffold(
+    bottomBar = { Bottombar(navController = navController)}
+) {
+    if (brandList.isNotEmpty() && randomList.isNotEmpty()) {
+    Column(
+        modifier = modifier
+            .padding(it)
+            .verticalScroll(rememberScrollState())
+            .padding(paddingValues = PaddingValues(10.dp))
+    )
+    {
+        HomeSection(sectionTitle = R.string.special_offers) {
+            AdsCarousel()
         }
 
+        HomeSection(sectionTitle = R.string.brands) {
 
+            //  (brandsState as UiState.Success).data.body()?.let {
+            BrandCards(brands = brandList, navController = navController)
+        }
 
+        HomeSection(sectionTitle = R.string.trending_products) {
+            ItemCards(products = randomList,
+                isFavourite = true, onFavouriteClicked = {}, onAddToCard = {})
 
-
-
+        }
     }
 }
+        }
+        }
+
+
+
+
+
+
+
+
 
 @Composable
 fun ScaffoldStructure(

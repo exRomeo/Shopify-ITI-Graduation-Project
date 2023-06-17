@@ -67,6 +67,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
@@ -90,7 +91,7 @@ import kotlin.random.Random
 fun ProductDetailsContentScreen(
     modifier: Modifier = Modifier,
     isFavorite: Boolean,
-    productNavController: NavController,
+    productNavController: NavHostController,
     onFavoriteChanged: () -> Unit,
     onAcceptFavChanged: () -> Unit,
     itemCount: Int,

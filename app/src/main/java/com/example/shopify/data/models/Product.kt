@@ -12,6 +12,7 @@ data class Variant(
     val title: String?,
     val variants: List<Product>?,
     val image: Image?
+)
 
 
 data class Product(

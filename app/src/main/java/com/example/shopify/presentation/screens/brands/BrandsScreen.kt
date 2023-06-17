@@ -40,11 +40,13 @@ import androidx.navigation.NavHostController
 import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
+import com.example.shopify.core.navigation.Screens
 import com.example.shopify.data.models.Image
 import com.example.shopify.data.models.Product
+
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.Products
-import com.example.shopify.data.models.Varient
+import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.screens.homescreen.CardDesign
@@ -56,7 +58,7 @@ import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingValues){
+fun BrandsScreen(navController: NavHostController, id: Long?){
     val repository: IProductRepository = (LocalContext.current.applicationContext as ShopifyApplication) .repository
    // val repository2: I = (LocalContext.current.applicationContext as ShopifyApplication) .repository
     val viewModel: BrandsViewModel = viewModel(factory = BrandsViewModelFactory(
@@ -64,16 +66,12 @@ fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingVa
     )
     )
 
-    val settingsViewModel: SettingsViewModel = viewModel(
-        factory = SettingsViewModelFactory(
-            (LocalContext.current.applicationContext as ShopifyApplication).userDataRepository
-        )
-    )
+
 
 
 
     val productsState: UiState by viewModel.brandList.collectAsState()
-    var productsList: List<Varient> = listOf()
+    var productsList: List<Variant> = listOf()
 
     LaunchedEffect(Unit) {
 
@@ -105,8 +103,9 @@ fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingVa
         if(productsList.isNotEmpty()){
 
             ProductsCards(
+               navController = navController,
                // viewModel= settingsViewModel,
-                modifier = Modifier.padding(paddingValues = padding),
+                modifier = Modifier,
                 isFavourite = true,
                 onFavouriteClicked = {},
                 onAddToCard = {},
@@ -120,9 +119,10 @@ fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingVa
 
 @Composable
     fun ProductsCards(
+    navController: NavHostController,
     //viewModel: SettingsViewModel,
         modifier: Modifier = Modifier,
-        products: List<Varient>,
+        products: List<Variant>,
         isFavourite: Boolean,
         onFavouriteClicked: (Boolean) -> Unit,
         onAddToCard: (item: Product) -> Unit
@@ -139,7 +139,9 @@ fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingVa
             ),
             content = {
                 items(products) { item ->
-                CardDesign(onCardClicked = { /*TODO*/ }) {
+                CardDesign(onCardClicked = {
+                 navController.navigate(route ="${Screens.Details.route}/${item.id}")
+                }) {
                  ProductItem(isFavourite = isFavourite, onFavouritesClicked ={
                      var productSample: ProductSample =
                          ProductSample(
@@ -153,7 +155,7 @@ fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingVa
                //   viewModel.addWishlistItem(productSample)
 
 
-                 }, onAddToCard = onAddToCard , item = item)
+                 }, onAddToCard = onAddToCard , item = item, navController = navController)
 
                 }
                 }
@@ -164,11 +166,15 @@ fun BrandsScreen(navController: NavHostController, id: Long?, padding: PaddingVa
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductItem(
+    navController:NavHostController,
     modifier: Modifier = Modifier, isFavourite: Boolean,
-    onFavouritesClicked: (Boolean) -> Unit, onAddToCard: (item: Product) -> Unit, item: Varient
+    onFavouritesClicked: (Boolean) -> Unit, onAddToCard: (item: Product) -> Unit, item: Variant
 ) {
-Card(onClick = {}, modifier = Modifier.height(200.dp)) {
+Card(onClick = {
+    navController.navigate(route ="${Screens.Details.route}/${item.id}")
+}, modifier = Modifier.height(200.dp)) {
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+
         item.image?.src?.let {
             ImageFromNetwork(image = it,
                 modifier = Modifier
