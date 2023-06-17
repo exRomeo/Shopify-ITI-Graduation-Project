@@ -225,7 +225,6 @@ fun WarningDialog(
             TextButton(
                 onClick = {
                     onDismiss()
-
                 }
             ) {
                 Text(text = dismissButtonText)

@@ -16,7 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import retrofit2.HttpException
 
 
 class AuthenticationClient(
@@ -29,7 +28,7 @@ class AuthenticationClient(
             val response = authenticationService.getSingleCustomerFromShopify(customerID)
             AuthenticationResponseState.Success(response)
         } catch (ex: Exception) {
-            AuthenticationResponseState.Error(ex.message.toString())
+            AuthenticationResponseState.Error(ex)
         }
 
     override suspend fun registerUserToShopify(customer: CustomerRequestBody): AuthenticationResponseState =
@@ -37,7 +36,7 @@ class AuthenticationClient(
             val response = authenticationService.registerUserToShopify(customer)
             AuthenticationResponseState.Success(response)
         } catch (ex: Exception) {
-            AuthenticationResponseState.Error(ex.message.toString())
+            AuthenticationResponseState.Error(ex)
         }
 
     override suspend fun registerUserToFirebase(
@@ -50,7 +49,7 @@ class AuthenticationClient(
             addCustomerIDs(customerID)
             checkedLoggedIn()
         } catch (ex: Exception) {
-            AuthenticationResponseState.Error(ex.message.toString())
+            AuthenticationResponseState.Error(ex)
         }
 
 
@@ -64,15 +63,25 @@ class AuthenticationClient(
             Log.i("TAG", "loginUserFirebase: $responseBody")
             checkedLoggedIn()
         } catch (ex: Exception) {
-            AuthenticationResponseState.Error(ex.message.toString())
+            AuthenticationResponseState.Error(ex)
         }
+
+    override suspend fun signOutFirebase(): AuthenticationResponseState {
+        return try {
+            authenticationFirebase.signOut()
+            Log.i("TAG", "${authenticationFirebase.currentUser} is signout:")
+            AuthenticationResponseState.Success(null)
+        } catch (ex: Exception) {
+            AuthenticationResponseState.Error(ex)
+        }
+    }
 
     override suspend fun googleSignIn(credential: AuthCredential): AuthenticationResponseState =
         try {
             val response = authenticationFirebase.signInWithCredential(credential).await()
             AuthenticationResponseState.GoogleSuccess(response)
         } catch (ex: Exception) {
-            AuthenticationResponseState.Error(ex.message.toString())
+            AuthenticationResponseState.Error(ex)
         }
 
     override fun checkedLoggedIn(responseBody: CustomerResponseBody?): AuthenticationResponseState =

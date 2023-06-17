@@ -3,6 +3,7 @@ package com.example.shopify.core.helpers
 import android.util.Log
 import com.example.shopify.data.repositories.authentication.IAuthRepository
 import com.example.shopify.presentation.screens.settingsscreen.TAG
+
 /*
     should be used for testing :D
 const val USER_ID = 7121192321330
@@ -16,7 +17,7 @@ object CurrentUserHelper {
     var wishlistDraftID: Long = -1
     var cartDraftID: Long = -1
     var customerID: Long = -1L
-
+    var customerName: String = ""
     suspend fun initialize(authRepository: IAuthRepository) {
         authRepo = authRepository
         getUserIDs()
@@ -56,6 +57,6 @@ object CurrentUserHelper {
     }
 
     fun hasCart(): Boolean {
-        return cartDraftID != -1L
+        return cartDraftID != -1L /*false*/
     }
 }
