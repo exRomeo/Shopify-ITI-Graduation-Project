@@ -69,12 +69,54 @@ import com.example.shopify.ui.theme.ShopifyTheme
 
 
 val mainCategories = listOf("Men", "Women", "Kid", "Sale")
-val list:List<Variant> = listOf(Variant(1,"ppp", listOf(Product(
-    1,1,"adidas","200")),Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png")),(Variant(1,"ppp", listOf(Product(
-    1,1,"adidas","200")),Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png"))),(Variant(1,"ppp", listOf(Product(
-    1,1,"adidas","200")),Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png"))),(Variant(1,"ppp", listOf(Product(
-    1,1,"adidas","200")),Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png"))),(Variant(1,"ppp", listOf(Product(
-    1,1,"adidas","200")),Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png"))))
+val list: List<Variant> = listOf(
+    Variant(
+        1,
+        "ppp",
+        listOf(
+            Product(
+                1, 1, "adidas", "200", 1
+            )
+        ),
+        Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png")
+    ), (Variant(
+        1,
+        "ppp",
+        listOf(
+            Product(
+                1, 1, "adidas", "200", 1
+            )
+        ),
+        Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png")
+    )), (Variant(
+        1,
+        "ppp",
+        listOf(
+            Product(
+                1, 1, "adidas", "200", 1
+            )
+        ),
+        Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png")
+    )), (Variant(
+        1,
+        "ppp",
+        listOf(
+            Product(
+                1, 1, "adidas", "200", 1
+            )
+        ),
+        Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png")
+    )), (Variant(
+        1,
+        "ppp",
+        listOf(
+            Product(
+                1, 1, "adidas", "200", 1
+            )
+        ),
+        Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png")
+    ))
+)
 
 val items = listOf(
 
@@ -92,15 +134,15 @@ val items = listOf(
         icon = R.drawable.sneakers,
         label = "SHOES",
     ),
-            MiniFABItem(
-            icon = R.drawable.close,
-           label = "CLOSE",
-)
+    MiniFABItem(
+        icon = R.drawable.close,
+        label = "CLOSE",
+    )
 
 )
 
 @Composable
-fun CategoriesScreen(navController:NavHostController) {
+fun CategoriesScreen(navController: NavHostController) {
     val repository: IProductRepository =
         (LocalContext.current.applicationContext as ShopifyApplication).repository
     val wishlistManager: WishlistManager =
@@ -122,7 +164,7 @@ fun CategoriesScreen(navController:NavHostController) {
      var state:String = "fail"
    // var FABIcon = R.drawable.ic_category
     var FABIcon by rememberSaveable {
-        mutableStateOf( R.drawable.app)
+        mutableStateOf(R.drawable.app)
 
     }
 
@@ -149,14 +191,14 @@ fun CategoriesScreen(navController:NavHostController) {
             state = "success"
             productsList =
                 (productsState as UiState.Success<Products>).data.body()?.products!!
-            filteredState =  productsList.filter { item ->
+            filteredState = productsList.filter { item ->
                 //  item.variants?.get(0)?.price?.let { it1 -> Log.i("hla", it1) }
                 item.variants?.get(0)?.price?.toFloat()!! >= productPrice
             }
-            Log.i("hala",productPrice.toString())
+            Log.i("hala", productPrice.toString())
 
-           // filteredState = productsList
-         //   Log.i("menna", productsList.toString())
+            // filteredState = productsList
+            //   Log.i("menna", productsList.toString())
         }
 
         else -> {
@@ -164,43 +206,42 @@ fun CategoriesScreen(navController:NavHostController) {
         }
     }
     Scaffold(
-        bottomBar = { Bottombar(navController = navController)},
+        bottomBar = { Bottombar(navController = navController) },
         //floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
-            FloatingButton(items = items, onMiniFABClicked = {
+            FloatingButton(
+                items = items, onMiniFABClicked = {
 
-                viewModel.type = it
-                viewModel.getProductsBySubcategory()
-                floatingButtonState = FloatingButtonState.Collapsed
-                FABIcon = when (it){
-                    "ACCESSORIES" -> {
-                        R.drawable.hat
+                    viewModel.type = it
+                    viewModel.getProductsBySubcategory()
+                    floatingButtonState = FloatingButtonState.Collapsed
+                    FABIcon = when (it) {
+                        "ACCESSORIES" -> {
+                            R.drawable.hat
+                        }
+
+                        "T-SHIRTS" -> {
+                            R.drawable.shirt
+                        }
+
+                        "SHOES" -> {
+                            R.drawable.sneakers
+                        }
+
+                        else -> {
+                            viewModel.type = ""
+                            R.drawable.app
+                        }
                     }
 
-                    "T-SHIRTS" -> {
-                        R.drawable.shirt
-                    }
 
-                    "SHOES" ->{
-                        R.drawable.sneakers
-                    }
-
-                    else -> {
-                        viewModel.type = ""
-                        R.drawable.app
-                    }
-                }
-
-
-
-
-            }, onFABCLicked =
-            {
+                }, onFABCLicked =
+                {
 
                     floatingButtonState = FloatingButtonState.Expanded
 
 
-                },FABIcon,floatingButtonState
+                }, FABIcon, floatingButtonState
             )
         }
 
@@ -243,22 +284,22 @@ fun CategoriesScreen(navController:NavHostController) {
             SliderComponent { price ->
 
                 p = price
-                    productPrice = p
-                Log.i("hala",productPrice.toString())
+                productPrice = p
+                Log.i("hala", productPrice.toString())
 
-                filteredState =  productsList.filter { item->
-                  //  item.variants?.get(0)?.price?.let { it1 -> Log.i("hla", it1) }
+                filteredState = productsList.filter { item ->
+                    //  item.variants?.get(0)?.price?.let { it1 -> Log.i("hla", it1) }
                     item.variants?.get(0)?.price?.toFloat()!! >= price
 
                 }
 
-              //  viewModel.getProductsBySubcategory()
-               // Log.i("hla", price.toString())
-                Log.i("hla",filteredList.toString())
+                //  viewModel.getProductsBySubcategory()
+                // Log.i("hla", price.toString())
+                Log.i("hla", filteredList.toString())
                 filteredState
             }
             if (filteredState.isNotEmpty()) {
-               // viewModel.type = ""
+                // viewModel.type = ""
                 ProductsCards(
                     navController = navController,
                     viewModel=viewModel2,
@@ -273,7 +314,7 @@ fun CategoriesScreen(navController:NavHostController) {
             }
             else{
 
-                if(state == "success" &&filteredState.isEmpty()){
+                if (state == "success" && filteredState.isEmpty()) {
                     Column {
                         Image(
                             modifier = Modifier.size(200.dp),
@@ -285,8 +326,7 @@ fun CategoriesScreen(navController:NavHostController) {
 
                     }
 
-                }
-                else {
+                } else {
                     LottieAnimation(animation = R.raw.loading_animation)
                 }
             }
@@ -294,73 +334,74 @@ fun CategoriesScreen(navController:NavHostController) {
         }
     }
 }
-    @Composable
-    fun MainFilters(
-        items: List<String>,
-        defaultSelectedItemIndex: Int = 0,
-        cornerRadius: Int = 30,
-        onItemSelection: (selectedItemIndex: Int) -> Unit
+
+@Composable
+fun MainFilters(
+    items: List<String>,
+    defaultSelectedItemIndex: Int = 0,
+    cornerRadius: Int = 30,
+    onItemSelection: (selectedItemIndex: Int) -> Unit
+) {
+
+    val selectedIndex = remember { mutableStateOf(defaultSelectedItemIndex) }
+    Row(
+        //  modifier = Modifier.padding(start = 20.dp),
+        // horizontalArrangement = Arrangement.Center
     ) {
-
-        val selectedIndex = remember { mutableStateOf(defaultSelectedItemIndex) }
-        Row(
-            //  modifier = Modifier.padding(start = 20.dp),
-            // horizontalArrangement = Arrangement.Center
-        ) {
-            items.forEachIndexed { index, item ->
-                OutlinedButton(
-                    modifier = Modifier.width(100.dp),
-                    onClick = {
-                        selectedIndex.value = index
-                        onItemSelection(selectedIndex.value)
-                    },
-                    shape = when (index) {
-                        0 -> RoundedCornerShape(
-                            topStartPercent = cornerRadius,
-                            topEndPercent = 0,
-                            bottomStartPercent = cornerRadius,
-                            bottomEndPercent = 0
-                        )
-
-                        items.size - 1 -> RoundedCornerShape(
-                            topStartPercent = 0,
-                            topEndPercent = cornerRadius,
-                            bottomStartPercent = 0,
-                            bottomEndPercent = cornerRadius
-                        )
-
-                        else -> RoundedCornerShape(
-                            topStartPercent = 0,
-                            topEndPercent = 0,
-                            bottomStartPercent = 0,
-                            bottomEndPercent = 0
-                        )
-                    },
-                    colors = if (selectedIndex.value == index) {
-                        ButtonDefaults.outlinedButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        )
-
-                    } else {
-                        ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
-                    }
-                ) {
-                    Text(
-                        text = item,
-                        fontWeight = FontWeight.Bold,
-                        color = if (selectedIndex.value == index) {
-                            MaterialTheme.colorScheme.onPrimary
-                        } else {
-                            MaterialTheme.colorScheme.primary
-                        }
+        items.forEachIndexed { index, item ->
+            OutlinedButton(
+                modifier = Modifier.width(100.dp),
+                onClick = {
+                    selectedIndex.value = index
+                    onItemSelection(selectedIndex.value)
+                },
+                shape = when (index) {
+                    0 -> RoundedCornerShape(
+                        topStartPercent = cornerRadius,
+                        topEndPercent = 0,
+                        bottomStartPercent = cornerRadius,
+                        bottomEndPercent = 0
                     )
 
-                }
+                    items.size - 1 -> RoundedCornerShape(
+                        topStartPercent = 0,
+                        topEndPercent = cornerRadius,
+                        bottomStartPercent = 0,
+                        bottomEndPercent = cornerRadius
+                    )
 
+                    else -> RoundedCornerShape(
+                        topStartPercent = 0,
+                        topEndPercent = 0,
+                        bottomStartPercent = 0,
+                        bottomEndPercent = 0
+                    )
+                },
+                colors = if (selectedIndex.value == index) {
+                    ButtonDefaults.outlinedButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
+
+                } else {
+                    ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
+                }
+            ) {
+                Text(
+                    text = item,
+                    fontWeight = FontWeight.Bold,
+                    color = if (selectedIndex.value == index) {
+                        MaterialTheme.colorScheme.onPrimary
+                    } else {
+                        MaterialTheme.colorScheme.primary
+                    }
+                )
 
             }
+
+
         }
     }
+}
 
 
     @Composable
@@ -380,153 +421,153 @@ fun CategoriesScreen(navController:NavHostController) {
         Text(text = "> $sliderValue")
     }
 
-    @Composable
-    fun CategoriesItems() {
-        val list = (1..10).map { it.toString() }
+@Composable
+fun CategoriesItems() {
+    val list = (1..10).map { it.toString() }
 
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(128.dp),
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(128.dp),
 // content padding
-            contentPadding = PaddingValues(
-                start = 12.dp,
-                top = 16.dp,
-                end = 12.dp,
-                bottom = 16.dp
-            ),
-            content = {
-                items(list.size) { index ->
-                    Card(
-                        // backgroundColor = Color.Red,
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .fillMaxWidth(),
-                        // elevation = CardElevation(),
-                    ) {
-                        Text(
-                            text = list[index],
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 30.sp,
-                            color = Color(0xFFFFFFFF),
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(16.dp)
-                        )
-                    }
-                }
-            }
-        )
-    }
-
-
-    enum class FloatingButtonState {
-        Expanded,
-        Collapsed
-    }
-
-    data class MiniFABItem(
-        val icon: Int,
-        val label: String,
-    )
-
-    @Composable
-    fun MiniFAB(
-        modifier: Modifier = Modifier,
-        item: MiniFABItem,
-        onMiniFABClicked: (String) -> Unit
-    ) {
-        FloatingActionButton(
-            modifier = modifier.size(40.dp),
-            onClick = { onMiniFABClicked(item.label)
-                      Log.i("hla","mini clicked")},
-            //  border = BorderStroke(1.dp, Color.Red),
-            shape = CircleShape,
-            //RoundedCornerShape(80), // = 50% percent
-            // or shape = CircleShape
-            containerColor = Color.Transparent
-        ) {
-            Image(
-                painter = painterResource(item.icon),
-                contentScale = ContentScale.Inside,
-                //  Icon(modifier = Modifier.size(40.dp) ,
-                //  painter = painterResource(R.drawable.accessories),
-                contentDescription = "content description"
-            )
-
-        }
-
-    }
-
-
-
-
-    @Composable
-    fun FloatingButton(
-        items:List<MiniFABItem>,
-          onMiniFABClicked: (String) -> Unit,
-         onFABCLicked:()->Unit,
-        @DrawableRes resId: Int,
-        floatingButtonState:FloatingButtonState
-
-    ) {
-
-
-
-        val transition = updateTransition(targetState = floatingButtonState, label = "transition")
-        val rotate by transition.animateFloat(label = "rotate") {
-            if (it == FloatingButtonState.Collapsed) 0f else 315f
-        }
-
-        Column(
-            //modifier = Modifier.alpha(if (transition.currentState == FloatingButtonState.Expanded) 1f else 0f)
-            ) {
-            if (transition.currentState == FloatingButtonState.Expanded) {
-                items.forEach {
-
-                    MiniFAB(
-                        modifier = Modifier
-                        //   .alpha(if (transition.currentState == FloatingButtonState.Expanded) 1f else 0f
-                        ,
-                        item = it, onMiniFABClicked = onMiniFABClicked
+        contentPadding = PaddingValues(
+            start = 12.dp,
+            top = 16.dp,
+            end = 12.dp,
+            bottom = 16.dp
+        ),
+        content = {
+            items(list.size) { index ->
+                Card(
+                    // backgroundColor = Color.Red,
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth(),
+                    // elevation = CardElevation(),
+                ) {
+                    Text(
+                        text = list[index],
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 30.sp,
+                        color = Color(0xFFFFFFFF),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(16.dp)
                     )
-
-                    Spacer(modifier = Modifier.size(16.dp))
                 }
             }
+        }
+    )
+}
+
+
+enum class FloatingButtonState {
+    Expanded,
+    Collapsed
+}
+
+data class MiniFABItem(
+    val icon: Int,
+    val label: String,
+)
+
+@Composable
+fun MiniFAB(
+    modifier: Modifier = Modifier,
+    item: MiniFABItem,
+    onMiniFABClicked: (String) -> Unit
+) {
+    FloatingActionButton(
+        modifier = modifier.size(40.dp),
+        onClick = {
+            onMiniFABClicked(item.label)
+            Log.i("hla", "mini clicked")
+        },
+        //  border = BorderStroke(1.dp, Color.Red),
+        shape = CircleShape,
+        //RoundedCornerShape(80), // = 50% percent
+        // or shape = CircleShape
+        containerColor = Color.Transparent
+    ) {
+        Image(
+            painter = painterResource(item.icon),
+            contentScale = ContentScale.Inside,
+            //  Icon(modifier = Modifier.size(40.dp) ,
+            //  painter = painterResource(R.drawable.accessories),
+            contentDescription = "content description"
+        )
+
+    }
+
+}
+
+
+@Composable
+fun FloatingButton(
+    items: List<MiniFABItem>,
+    onMiniFABClicked: (String) -> Unit,
+    onFABCLicked: () -> Unit,
+    @DrawableRes resId: Int,
+    floatingButtonState: FloatingButtonState
+
+) {
+
+
+    val transition = updateTransition(targetState = floatingButtonState, label = "transition")
+    val rotate by transition.animateFloat(label = "rotate") {
+        if (it == FloatingButtonState.Collapsed) 0f else 315f
+    }
+
+    Column(
+        //modifier = Modifier.alpha(if (transition.currentState == FloatingButtonState.Expanded) 1f else 0f)
+    ) {
+        if (transition.currentState == FloatingButtonState.Expanded) {
+            items.forEach {
+
+                MiniFAB(
+                    modifier = Modifier
+                    //   .alpha(if (transition.currentState == FloatingButtonState.Expanded) 1f else 0f
+                    ,
+                    item = it, onMiniFABClicked = onMiniFABClicked
+                )
+
+                Spacer(modifier = Modifier.size(16.dp))
+            }
+        }
 
 
 
 
 
-            FloatingActionButton(
-                containerColor = MaterialTheme.colorScheme.primary,
-                shape = CircleShape,
-                onClick =
-                //{
-                   // Log.i("menna", "clicked")
-                     onFABCLicked
-                    //  onFloatingButtonStateChange(
+        FloatingActionButton(
+            containerColor = MaterialTheme.colorScheme.primary,
+            shape = CircleShape,
+            onClick =
+            //{
+            // Log.i("menna", "clicked")
+            onFABCLicked
+            //  onFloatingButtonStateChange(
 //                    if (transition.currentState == FloatingButtonState.Collapsed) {
 //                        floatingButtonState = FloatingButtonState.Expanded
 //                    } else {
 //                        floatingButtonState = FloatingButtonState.Collapsed
 //
 //                    }
-              //  }
-        ,
-                modifier = Modifier
-                    .rotate(rotate)
-                // .padding(20.dp)
+            //  }
+            ,
+            modifier = Modifier
+                .rotate(rotate)
+            // .padding(20.dp)
+        )
+        {
+            Image(
+                modifier = Modifier.size(50.dp),
+                painter = painterResource(resId),
+                contentDescription = "content description"
             )
-            {
-                Image(
-                    modifier = Modifier.size(50.dp),
-                    painter = painterResource(resId),
-                    contentDescription = "content description"
-                )
 
 
-            }        }
-
+        }
     }
+
+}
 
 
 @Preview
@@ -534,14 +575,13 @@ fun CategoriesScreen(navController:NavHostController) {
 fun MainFiltersPreview() {
     ShopifyTheme {
 
-     //   CategoriesScreen()
-       // Floatingbutton()
+        //   CategoriesScreen()
+        // Floatingbutton()
 
-            }
-        }
-
+    }
+}
 
 
 //SliderComponent({})
-    //  MainFilters(items = mainCategories, onItemSelection = {})
+//  MainFilters(items = mainCategories, onItemSelection = {})
 

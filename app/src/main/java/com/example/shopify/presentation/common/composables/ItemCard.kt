@@ -161,7 +161,6 @@ fun WishlistItemCard(
                     contentAlignment = Alignment.Center
                 ) {
                     IconButton(
-
                         onClick = {
                             onRemoveItem()
                         }
@@ -185,7 +184,7 @@ fun WishlistItemCardPreview() {
         product = ProductSample(
             5,
             "Very Long Product Title1235",
-            listOf(Product(1, 0, "Product TITLE", "10.254")),
+            listOf(Product(1, 0, "Product TITLE", "10.254",10L)),
             listOf(Image("")),
             Image(""),
         ),
@@ -199,6 +198,7 @@ fun CartItemCard(
     modifier: Modifier = Modifier,
     product: ProductSample,
     initialCount: Long,
+    maxCount: Long,
     increase: () -> Unit,
     decrease: () -> Unit,
     onClick: () -> Unit
@@ -253,7 +253,7 @@ fun CartItemCard(
                     IconButton(
                         onClick = {
                             increase()
-                            if (count < 10) {
+                            if (count < maxCount) {
                                 count++
                             }
                         }
@@ -298,11 +298,12 @@ fun CartItemCardPreview() {
         product = ProductSample(
             5,
             "Very Long Product Title1235",
-            listOf(Product(1, 0, "Product TITLE", "10.254")),
+            listOf(Product(1, 0, "Product TITLE", "10.254",10L)),
             listOf(Image("")),
             Image(""),
         ),
         initialCount = 0,
+        maxCount = 12,
         increase = {},
         decrease = {},
         onClick = {}
@@ -375,7 +376,7 @@ fun OrderItemCardPreview() {
         product = ProductSample(
             5,
             "Very Long Product Title1235",
-            listOf(Product(1, 0, "Product TITLE", "10.254")),
+            listOf(Product(1, 0, "Product TITLE", "10.254",10L)),
             listOf(Image("")),
             Image(""),
         ),

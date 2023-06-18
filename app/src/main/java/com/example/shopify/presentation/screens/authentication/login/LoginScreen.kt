@@ -47,7 +47,12 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
             LaunchedEffect(key1 = authState) {
                 error = ""
                 Log.i("TAG", "NAVIGATE TO HOME SCREEN")
-                loginNavController.navigate(route = Screens.Home.route)
+                loginNavController.popBackStack()
+                loginNavController.navigate(route = Screens.Home.route, builder = {
+                    popUpTo(route = Screens.Home.route) {
+                        inclusive = true
+                    }
+                })
 
             }
         }
