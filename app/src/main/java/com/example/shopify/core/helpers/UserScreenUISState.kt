@@ -7,6 +7,8 @@ sealed class UserScreenUISState {
     object NotLoggedIn : UserScreenUISState()
     object LoggedIn : UserScreenUISState()
 
+    object NotConnected : UserScreenUISState()
+
     class Success<UserData>(val data: UserData) : UserScreenUISState()
 
     class Failure(val message: String) : UserScreenUISState()

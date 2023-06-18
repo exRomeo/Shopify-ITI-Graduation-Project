@@ -13,9 +13,7 @@ import com.example.shopify.presentation.screens.settingsscreen.SettingsScreen
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModelFactory
 import com.example.shopify.presentation.screens.settingsscreen.subscreens.addressesscreen.AddressScreen
-import com.example.shopify.presentation.screens.settingsscreen.subscreens.cartscreen.CartScreen
 import com.example.shopify.presentation.screens.settingsscreen.subscreens.ordersscreen.OrdersScreen
-import com.example.shopify.presentation.screens.settingsscreen.subscreens.wishlist.WishlistScreen
 
 @Composable
 fun SettingsNavigation(
@@ -47,18 +45,5 @@ fun SettingsNavigation(
             OrdersScreen(settingsViewModel, navController = settingsNavController)
         }
 
-        composable(route = Screens.Wishlist.route) {
-            WishlistScreen(
-                settingsViewModel,
-                settingsNavController = settingsNavController,
-                mainNavController = bottomNavController
-            )
-        }
-
-        composable(route = Screens.Cart.route) {
-            CartScreen(viewModel = settingsViewModel,
-                settingsNavController = settingsNavController,
-                mainNavController = bottomNavController)
-        }
     }
 }

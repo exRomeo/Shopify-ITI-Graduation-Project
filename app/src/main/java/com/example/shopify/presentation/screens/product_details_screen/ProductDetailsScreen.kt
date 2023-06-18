@@ -18,8 +18,8 @@ import androidx.navigation.NavHostController
 import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
-import com.example.shopify.data.managers.CartManager
-import com.example.shopify.data.managers.WishlistManager
+import com.example.shopify.data.managers.cart.CartManager
+import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.models.Image
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.SingleProduct

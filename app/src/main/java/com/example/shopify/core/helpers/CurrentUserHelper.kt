@@ -2,7 +2,6 @@ package com.example.shopify.core.helpers
 
 import android.util.Log
 import com.example.shopify.data.repositories.authentication.IAuthRepository
-import com.example.shopify.presentation.screens.settingsscreen.TAG
 
 /*
     should be used for testing :D
@@ -29,8 +28,9 @@ object CurrentUserHelper {
             customerID = ids.customer_id!!
             cartDraftID = ids.card_id!!
             wishlistDraftID = ids.wishlist_id!!
+
             Log.i(
-                TAG,
+                "CurrentUser",
                 "Current User Data: Customer id -> $customerID,Cart Draft ID -> $cartDraftID, Wishlist Draft ID -> $wishlistDraftID"
             )
         }
@@ -49,7 +49,9 @@ object CurrentUserHelper {
     }
 
     fun isLoggedIn(): Boolean {
-        return customerID != -1L
+        if (!::authRepo.isInitialized)
+            return false
+        return authRepo.checkedLoggedIn() is AuthenticationResponseState.Success
     }
 
     fun hasWishlist(): Boolean {
@@ -57,6 +59,14 @@ object CurrentUserHelper {
     }
 
     fun hasCart(): Boolean {
-        return cartDraftID != -1L /*false*/
+        return cartDraftID != -1L
+    }
+
+    suspend fun logout() {
+        authRepo.signOutFirebase()
+        customerID = -1
+        cartDraftID = -1
+        wishlistDraftID = -1
+        customerName = ""
     }
 }

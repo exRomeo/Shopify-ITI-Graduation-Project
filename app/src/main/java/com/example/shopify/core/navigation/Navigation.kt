@@ -24,9 +24,11 @@ import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
 import com.example.shopify.presentation.screens.authentication.login.LoginScreen
 import com.example.shopify.presentation.screens.authentication.registeration.SignupScreen
 import com.example.shopify.presentation.screens.brands.BrandsScreen
+import com.example.shopify.presentation.screens.cartscreen.CartScreen
 import com.example.shopify.presentation.screens.categories.CategoriesScreen
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 import com.example.shopify.presentation.screens.product_details_screen.ProductDetailsScreen
+import com.example.shopify.presentation.screens.settingsscreen.subscreens.wishlist.WishlistScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -53,6 +55,15 @@ fun NavGraph(navController: NavHostController) {
             CategoriesScreen(navController)
         }
 
+        composable(route = Screens.Cart.route) {
+            CartScreen(navController)
+        }
+
+        composable(route = Screens.Wishlist.route) {
+            WishlistScreen(navController)
+        }
+
+
         composable(route = Screens.Settings.route) {
             SettingsNavigation(bottomNavController = navController)
         }
@@ -73,7 +84,7 @@ fun NavGraph(navController: NavHostController) {
             })
         ) {
             it.arguments?.getLong("productId")
-                ?.let { it1 -> ProductDetailsScreen(navController, it1) }
+                ?.let { productID -> ProductDetailsScreen(navController, productID) }
         }
     }
 }

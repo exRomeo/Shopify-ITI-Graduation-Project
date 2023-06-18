@@ -62,6 +62,29 @@ fun LottieAnimation(
 }
 
 @Composable
+fun SmallLottieAnimation(
+    modifier: Modifier = Modifier.size(150.dp),
+    @RawRes animation: Int
+) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(modifier = modifier) {
+            val composition by rememberLottieComposition(
+                spec = LottieCompositionSpec.RawRes(
+                    animation
+                )
+            )
+            LottieAnimation(
+                composition = composition,
+                iterations = LottieConstants.IterateForever,
+            )
+        }
+    }
+}
+
+@Composable
 fun ChangingColorProgressBar(
 ) {
 

@@ -1,4 +1,4 @@
-package com.example.shopify.data.managers
+package com.example.shopify.data.managers.wishlist
 
 import android.util.Log
 import com.example.shopify.BuildConfig
@@ -17,12 +17,12 @@ import kotlinx.coroutines.flow.asSharedFlow
 
 class WishlistManager(
     private val draftOrderAPI: DraftOrderAPI
-) {
+) : IWishlistManager {
     private var _wishlist: MutableSharedFlow<List<ProductSample>> = MutableSharedFlow(1)
-    val wishlist: SharedFlow<List<ProductSample>> = _wishlist.asSharedFlow()
+    override val wishlist: SharedFlow<List<ProductSample>> = _wishlist.asSharedFlow()
     private lateinit var wishlistDraftOrder: DraftOrderBody
 
-    suspend fun getWishlistItems() {
+    override suspend fun getWishlistItems() {
         if (CurrentUserHelper.hasWishlist()) {
             val response =
                 draftOrderAPI.getDraftOrder(
@@ -50,7 +50,7 @@ class WishlistManager(
         }
     }
 
-    suspend fun addWishlistItem(productID: Long, variantID: Long) {
+    override suspend fun addWishlistItem(productID: Long, variantID: Long) {
         if (!::wishlistDraftOrder.isInitialized)
             getWishlistItems()
         if (CurrentUserHelper.hasWishlist())
@@ -114,7 +114,7 @@ class WishlistManager(
         )
     }
 
-    suspend fun removeWishlistItem(productID: Long) {
+    override suspend fun removeWishlistItem(productID: Long) {
         if (wishlistDraftOrder.draftOrder.lineItems.size > 1) {
             val index: Int = wishlistDraftOrder.draftOrder.lineItems.indexOfFirst {
                 it.productID == productID

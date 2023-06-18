@@ -3,12 +3,10 @@ package com.example.shopify.presentation.screens.authentication.login
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.data.models.GoogleSignInState
 import com.example.shopify.data.repositories.authentication.IAuthRepository
 import com.google.firebase.auth.AuthCredential
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,21 +35,25 @@ class LoginViewModel(private val authRepository: IAuthRepository) : ViewModel() 
         }
     }
 
-    fun logoutUser(){
+    fun logoutUser() {
         viewModelScope.launch {
-           _logoutState.value = authRepository.signOutFirebase()
+            _logoutState.value = authRepository.signOutFirebase()
         }
-        when(_logoutState.value){
-            is AuthenticationResponseState.Success ->{
-                Log.i("TAG", "logoutUser success: ")}
-            is AuthenticationResponseState.Error->{
+        when (_logoutState.value) {
+            is AuthenticationResponseState.Success -> {
+                Log.i("TAG", "logoutUser success: ")
+            }
+
+            is AuthenticationResponseState.Error -> {
                 Log.i("TAG", "logoutUser: Failed")
             }
-            else->{
+
+            else -> {
                 Log.i("TAG", "NOT ")
             }
         }
     }
+
     fun googleSignIn(credential: AuthCredential) {
         viewModelScope.launch(Dispatchers.IO) {
             val response = authRepository.googleSignIn(credential)
@@ -94,4 +96,6 @@ class LoginViewModel(private val authRepository: IAuthRepository) : ViewModel() 
             }
         }
     }
+
+//    fun isLogged():Boolean = authRepository.checkedLoggedIn() is AuthenticationResponseState.Success
 }

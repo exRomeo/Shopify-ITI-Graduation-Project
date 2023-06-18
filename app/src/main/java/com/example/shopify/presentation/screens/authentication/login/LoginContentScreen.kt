@@ -51,6 +51,16 @@ fun LoginContentScreen(
     errorResponse: String,
     loginNavController: NavController
 ) {
+//    LaunchedEffect(Unit) {
+//        if (loginViewModel.isLogged()) {
+//            loginNavController.popBackStack()
+//            loginNavController.navigate(route = Screens.Home.route, builder = {
+//                popUpTo(route = Screens.Home.route) {
+//                    inclusive = true
+//                }
+//            })
+//        }
+//    }
     Column(
         modifier = Modifier
             .fillMaxSize()
