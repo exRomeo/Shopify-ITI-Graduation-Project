@@ -1,6 +1,5 @@
 package com.example.shopify.data.managers.wishlist
 
-import android.util.Log
 import com.example.shopify.BuildConfig
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.KeyFirebase
@@ -9,7 +8,6 @@ import com.example.shopify.data.models.draftorder.DraftOrder
 import com.example.shopify.data.models.draftorder.DraftOrderBody
 import com.example.shopify.data.models.draftorder.LineItem
 import com.example.shopify.data.repositories.user.remote.retrofitclient.DraftOrderAPI
-import com.example.shopify.presentation.screens.settingsscreen.TAG
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -135,7 +133,6 @@ class WishlistManager(
     }
 
     private suspend fun deleteDraftOrder(draftOrder: DraftOrder, draftOrderType: KeyFirebase) {
-        Log.i(TAG, "deleteDraftOrder: WISHY LIST")
         CurrentUserHelper.updateListID(
             listType = draftOrderType,
             newID = -1
@@ -151,4 +148,9 @@ class WishlistManager(
         _wishlist.emit(listOf())
         wishlistDraftOrder.draftOrder.lineItems = mutableListOf()
     }
+
+    fun isFavorite(productID: Long, variantID: Long): Boolean =
+        wishlistDraftOrder.draftOrder.lineItems.any {
+            it.productID == productID && it.variantID == variantID
+        }
 }
