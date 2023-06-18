@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Shopify</string>
+    <string name="app_name">Shopingoo</string>
     <string name="profile_picture">profile picture</string>
     <string name="track_orders">Track Orders</string>
     <string name="cart">Cart</string>
@@ -86,6 +86,15 @@
     <string name="trending_products">Trending Products</string>
     <string name="special_offers">Special Offers</string>
     <string name="add_to_cart">Add to Cart</string>
+    <string name="login_request_message">Please Login To Show Your Data</string>
+    <string name="exceeded_max_amount">Cannot Exceed Maximum Available Amount!</string>
+    <string name="address_updated">Address has been updated</string>
+    <string name="address_not_updated">Failed to updated address</string>
+    <string name="address_added">Address has been added</string>
+    <string name="address_not_added">Failed to add address</string>
+    <string name="address_removed">Address has been removed</string>
+    <string name="address_not_removed">Failed to remove address</string>
+    <string name="logout">Logout</string>
     <string name="description">Description</string>
     <string name="filled_star">Filled star</string>
     <string name="half_star">Half star</string>

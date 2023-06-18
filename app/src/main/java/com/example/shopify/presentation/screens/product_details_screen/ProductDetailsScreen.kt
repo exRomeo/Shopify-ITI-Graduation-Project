@@ -25,6 +25,10 @@ import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.SingleProduct
 import com.example.shopify.data.models.SingleProductResponseBody
 import com.example.shopify.data.repositories.product.IProductRepository
+import com.example.shopify.data.repositories.user.IUserDataRepository
+import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
+import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModelFactory
+import com.example.shopify.presentation.screens.settingsscreen.TAG
 
 @Composable
 fun ProductDetailsScreen(navController: NavHostController, productId: Long) {

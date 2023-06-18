@@ -1,6 +1,9 @@
 package com.example.shopify.presentation.screens.homescreen
 
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.animation.ContentTransform
@@ -71,29 +74,35 @@ import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.Screens
+import com.example.shopify.core.navigation.TopBar
+import com.example.shopify.data.managers.CartManager
+import com.example.shopify.data.managers.WishlistManager
 import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.Product
+import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.SmartCollections
-import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
+import com.example.shopify.presentation.common.composables.WarningDialog
+
 import com.example.shopify.presentation.common.composables.CustomSearchbar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
-//    ScaffoldStructure(screenTitle = "Home")
-//    {
-//HomeScreen(navController = navController )
-//    }
-    val repository: IProductRepository =
-        (LocalContext.current.applicationContext as ShopifyApplication).repository
-    val viewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(repository))
+fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
+
+
+  val repository: IProductRepository = (LocalContext.current.applicationContext as ShopifyApplication) .repository
+    val wishlistManager: WishlistManager =
+        (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
+    val cartManager: CartManager =
+        (LocalContext.current.applicationContext as ShopifyApplication).cartManager
+  val viewModel: HomeViewModel = viewModel(factory =  HomeViewModelFactory(repository,wishlistManager,cartManager))
 
     val brandsState: UiState by viewModel.brandList.collectAsState()
     val randomsState: UiState by viewModel.randomList.collectAsState()
     var brandList: List<Brand> by remember { mutableStateOf(listOf()) }
-    var randomList: List<Variant> = listOf()
+    var randomList: List<ProductSample> = listOf()
     var searchText by remember { mutableStateOf("") }
     val isSearching by remember {
         derivedStateOf {
@@ -109,9 +118,12 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
             }
         }
     }
+//    var isFavourite by remember {
+//        mutableStateOf(false)
+//    }
     when (brandsState) {
         is UiState.Loading -> {
-            Log.i("menna", "loading")
+
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -157,50 +169,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
         bottomBar = { Bottombar(navController = navController) }
     ) {
         Spacer(modifier = Modifier.height(8.dp))
-        /*SearchBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            query = searchText,
-            onQueryChange = { searchText = it },
-            onSearch = {
-                stateOfSearchBar = false
-            },
-            active = stateOfSearchBar,
-            onActiveChange = { stateOfSearchBar = it },
-            placeholder = { Text(text = stringResource(id = R.string.search_brands)) },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search, contentDescription = stringResource(
-                        id = R.string.search
-                    )
-                )
-            },
-            trailingIcon = {
-                if (stateOfSearchBar) {
-                    Icon(
-                        modifier = Modifier.clickable {
-                            searchText = ""
-                            stateOfSearchBar = false
-                        },
-                        imageVector = Icons.Default.Close,
-                        contentDescription = stringResource(
-                            id = R.string.close
-                        )
-                    )
-                }
 
-            }
-        ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2)
-            ) {
-                items(filteredList.size) {
-                    BrandCardContent(brand = filteredList[it], navController = navController)
-//                    BrandCards(brands = filteredList, navController = navController)
-                }
-            }
-        }*/
         if (brandList.isNotEmpty() && randomList.isNotEmpty()) {
             Column(
                 modifier = modifier
@@ -229,9 +198,23 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
                     BrandCards(brands = filteredList, navController = navController)
                 }
 
-                HomeSection(sectionTitle = R.string.trending_products) {
-                    ItemCards(products = randomList,
-                        isFavourite = true, onFavouriteClicked = {}, onAddToCard = {})
+        HomeSection(sectionTitle = R.string.trending_products) {
+            ItemCards(navController =navController,viewModel,products = randomList,
+                isFavourite = false, onFavouriteClicked = {
+//                        product ->
+//                    isFavourite = !isFavourite
+//                    if (isFavourite) {
+//                        viewModel.addWishlistItem(product)
+//
+//                    }
+//                    if (!isFavourite) {
+//                        viewModel.removeWishlistItem(product)
+//
+//                    }
+                }, onAddToCard = {product ->
+                    viewModel.addItemToCart(product.id,product.variants[0].id)
+
+                })
 
                 }
             }
@@ -261,6 +244,11 @@ fun ScaffoldStructure(
 }
 
 
+        }
+    }
+}
+        }
+        }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardDesign(
@@ -285,10 +273,16 @@ fun CardDesign(
 
 @Composable
 fun ItemCardContent(
+    navController:NavHostController,
     modifier: Modifier = Modifier, isFavourite: Boolean,
-    onFavouritesClicked: (Boolean) -> Unit, onAddToCard: (item: Product) -> Unit, item: Variant
+    onFavouritesClicked: (item:ProductSample) -> Unit, onAddToCard: (item: ProductSample) -> Unit, item: ProductSample
 ) {
-    Column(modifier = modifier.padding(horizontal = 20.dp, vertical = 10.dp)) {
+    Column(modifier = modifier.clickable {
+        navController.navigate(route ="${Screens.Details.route}/${item.id}")
+    }
+        .padding(horizontal = 20.dp, vertical = 10.dp)
+        .height(330.dp)
+        .width(200.dp)) {
         item.image?.src?.let {
             ImageFromNetwork(image = it,
                 modifier = Modifier
@@ -301,36 +295,34 @@ fun ItemCardContent(
             )
         }
 
-
         // Divider(thickness = 5.dp, color= Color.Black)
-        Row(horizontalArrangement = Arrangement.spacedBy(30.dp)) {
+
             // var titles= item.title?.split("|")
-            item.variants?.get(0)?.title.let {
-                if (it != null) {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                }
-            }
-            FavoriteButton(isFavourite = isFavourite, onClicked = onFavouritesClicked)
-
-        }
-
-        item.variants?.get(0)?.price.let {
             Text(
-                text = it.toString(),
+                modifier = Modifier
+                    .width(200.dp)
+                    .padding(top = 5.dp),
+                text = item.title,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+
+        Row(horizontalArrangement = Arrangement.spacedBy(60.dp)) {
+
+            Text(
+                text = item.variants[0].price.toString(),
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            FavoriteButton(isFavourite = isFavourite, onClicked = { onFavouritesClicked(item) })
+
         }
-        Button(
+            Button(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(10.dp),
             shape = RoundedCornerShape(20.dp),
-            onClick = { onAddToCard },
+            onClick =  {onAddToCard (item)},
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -390,17 +382,28 @@ fun BrandCardContent(
 
 @OptIn(ExperimentalTvMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
-fun AdsCarousel() {
+fun AdsCarousel(
+    openDialogue:Boolean =true
+) {
     val items: List<String> = listOf(
-        "https://www.seiu1000.org/sites/main/files/main-images/camera_lense_0.jpeg",
+        "https://img.freepik.com/free-psd/summer-sale-70-discount_23-2148476960.jpg",
         "https://assets.keap.com/image/upload/v1547580346/Blog%20thumbnail%20images/Screen_Shot_2019-01-15_at_12.25.23_PM.png",
         "https://fitsmallbusiness.com/wp-content/uploads/2018/05/23-Best-Sales-Promotion-Ideas.png",
         "https://a.storyblok.com/f/140059/720x400/ab918c4aa1/sales-promotion-examples-to-help-boost-your-business-main.jpg"
     )
 
+    val couponsList:List<String> = listOf("Cf56u%erdHJJ","AAgf8876GFd","GRTO#kl76C","PTYR%&R#dw")
+    val offers:List<String> = listOf("5%","20%","50%","70%")
+    var openDialogue by remember{
+        mutableStateOf(false)
+    }
+    var itemIndex by remember{
+        mutableStateOf(0)
+    }
+
     val transform = ContentTransform(
-        targetContentEnter = fadeIn(tween(durationMillis = 1000)),
-        initialContentExit = fadeOut(tween(durationMillis = 1000))
+        targetContentEnter = fadeIn(tween(durationMillis = 5000)),
+        initialContentExit = fadeOut(tween(durationMillis = 5000))
     )
 
     Carousel(
@@ -417,7 +420,6 @@ fun AdsCarousel() {
             items[index].also { item ->
                 CarouselItem(
                     background = {
-
                         AsyncImage(
                             model = items[index],
                             contentDescription = null,
@@ -440,16 +442,40 @@ fun AdsCarousel() {
                                     .padding(10.dp),
                                 shape = RoundedCornerShape(20.dp),
                                 onClick = {
-                                },
+                                    openDialogue = true
+                                    itemIndex = index
+                                }
+                                ,
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = MaterialTheme.colorScheme.primary,
                                     contentColor = MaterialTheme.colorScheme.onPrimary
 
                                 )
                             ) {
-                                Text(text = "Learm More")
-                                //  }
 
+
+
+                                    Text(text = "Get your Discount")
+
+                                //  }
+                                     if(openDialogue){
+                                         val clipboardManager =
+                                             LocalContext.current.getSystemService( Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                         val clip = ClipData.newPlainText("coupon", couponsList[itemIndex])
+                                         clipboardManager.setPrimaryClip(clip)
+                                   WarningDialog(
+                                        dialogTitle = "GREAT OFFERS !!",
+                                        message = "Your have got ${offers[itemIndex]} discount ,your coupon ${couponsList[itemIndex]} has been copied to" +
+
+                                                "clibboard",
+                                        dismissButtonText = "",
+                                        confirmButtonText = "OK",
+                                        onConfirm = { openDialogue = false
+                                           },
+                                        onDismiss = {},
+                                        addDismissButton = false
+                                    )
+                                     }
                             }
                         }
                     }
@@ -465,7 +491,7 @@ fun AdsCarousel() {
 fun FavoriteButton(
     modifier: Modifier = Modifier,
     isFavourite: Boolean,
-    onClicked: (Boolean) -> Unit
+    onClicked: () -> Unit
 ) {
     Surface(
         shape = CircleShape,
@@ -476,7 +502,7 @@ fun FavoriteButton(
     ) {
         IconToggleButton(
             checked = isFavourite,
-            onCheckedChange = onClicked
+            onCheckedChange = {onClicked()}
 
         ) {
             Icon(
@@ -562,22 +588,40 @@ fun BrandCards(
 
 @Composable
 fun ItemCards(
+    navController: NavHostController,
+    viewModel: HomeViewModel,
     modifier: Modifier = Modifier,
-    products: List<Variant>,
+    products: List<ProductSample>,
     isFavourite: Boolean,
-    onFavouriteClicked: (Boolean) -> Unit,
-    onAddToCard: (item: Product) -> Unit
+    onFavouriteClicked: (item:ProductSample) -> Unit,
+    onAddToCard: (item: ProductSample) -> Unit
 ) {
     LazyRow(
         modifier = modifier.padding(start = 6.dp, end = 6.dp)
     ) {
         items(products) { item ->
+
+            var isFavourite by remember {
+                mutableStateOf(false)
+            }
             CardDesign(onCardClicked = {}) {
                 ItemCardContent(
+                    navController=navController,
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
                     isFavourite = isFavourite,
-                    onFavouritesClicked = onFavouriteClicked,
-                    onAddToCard = onAddToCard,
+                    onFavouritesClicked = {
+                            product ->
+                        isFavourite = !isFavourite
+                        if (isFavourite) {
+                            viewModel.addWishlistItem(product.id,product.variants[0].id)
+
+                        }
+                        if (!isFavourite) {
+                            viewModel.removeWishlistItem(product.id)
+
+                        }
+                       },
+                    onAddToCard = {onAddToCard(item)},
                     item = item
                 )
             }
@@ -585,10 +629,5 @@ fun ItemCards(
         }
     }
 }
-
-
-
-
-
 
 

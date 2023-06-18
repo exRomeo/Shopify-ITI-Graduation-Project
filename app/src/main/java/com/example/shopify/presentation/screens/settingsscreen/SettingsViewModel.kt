@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.shopify.R
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.data.managers.CartManager
@@ -13,6 +14,7 @@ import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.repositories.user.IUserDataRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -26,7 +28,14 @@ class SettingsViewModel(
 
     private var _settingsState: MutableStateFlow<UserScreenUISState> =
         MutableStateFlow(UserScreenUISState.Loading)
-    val settingsState = _settingsState.asStateFlow()
+    val settingsState: StateFlow<UserScreenUISState> by lazy {
+        MutableStateFlow(
+            if (CurrentUserHelper.isLoggedIn())
+                UserScreenUISState.LoggedIn
+            else
+                UserScreenUISState.NotLoggedIn
+        )
+    }
 
     init {
         if (CurrentUserHelper.isLoggedIn()) {
@@ -39,7 +48,7 @@ class SettingsViewModel(
         }
     }
 
-    private var _snackbarMessage: MutableSharedFlow<String> = MutableSharedFlow()
+    var _snackbarMessage: MutableSharedFlow<Int> = MutableSharedFlow()
     val snackbarMessage = _snackbarMessage.asSharedFlow()
 
     /**
@@ -64,9 +73,9 @@ class SettingsViewModel(
             val response = userDataRepository.updateAddress(address)
             _snackbarMessage.emit(
                 if (response.isSuccessful)
-                    "Address has been updated"
+                    R.string.address_updated
                 else
-                    "Failed to updated address"
+                    R.string.address_not_updated
             )
             getAddresses()
         }
@@ -78,9 +87,9 @@ class SettingsViewModel(
             val response = userDataRepository.addAddress(CurrentUserHelper.customerID, address)
             _snackbarMessage.emit(
                 if (response.isSuccessful)
-                    "Address has been added"
+                    R.string.address_added
                 else
-                    "Failed to add address"
+                    R.string.address_not_added
             )
             getAddresses()
         }
@@ -91,9 +100,9 @@ class SettingsViewModel(
             val response = userDataRepository.removeAddress(address)
             _snackbarMessage.emit(
                 if (response.isSuccessful)
-                    "Address has been removed"
+                    R.string.address_removed
                 else
-                    "Failed to remove address"
+                    R.string.address_not_removed
             )
             getAddresses()
         }
@@ -146,15 +155,15 @@ class SettingsViewModel(
         }
     }
 
-    fun addWishlistItem(product: ProductSample) {
+    fun addWishlistItem(productID: Long, variantID: Long) {
         viewModelScope.launch {
-            wishlistManager.addWishlistItem(product)
+            wishlistManager.addWishlistItem(productID = productID, variantID = variantID)
         }
     }
 
-    fun removeWishlistItem(product: ProductSample) {
+    fun removeWishlistItem(productID: Long) {
         viewModelScope.launch {
-            wishlistManager.removeWishlistItem(product)
+            wishlistManager.removeWishlistItem(productID = productID)
         }
     }
 
@@ -173,7 +182,10 @@ class SettingsViewModel(
 
     fun increaseCartItemCount(product: ProductSample) {
         viewModelScope.launch {
-            cartManager.increaseCartItemCount(product)
+            if (getCartItemCount(product) < product.variants[0].availableAmount!!)
+                cartManager.increaseCartItemCount(product)
+            else
+                _snackbarMessage.emit(R.string.exceeded_max_amount)
         }
     }
 
@@ -192,16 +204,16 @@ class SettingsViewModel(
         }
     }
 
-    fun addCartItem(product: ProductSample) {
+    fun addCartItem(productID: Long, variantID: Long) {
         viewModelScope.launch {
-            cartManager.addCartItem(product)
+            cartManager.addCartItem(productID = productID, variantID = variantID)
         }
 
     }
 
-    fun removeCart(product: ProductSample) {
+    fun removeCart(productID: Long) {
         viewModelScope.launch {
-            cartManager.removeCart(product)
+            cartManager.removeCart(productID = productID)
         }
     }
 }
