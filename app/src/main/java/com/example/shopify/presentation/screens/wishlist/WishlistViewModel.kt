@@ -1,4 +1,4 @@
-package com.example.shopify.presentation.screens.settingsscreen.subscreens.wishlist
+package com.example.shopify.presentation.screens.wishlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

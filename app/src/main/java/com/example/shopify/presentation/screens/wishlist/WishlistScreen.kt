@@ -1,4 +1,4 @@
-package com.example.shopify.presentation.screens.settingsscreen.subscreens.wishlist
+package com.example.shopify.presentation.screens.wishlist
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement

@@ -28,7 +28,7 @@ import com.example.shopify.presentation.screens.cartscreen.CartScreen
 import com.example.shopify.presentation.screens.categories.CategoriesScreen
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 import com.example.shopify.presentation.screens.product_details_screen.ProductDetailsScreen
-import com.example.shopify.presentation.screens.settingsscreen.subscreens.wishlist.WishlistScreen
+import com.example.shopify.presentation.screens.wishlist.WishlistScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {

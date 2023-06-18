@@ -96,6 +96,4 @@ class LoginViewModel(private val authRepository: IAuthRepository) : ViewModel() 
             }
         }
     }
-
-//    fun isLogged():Boolean = authRepository.checkedLoggedIn() is AuthenticationResponseState.Success
 }
