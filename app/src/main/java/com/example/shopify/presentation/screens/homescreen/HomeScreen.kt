@@ -1,7 +1,6 @@
 package com.example.shopify.presentation.screens.homescreen
 
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.animation.ContentTransform
@@ -26,20 +25,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -50,7 +44,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -62,7 +55,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -79,13 +71,13 @@ import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.Screens
-
 import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.SmartCollections
 import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
+import com.example.shopify.presentation.common.composables.CustomSearchbar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -103,21 +95,17 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
     var brandList: List<Brand> by remember { mutableStateOf(listOf()) }
     var randomList: List<Variant> = listOf()
     var searchText by remember { mutableStateOf("") }
-    var stateOfSearchBar by remember { mutableStateOf(false) }
+    val isSearching by remember {
+        derivedStateOf {
+            searchText.isNotEmpty()
+        }
+    }
     val filteredList by remember {
         derivedStateOf {
             if (searchText.isEmpty()) {
                 brandList
             } else {
-                Log.i(
-                    "TAG", "Filtered List: ${
-                        brandList.filter {
-                            it.name?.contains(searchText, ignoreCase = true) ?: false
-                        }
-                    }"
-                )
-                Log.i("TAG", "Brand List : ${brandList}")
-                brandList.filter { it.name?.contains(searchText, ignoreCase = true) ?: false }
+                brandList.filter { it.name?.startsWith(searchText, ignoreCase = true) ?: false }
             }
         }
     }
@@ -168,9 +156,8 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
     Scaffold(
         bottomBar = { Bottombar(navController = navController) }
     ) {
-
-        Spacer(modifier = Modifier.height(16.dp))
-        SearchBar(
+        Spacer(modifier = Modifier.height(8.dp))
+        /*SearchBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
@@ -205,21 +192,16 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
 
             }
         ) {
-            /*LazyColumn (modifier.padding(16.dp)){
-                items(1) { obj ->
-                    BrandCards(brands = filteredList, navController = navController)
-                }
-            }*/
             LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 15.dp)
+                columns = GridCells.Fixed(2)
             ) {
-                items(1) {
-                    BrandCards(brands = filteredList, navController = navController)
+                items(filteredList.size) {
+                    BrandCardContent(brand = filteredList[it], navController = navController)
+//                    BrandCards(brands = filteredList, navController = navController)
                 }
             }
-        }
+        }*/
         if (brandList.isNotEmpty() && randomList.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(32.dp))
             Column(
                 modifier = modifier
                     .padding(it)
@@ -227,16 +209,24 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
                     .padding(paddingValues = PaddingValues(10.dp))
             )
             {
+                CustomSearchbar(
+                    searchText = searchText,
+                    onTextChange = { searchText = it },
+                    hintText = R.string.search_brands,
+                    isSearching = isSearching,
+                    onCloseSearch = { searchText = "" }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
 
-
-                HomeSection(sectionTitle = R.string.special_offers) {
-                    AdsCarousel()
-                }
+                if (!isSearching)
+                    HomeSection(sectionTitle = R.string.special_offers) {
+                        AdsCarousel()
+                    }
 
                 HomeSection(sectionTitle = R.string.brands) {
 
                     //  (brandsState as UiState.Success).data.body()?.let {
-                    BrandCards(brands = brandList, navController = navController)
+                    BrandCards(brands = filteredList, navController = navController)
                 }
 
                 HomeSection(sectionTitle = R.string.trending_products) {

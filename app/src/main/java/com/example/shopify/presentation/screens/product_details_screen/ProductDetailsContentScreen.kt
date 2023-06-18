@@ -34,15 +34,20 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -70,6 +75,7 @@ import com.example.shopify.R
 import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.data.models.SingleProduct
 import com.example.shopify.presentation.common.composables.WarningDialog
+import com.example.shopify.ui.theme.backgroundColor
 import com.example.shopify.ui.theme.ibarraBold
 import com.example.shopify.ui.theme.ibarraRegular
 import com.example.shopify.ui.theme.mainColor
@@ -79,38 +85,52 @@ import kotlin.random.Random
 @Composable
 fun ProductDetailsContentScreen(
     modifier: Modifier = Modifier,
-    isFavorite: Boolean,
     productNavController: NavHostController,
-    onFavoriteChanged: () -> Unit,
-    onAcceptFavChanged: () -> Unit,
-    itemCount: Int,
-    increase: () -> Unit,
-    decrease: () -> Unit,
-    showDialog: Boolean,
+    isFavorite: Boolean,
     showFavWarningDialog: Boolean,
     showReviewsDialog: Boolean,
     showToast: Boolean,
+    showCartDialog: Boolean,
+    @StringRes dialogMessage: Int,
     @StringRes toastMessage: Int,
-    onShowDialogAction: () -> Unit,
-    onDismissDialogAction: () -> Unit,
+    itemCount: Int,
+    product: SingleProduct,
+
+    onFavoriteChanged: () -> Unit,
+    onAcceptFavChanged: () -> Unit,
+    onDismissFavChanged: () -> Unit,
+
+    increaseItemCount: () -> Unit,
+    decreaseItemCount: () -> Unit,
+
+    addToCartAction: () -> Unit,
     onAcceptRemoveCart: () -> Unit,
     onDismissRemoveCart: () -> Unit,
-    addToCartAction: () -> Unit,
+
     showReviews: () -> Unit,
     onDismissShowReview: () -> Unit,
-    product: SingleProduct
-) {
-    var rating: Double = 2.3
-    LaunchedEffect(Unit) { rating = Random.nextDouble(2.0, 5.0) }
+
+    ) {
+    var rating by remember {
+        mutableStateOf(3.5)
+    }
+    LaunchedEffect(Unit) { rating = Random.nextDouble(3.0, 5.0) }
 
     Log.i("TAG", "ProductDetailsContentScreen: $product")
-    Scaffold(bottomBar =
+    Scaffold(containerColor = Color.Transparent, bottomBar =
     {
-        BottomNavigation(
+        NavigationBar(
+            containerColor = Color.Transparent,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        /*BottomNavigation(
             modifier = Modifier.fillMaxWidth()
-                .background(Color.Transparent),
-        ) {
-            AddToCartBottom(addToCartAction, increase, decrease, itemCount)
+                .background(Color.Transparent)
+                .align(),
+            backgroundColor = Color.Transparent,
+            contentColor = Color.Transparent,
+        ) */{
+            AddToCartBottom(addToCartAction, increaseItemCount, decreaseItemCount, itemCount)
         }
     }) { values ->
         LazyColumn(
@@ -122,8 +142,8 @@ fun ProductDetailsContentScreen(
                 val colorMatrix = remember { ColorMatrix() }
 
                 Card(
-                    modifier = modifier
-                        .padding(bottom = 50.dp),
+//                    modifier = modifier
+//                        .padding(bottom = 30.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
                     ),
@@ -326,43 +346,29 @@ fun ProductDetailsContentScreen(
                 }
             }
         }
-        if (showDialog) {
+        if (showCartDialog) {
             WarningDialog(
                 dialogTitle = stringResource(id = R.string.remove_product),
                 message = stringResource(id = R.string.cart_item_removal_warning),
                 dismissButtonText = stringResource(id = R.string.cancel),
                 confirmButtonText = stringResource(id = R.string.remove),
-                onConfirm = {
-                    onShowDialogAction()
-                    onAcceptRemoveCart()
-                },
-                onDismiss = {
-                    decrease()
-                    onDismissRemoveCart()
-                }
+                onConfirm = onAcceptRemoveCart,
+                onDismiss = onDismissRemoveCart
 
             )
         }
         if (showFavWarningDialog) {
-            val title: String?
-            val message: String
-            val confirmButtonText: String
-            if (isFavorite) {
-                title = stringResource(id = R.string.remove_product_from_fav)
-                message = stringResource(id = R.string.fav_item_removal_warning)
-                confirmButtonText = stringResource(id = R.string.remove)
-            } else {
-                title = stringResource(id = R.string.add_product_to_fav)
-                message = stringResource(id = R.string.add_item_to_fav_message)
-                confirmButtonText = stringResource(id = R.string.add)
-            }
             WarningDialog(
-                dialogTitle = title,
-                message = message,
+                dialogTitle = if (isFavorite) stringResource(id = R.string.remove_product_from_fav) else stringResource(
+                    id = R.string.add_product_to_fav
+                ),
+                message = stringResource(id = dialogMessage),
                 dismissButtonText = stringResource(id = R.string.cancel),
-                confirmButtonText = confirmButtonText,
+                confirmButtonText = if (isFavorite) stringResource(id = R.string.remove) else if (!isFavorite) stringResource(
+                    id = R.string.add
+                ) else "",
                 onConfirm = onAcceptFavChanged,
-                onDismiss = onDismissDialogAction
+                onDismiss = onDismissFavChanged
             )
 
         }
@@ -378,87 +384,90 @@ fun ProductDetailsContentScreen(
         }
     }
 }
+
 @Composable
 fun AddToCartBottom(
-    addToCartAction : ()->Unit,
-    increase : ()->Unit,
+    addToCartAction: () -> Unit,
+    increase: () -> Unit,
     decrease: () -> Unit,
-    itemCount : Int
-){
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 10.dp)
-            .background(Color.Transparent),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
+    itemCount: Int
+) {
+    Box (Modifier.fillMaxWidth().padding(start = 30.dp, end = 30.dp)){
+        Row(
             modifier = Modifier
-                .clip(RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp))
-                .background(Color.LightGray)
-                .align(Alignment.CenterVertically)
-                .width(200.dp)
-                .clickable {
-                    addToCartAction()
-                    Log.i("TAG", "view model to cart: ")
-                }
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(
-                    onClick = { Log.i("TAG", "Add to cart: ") }
-                ) {
-                    Icon(
-                        Icons.Filled.ShoppingCart,
-                        stringResource(id = R.string.add_to_cart),
-                        tint = Color.White
-                    )
-                }
-                Text(
-                    text = stringResource(id = R.string.add_to_cart),
-                    style = TextStyle(
-                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                        textAlign = TextAlign.Center,
-                        color = Color.White
-                    )
-
-                )
-            }
-        }
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))
+                .fillMaxWidth()
+                .padding(bottom = 10.dp)
                 .background(Color.Transparent)
-                .width(125.dp)
+//                .align(Alignment.BottomCenter),
+//            verticalAlignment = Alignment.BottomCenter
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(
-                    onClick = increase
-                ) {
-                    Icon(
-                        Icons.Default.Add,
-                        stringResource(id = R.string.add)
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp))
+                    .background(Color.Gray)
+                    .width(200.dp)
+                    .clickable {
+                        addToCartAction()
+                        Log.i("TAG", "view model to cart: ")
+                    }
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(
+                        onClick = { Log.i("TAG", "Add to cart: ") }
+                    ) {
+                        Icon(
+                            Icons.Filled.ShoppingCart,
+                            stringResource(id = R.string.add_to_cart),
+                            tint = Color.White
+                        )
+                    }
+                    Text(
+                        text = stringResource(id = R.string.add_to_cart),
+                        style = TextStyle(
+                            fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                            textAlign = TextAlign.Center,
+                            color = Color.White
+                        )
+
                     )
                 }
-                Text(
-                    text = itemCount.toString(),
-                    style = TextStyle(
-                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                        textAlign = TextAlign.Center
-                    )
+            }
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))
+                    .background(Color.White)
+                    .width(125.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(
+                        onClick = increase
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            stringResource(id = R.string.add)
+                        )
+                    }
+                    Text(
+                        text = itemCount.toString(),
+                        style = TextStyle(
+                            fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                            textAlign = TextAlign.Center
+                        )
 
-                )
-                Log.i("TAG", "ProductDetailsContentScreen: $itemCount")
-                IconButton(
-                    onClick = decrease
-
-                ) {
-                    Icon(
-                        painterResource(id = R.drawable.remove),
-                        stringResource(id = R.string.remove)
                     )
+                    Log.i("TAG", "ProductDetailsContentScreen: $itemCount")
+                    IconButton(
+                        onClick = decrease
+
+                    ) {
+                        Icon(
+                            painterResource(id = R.drawable.remove),
+                            stringResource(id = R.string.remove)
+                        )
+
+                    }
 
                 }
-
             }
         }
     }

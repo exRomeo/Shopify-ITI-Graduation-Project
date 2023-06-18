@@ -29,6 +29,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,6 +60,7 @@ import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
+import com.example.shopify.presentation.common.composables.CustomSearchbar
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.screens.brands.ProductsCards
 import com.example.shopify.ui.theme.ShopifyTheme
@@ -114,7 +116,12 @@ fun CategoriesScreen(navController:NavHostController) {
         mutableStateOf( R.drawable.app)
 
     }
-
+    var searchText by remember { mutableStateOf("") }
+    val isSearching by remember {
+        derivedStateOf {
+            searchText.isNotEmpty()
+        }
+    }
 
     var p = 0f
     var productPrice by rememberSaveable {
@@ -124,7 +131,15 @@ fun CategoriesScreen(navController:NavHostController) {
         mutableStateOf(filteredList)
 
     }
-
+    val searchFilteredList by remember {
+        derivedStateOf {
+            if (searchText.isEmpty()) {
+                filteredState
+            } else {
+                filteredState.filter { it.title?.startsWith(searchText, ignoreCase = true) ?: false }
+            }
+        }
+    }
     var floatingButtonState by rememberSaveable {
         mutableStateOf(FloatingButtonState.Collapsed)
     }
@@ -201,6 +216,14 @@ fun CategoriesScreen(navController:NavHostController) {
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            CustomSearchbar(
+                searchText = searchText,
+                onTextChange = { searchText = it },
+                hintText = R.string.search_brands,
+                isSearching = isSearching,
+                onCloseSearch = { searchText = "" }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
             MainFilters(items = mainCategories, onItemSelection = { index ->
 
                 when (index) {
@@ -251,9 +274,8 @@ fun CategoriesScreen(navController:NavHostController) {
                 ProductsCards(
                     navController = navController,
                     modifier = Modifier.height(600.dp),
-                    products = filteredState,
+                    products = searchFilteredList,
                     isFavourite = true,
-                    onFavouriteClicked = {},
                     onAddToCard = {})
             }
             else{

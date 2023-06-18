@@ -1,6 +1,7 @@
 package com.example.shopify.data.models
 
-import com.example.shopify.core.helpers.AuthenticationResponseState
+/*import com.example.shopify.core.helpers.AuthenticationResponseState
+import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.data.repositories.authentication.IAuthRepository
 import kotlinx.coroutines.coroutineScope
 
@@ -24,4 +25,4 @@ object GetCurrentCustomer {
         }
         return CollectCurrentCustomerData(customerFirebase,simpleResponse)
     }
-}
+}*/

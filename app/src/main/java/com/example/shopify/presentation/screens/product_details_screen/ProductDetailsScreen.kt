@@ -28,10 +28,6 @@ import com.example.shopify.data.repositories.product.IProductRepository
 
 @Composable
 fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
-    var isFavorite by remember {
-        mutableStateOf(false)
-    }
-    var itemCount by remember { mutableStateOf(0) }
 
     //product
     val productRepository: IProductRepository =
@@ -56,14 +52,16 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
         images = product?.images ?: listOf(),
         image = Image(product?.images?.get(0)?.src ?: "")
     )
-
+    var isFavorite by remember { mutableStateOf(false) }
+    var itemCount by remember { mutableStateOf(0) }
     var productAddedToCart by remember { mutableStateOf(false) }
     var dialogIsAppeared by remember { mutableStateOf(false) }
-    var showDialog by remember { mutableStateOf(false) }
+    var showCartDialog by remember { mutableStateOf(false) }
+    var showFavDialog by remember { mutableStateOf(false) }
     var showToast by remember { mutableStateOf(false) }
-    var showFavWarningDialog by remember { mutableStateOf(false) }
     var showReviewsDialog by remember { mutableStateOf(false) }
     var toastMessage by remember { mutableStateOf(0) }
+    var dialogMessage by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
         productDetailsViewModel.getProductInfo(productId/*8398820573490*/)
@@ -88,95 +86,94 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
         else -> {}
     }
 
-
     product?.let {
         ProductDetailsContentScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            isFavorite = isFavorite,
             productNavController = navController,
+            isFavorite = isFavorite,
+            showFavWarningDialog = showFavDialog,
+            showReviewsDialog = showReviewsDialog,
+            showToast = showToast,
+            showCartDialog = showCartDialog,
+            dialogMessage = dialogMessage,
+            toastMessage = toastMessage,
+            itemCount = itemCount,
+            product = it,
             onFavoriteChanged = {
-                showFavWarningDialog = true
+                showFavDialog = true
                 showToast = false
+                dialogMessage =
+                    if (isFavorite) R.string.fav_item_removal_warning else R.string.add_item_to_fav_message
             },
             onAcceptFavChanged = {
-                isFavorite = !isFavorite
-                if (isFavorite) {
-                    productDetailsViewModel.addWishlistItem(productSample)
-                    toastMessage = R.string.product_add_to_fav_success
-                }
-                if (!isFavorite) {
-                    productDetailsViewModel.removeWishlistItem(productSample)
-                    toastMessage = R.string.product_remove_from_fav_success
-                }
+                showFavDialog = false
                 showToast = true
+                isFavorite = !isFavorite
+                toastMessage = if (isFavorite) {
+                    productDetailsViewModel.addWishlistItem(productSample)
+                    R.string.product_add_to_fav_success
+                } else {
+                    productDetailsViewModel.removeWishlistItem(productSample)
+                    R.string.product_remove_from_fav_success
+                }
+
             },
-            itemCount = itemCount,
-            increase = {
+            onDismissFavChanged = {
+                showFavDialog = false
+            },
+
+            increaseItemCount = {
                 showToast = false
                 if (itemCount < 10) itemCount++
             },
-            decrease = {
-                if (itemCount > 1) {
-                    itemCount--
-                    showToast = false
-                } else if (itemCount == 1 && !dialogIsAppeared) showDialog = true
-            },
-            showDialog = showDialog,
-            showFavWarningDialog = showFavWarningDialog,
-            showReviewsDialog = showReviewsDialog,
-            showToast = if (!dialogIsAppeared) showToast else false,
-            toastMessage = toastMessage,
-            onShowDialogAction = {
-                showDialog = false
-                dialogIsAppeared = true
-            },
-            onDismissDialogAction = {
-                showFavWarningDialog = false
-            },
-            onAcceptRemoveCart = {
-                if (itemCount == 1) {
-                    itemCount = 0
-                    if (productAddedToCart) {
-//                        productDetailsViewModel.removeItemFromCart(productSample)
-                        toastMessage = R.string.product_remove_from_cart_success
-                        showToast = true
-                        productAddedToCart = false
-                    }
+            decreaseItemCount = {
+                showToast = false
+                if (itemCount > 1) itemCount--
+                else if (itemCount == 1 && productAddedToCart) {
+                    showCartDialog = true
+                    dialogMessage = R.string.cart_item_removal_warning
                 }
-                showDialog = false
+                else if(itemCount == 1 && !productAddedToCart){
+                    itemCount = 0
+                }
+            },
+
+            onAcceptRemoveCart = {
+                if (productAddedToCart) {
+                    productDetailsViewModel.removeItemFromCart(productSample)
+                    productAddedToCart = false
+                    showToast = true
+                    toastMessage = R.string.product_remove_from_cart_success
+                }
+                itemCount = 0
+                showCartDialog = false
             },
             onDismissRemoveCart = {
-                dialogIsAppeared = false
-                showDialog = false
+                showCartDialog = false
             },
-            addToCartAction = {
-                toastMessage = if (itemCount != 0) {
-                    productDetailsViewModel.addItemToCart(
-                        product = ProductSample(
-                            id = product?.id ?: 0,
-                            title = product?.title ?: "",
-                            variants = product?.variants ?: listOf(),
-                            images = product?.images ?: listOf(),
-                            image = Image(product?.images?.get(0)?.src ?: "")
-                        )
-                    )
-                    productAddedToCart = true
-                    R.string.product_add_to_cart_success
-                } else {
-                    productAddedToCart = false
-                    R.string.please_enter_quantity_of_product
-                }
-                showToast = true
 
+            addToCartAction = {
+                showToast = false
+                if (itemCount > 0) {
+                    productDetailsViewModel.addItemToCart(productSample)
+                    productAddedToCart = true
+                    showToast = true
+                    toastMessage = R.string.product_add_to_cart_success
+                } else {
+                    showToast = true
+                    toastMessage = R.string.please_enter_quantity_of_product
+                }
             },
+
             showReviews = { showReviewsDialog = true },
             onDismissShowReview = { showReviewsDialog = false },
-            it
-        )
+
+            )
     }
 }
+
 
 
 

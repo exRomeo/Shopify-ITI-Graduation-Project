@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,7 +28,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,6 +53,7 @@ import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
+import com.example.shopify.presentation.common.composables.CustomSearchbar
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.screens.homescreen.CardDesign
 import com.example.shopify.presentation.screens.homescreen.FavoriteButton
@@ -70,6 +76,22 @@ fun BrandsScreen(navController: NavHostController, id: Long?) {
 
     val productsState: UiState by viewModel.brandList.collectAsState()
     var productsList: List<Variant> = listOf()
+    var searchText by remember { mutableStateOf("") }
+    val isSearching by remember {
+        derivedStateOf {
+            searchText.isNotEmpty()
+        }
+    }
+    val filteredList by remember {
+        derivedStateOf {
+            if (searchText.isEmpty()) {
+                productsList
+            } else {
+
+                productsList.filter { it.title?.startsWith(searchText, ignoreCase = true) ?: false }
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
 
@@ -98,17 +120,27 @@ fun BrandsScreen(navController: NavHostController, id: Long?) {
             Log.i("homepage", (productsState as UiState.Error).error.toString())
         }
     }
-    if (productsList.isNotEmpty()) {
 
-        ProductsCards(
-            navController = navController,
-            // viewModel= settingsViewModel,
-            modifier = Modifier,
-            isFavourite = true,
-            onFavouriteClicked = {},
-            onAddToCard = {},
-            products = productsList,
-        )
+    if (filteredList.isNotEmpty()) {
+        Column() {
+            CustomSearchbar(
+                searchText = searchText,
+                onTextChange = { searchText = it },
+                hintText = R.string.search_brands,
+                isSearching = isSearching,
+                onCloseSearch = { searchText = "" }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            ProductsCards(
+                navController = navController,
+                // viewModel= settingsViewModel,
+                modifier = Modifier,
+                isFavourite = true,
+                onAddToCard = {},
+                products = filteredList,
+            )
+        }
+
 
     }
 }
@@ -121,43 +153,44 @@ fun ProductsCards(
     modifier: Modifier = Modifier,
     products: List<Variant>,
     isFavourite: Boolean,
-    onFavouriteClicked: (Boolean) -> Unit,
     onAddToCard: (item: Product) -> Unit
 ) {
-    LazyColumn(
-        modifier = modifier,
+        LazyColumn(
+            modifier = modifier,
 
-        // content padding
-        contentPadding = PaddingValues(
-            start = 12.dp,
-            top = 16.dp,
-            end = 12.dp,
-            bottom = 16.dp
-        ),
-        content = {
-            items(products) { item ->
-                CardDesign(onCardClicked = {
-                    navController.navigate(route = "${Screens.Details.route}/${item.id}")
-                }) {
-                    ProductItem(isFavourite = isFavourite, onFavouritesClicked = {
-                        var productSample: ProductSample =
-                            ProductSample(
-                                id = item.id,
-                                title = item.title!!,
-                                variants = item.variants!!,
-                                images = listOf(item.image)!! as List<Image>,
-                                image = item.image!!
-                            )
+            // content padding
+            contentPadding = PaddingValues(
+                start = 12.dp,
+                top = 16.dp,
+                end = 12.dp,
+                bottom = 16.dp
+            ),
+            content = {
+                items(products) { item ->
+                    CardDesign(onCardClicked = {
+                        navController.navigate(route = "${Screens.Details.route}/${item.id}")
+                    }) {
+                        ProductItem(isFavourite = isFavourite, onFavouritesClicked = {
+                            var productSample: ProductSample =
+                                ProductSample(
+                                    id = item.id,
+                                    title = item.title!!,
+                                    variants = item.variants!!,
+                                    images = listOf(item.image)!! as List<Image>,
+                                    image = item.image!!
+                                )
 
-                        //   viewModel.addWishlistItem(productSample)
+                            //   viewModel.addWishlistItem(productSample)
 
 
-                    }, onAddToCard = onAddToCard, item = item, navController = navController)
+                        }, onAddToCard = onAddToCard, item = item, navController = navController)
 
+                    }
                 }
             }
-        }
-    )
+        )
+
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

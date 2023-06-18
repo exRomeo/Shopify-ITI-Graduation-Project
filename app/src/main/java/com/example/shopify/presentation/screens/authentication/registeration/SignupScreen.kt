@@ -18,6 +18,7 @@ import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.data.repositories.authentication.IAuthRepository
+import java.io.IOException
 
 @Composable
 fun SignupScreen(signupNavController: NavController) {
@@ -73,7 +74,10 @@ fun SignupScreen(signupNavController: NavController) {
         }
 
         is AuthenticationResponseState.Error -> {
-            error = stringResource(id = R.string.email_password_must_be_unique)
+            when (authResponse.message) {
+                is IOException -> error = stringResource(id = R.string.please_check_network)
+                else -> error = stringResource(id = R.string.email_password_must_be_unique)
+            }
             Log.i("TAG", " ERROR ${authResponse.message}")
         }
 
