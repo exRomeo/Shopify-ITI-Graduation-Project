@@ -1,4 +1,4 @@
-package com.example.shopify.presentation.screens.settingsscreen.subscreens.wishlist
+package com.example.shopify.presentation.screens.wishlist
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,23 +32,33 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.shopify.R
+import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.data.models.ProductSample
+import com.example.shopify.data.repositories.wishlist.WishlistRepository
+import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.presentation.common.composables.WishlistItemCard
-import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 import com.example.shopify.presentation.screens.settingsscreen.TAG
+import com.example.shopify.utilities.ShopifyApplication
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WishlistScreen(
-    viewModel: SettingsViewModel,
-    settingsNavController: NavHostController,
-    mainNavController: NavHostController
+    navController: NavHostController
 ) {
+    val viewModel: WishlistViewModel = viewModel(
+        factory =
+        WishlistViewModelFactory(
+            WishlistRepository(
+                wishlistManager = (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
+            )
+        )
+    )
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -61,18 +70,8 @@ fun WishlistScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = { settingsNavController.navigateUp() }) {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(Icons.Default.ArrowBack, "")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = {
-                        viewModel.addWishlistItem(
-                            productID = 8398826111282,
-                            variantID = 45344376652082
-                        )
-                    }) {
-                        Icon(Icons.Default.Add, "")
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -89,13 +88,24 @@ fun WishlistScreen(
         }
     ) {
         Column(Modifier.padding(it)) {
-            WishlistScreenContent(viewModel = viewModel, mainNavController = mainNavController)
+            val state by viewModel.screenState.collectAsState()
+            when (state) {
+                is UserScreenUISState.Loading -> {
+                    LottieAnimation(animation = R.raw.loading_animation)
+                }
+
+                is UserScreenUISState.Success<*> -> {
+                    WishlistScreenContent(viewModel = viewModel, navController = navController)
+                }
+
+                else -> {}
+            }
         }
     }
 }
 
 @Composable
-fun WishlistScreenContent(viewModel: SettingsViewModel, mainNavController: NavHostController) {
+fun WishlistScreenContent(viewModel: WishlistViewModel, navController: NavHostController) {
     var productToRemove by remember { mutableStateOf<ProductSample?>(null) }
     var showDialog by remember { mutableStateOf(false) }
     val wishlistItems by viewModel.wishlist.collectAsState()
@@ -111,7 +121,7 @@ fun WishlistScreenContent(viewModel: SettingsViewModel, mainNavController: NavHo
                     productToRemove = it
                     showDialog = true
                 }) {
-                mainNavController.navigate(Screens.Details.route + "/${it.id}",
+                navController.navigate(Screens.Details.route + "/${it.id}",
                     builder = {
                         launchSingleTop = true
                     }

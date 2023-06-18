@@ -112,6 +112,9 @@
     <string name="please_enter_quantity_of_product">Please enter quantity you need!</string>
     <string name="product_remove_from_fav_success">Product remove from favorite</string>
     <string name="product_remove_from_cart_success">Product remove from cart</string>
+    <string name="checkout">CHECKOUT</string>
+    <string name="add_items_to_cart">Add Items TO Cart</string>
+    <string name="not_connection">Please Check Your Internet Connection.</string>
     <string name="search_brands">Search On Brands</string>
     <string name="search">Search</string>
     <string name="please_check_network">Please check your internet connection and try again.</string>

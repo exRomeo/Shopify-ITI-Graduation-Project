@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 
-object RetrofitClient {
+object ShopifyAPIClient {
     private const val BASE_URL = "https://mad43-alex-and-team2.myshopify.com/"
     private val retrofit: Retrofit =
         Retrofit

@@ -39,15 +39,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.shopify.R
-import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.Screens
-import com.example.shopify.data.managers.CartManager
-import com.example.shopify.data.managers.WishlistManager
+import com.example.shopify.data.managers.cart.CartManager
+import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.repositories.user.UserDataRepository
 import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
-import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
+import com.example.shopify.data.repositories.user.remote.retrofitclient.ShopifyAPIClient
+import com.example.shopify.presentation.common.composables.NoConnectionScreen
 import com.example.shopify.presentation.common.composables.SettingItemCard
 import com.example.shopify.ui.theme.ShopifyTheme
 
@@ -62,6 +62,7 @@ fun SettingsScreen(
 ) {
 
     val state by settingsViewModel.settingsState.collectAsState()
+    val userName by settingsViewModel.userName.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -70,7 +71,7 @@ fun SettingsScreen(
                 ),
                 title = {
                     Text(
-                        text = "Welcome ${CurrentUserHelper.customerName}",
+                        text = "Welcome $userName",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -78,10 +79,9 @@ fun SettingsScreen(
                 actions = {
                     if (state is UserScreenUISState.LoggedIn)
                         IconButton(onClick = {
-                            bottomNavController.popBackStack()
+                            settingsViewModel.logout()
                             bottomNavController.navigate(Screens.Login.route, builder = {
                                 popUpTo(route = Screens.Login.route) {
-                                    Log.i(TAG, "SettingsScreen: NAVIGATION TO LOGIN SQREEN")
                                     inclusive = true
                                 }
                             }
@@ -89,7 +89,14 @@ fun SettingsScreen(
                         }
                         ) {
                             Icon(Icons.Default.Logout, stringResource(id = R.string.logout))
-                        } else IconButton(onClick = { /*TODO: Login action*/ }) {
+                        }
+                    else IconButton(onClick = {
+                        bottomNavController.navigate(Screens.Login.route, builder = {
+                            popUpTo(route = Screens.Login.route) {
+                                inclusive = true
+                            }
+                        })
+                    }) {
                         Icon(Icons.Default.Login, stringResource(id = R.string.login))
                     }
                 }
@@ -102,12 +109,17 @@ fun SettingsScreen(
                 is UserScreenUISState.LoggedIn -> {
                     SettingsScreenContent(
                         settingsViewModel = settingsViewModel,
+                        bottomNavController = bottomNavController,
                         settingsNav = settingsNav
                     )
                 }
 
+                is UserScreenUISState.NotConnected -> {
+                    NoConnectionScreen()
+                }
+
                 else -> {
-                    NotLoggedInSettings(navController = settingsNav)
+                    NotLoggedInSettings(navController = bottomNavController)
                 }
 
             }
@@ -119,11 +131,13 @@ fun SettingsScreen(
 @Composable
 fun SettingsScreenContent(
     settingsViewModel: SettingsViewModel,
+    bottomNavController: NavHostController,
     settingsNav: NavHostController
 ) {
 
     SettingsItemList(
         settingsViewModel = settingsViewModel,
+        bottomNavController = bottomNavController,
         settingsNav = settingsNav
     )
 }
@@ -132,6 +146,7 @@ fun SettingsScreenContent(
 @Composable
 fun SettingsItemList(
     settingsViewModel: SettingsViewModel,
+    bottomNavController: NavHostController,
     settingsNav: NavHostController
 ) {
     LazyColumn(
@@ -164,7 +179,7 @@ fun SettingsItemList(
                     Icon(Icons.Default.Favorite, stringResource(id = R.string.wishlist))
                 }
             ) {
-                settingsNav.navigate(Screens.Wishlist.route)
+                bottomNavController.navigate(Screens.Wishlist.route)
             }
         }
         item {
@@ -192,7 +207,7 @@ fun SettingsItemList(
                     Icon(Icons.Default.ShoppingCart, stringResource(id = R.string.cart))
                 }
             ) {
-                settingsNav.navigate(Screens.Cart.route)
+                bottomNavController.navigate(Screens.Cart.route)
             }
         }
     }
@@ -229,14 +244,14 @@ fun SettingsPreview() {
             SettingsViewModel(
                 UserDataRepository(
                     UserDataRemoteSource(
-                        RetrofitClient.customerAddressAPI
+                        ShopifyAPIClient.customerAddressAPI
                     )
                 ),
                 wishlistManager = WishlistManager(
-                    RetrofitClient.draftOrderAPI
+                    ShopifyAPIClient.draftOrderAPI
                 ),
                 cartManager = CartManager(
-                    RetrofitClient.draftOrderAPI
+                    ShopifyAPIClient.draftOrderAPI
                 )
             ),
             rememberNavController(),

@@ -6,7 +6,6 @@ import com.example.shopify.core.helpers.KeyFirebase
 import com.example.shopify.core.utils.SharedPreference.customerID
 import com.example.shopify.data.models.CustomerFirebase
 import com.example.shopify.data.models.CustomerRequestBody
-import com.example.shopify.data.models.CustomerResponseBody
 import com.example.shopify.data.remote.authentication.IAuthenticationClient
 import com.google.firebase.auth.AuthCredential
 

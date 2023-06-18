@@ -5,9 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.shopify.core.helpers.UiState
-import com.example.shopify.data.managers.CartManager
-import com.example.shopify.data.managers.WishlistManager
-import com.example.shopify.data.models.ProductSample
+import com.example.shopify.data.managers.cart.CartManager
+import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.repositories.product.IProductRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +19,7 @@ class HomeViewModel(
     private val repository: IProductRepository,
     private val wishlistManager: WishlistManager,
     private val cartManager: CartManager
-):ViewModel() {
+) : ViewModel() {
 
     private var _brandsList: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val brandList: StateFlow<UiState> = _brandsList
@@ -73,30 +72,37 @@ class HomeViewModel(
     }
 
 
-    fun addWishlistItem(productId: Long,variantId: Long) {
+    fun addWishlistItem(productId: Long, variantId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            wishlistManager.addWishlistItem(productId,variantId)
+            wishlistManager.addWishlistItem(productId, variantId)
         }
     }
+
     fun removeWishlistItem(productId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             wishlistManager.removeWishlistItem(productId)
         }
     }
 
-    fun addItemToCart(productId: Long,variantId: Long) {
+    fun addItemToCart(productId: Long, variantId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            cartManager.addCartItem(productId,variantId)
+            cartManager.addCartItem(productId, variantId)
         }
 
     }
 }
 
-class HomeViewModelFactory(  private val repository: IProductRepository,
-                               private val wishlistManager: WishlistManager,
-                               private val cartManager: CartManager) : ViewModelProvider.Factory {
+class HomeViewModelFactory(
+    private val repository: IProductRepository,
+    private val wishlistManager: WishlistManager,
+    private val cartManager: CartManager
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(HomeViewModel::class.java))
-            HomeViewModel(repository,wishlistManager,cartManager) as T else throw IllegalArgumentException("View Model Class Not Found !!!")
+            HomeViewModel(
+                repository,
+                wishlistManager,
+                cartManager
+            ) as T else throw IllegalArgumentException("View Model Class Not Found !!!")
     }
 }

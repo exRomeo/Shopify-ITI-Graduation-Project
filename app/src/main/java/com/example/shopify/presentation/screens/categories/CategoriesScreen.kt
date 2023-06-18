@@ -50,12 +50,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.shopify.R
-import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
-import com.example.shopify.data.managers.CartManager
-import com.example.shopify.data.managers.WishlistManager
-
+import com.example.shopify.data.managers.cart.CartManager
+import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.models.Image
 import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.ProductSample
@@ -68,6 +66,7 @@ import com.example.shopify.presentation.screens.brands.BrandsViewModel
 import com.example.shopify.presentation.screens.brands.BrandsViewModelFactory
 import com.example.shopify.presentation.screens.brands.ProductsCards
 import com.example.shopify.ui.theme.ShopifyTheme
+import com.example.shopify.utilities.ShopifyApplication
 
 
 val mainCategories = listOf("Men", "Women", "Kid", "Sale")
@@ -136,15 +135,15 @@ val items = listOf(
         icon = R.drawable.sneakers,
         label = "SHOES",
     ),
-            MiniFABItem(
-            icon = R.drawable.close,
-           label = "CLOSE",
-)
+    MiniFABItem(
+        icon = R.drawable.close,
+        label = "CLOSE",
+    )
 
 )
 
 @Composable
-fun CategoriesScreen(navController:NavHostController) {
+fun CategoriesScreen(navController: NavHostController) {
     val repository: IProductRepository =
         (LocalContext.current.applicationContext as ShopifyApplication).repository
     val wishlistManager: WishlistManager =
@@ -156,17 +155,19 @@ fun CategoriesScreen(navController:NavHostController) {
             repository
         )
     )
-    val viewModel2: BrandsViewModel = viewModel(factory = BrandsViewModelFactory(
-        repository,wishlistManager,cartManager
-    ))
+    val viewModel2: BrandsViewModel = viewModel(
+        factory = BrandsViewModelFactory(
+            repository, wishlistManager, cartManager
+        )
+    )
 
     val productsState: UiState by viewModel.productsList.collectAsState()
     var productsList: List<ProductSample> = listOf()
-    var filteredList:List<ProductSample> = listOf()
-     var state:String = "fail"
-   // var FABIcon = R.drawable.ic_category
+    var filteredList: List<ProductSample> = listOf()
+    var state: String = "fail"
+    // var FABIcon = R.drawable.ic_category
     var FABIcon by rememberSaveable {
-        mutableStateOf( R.drawable.app)
+        mutableStateOf(R.drawable.app)
 
     }
     var searchText by remember { mutableStateOf("") }
@@ -189,7 +190,9 @@ fun CategoriesScreen(navController:NavHostController) {
             if (searchText.isEmpty()) {
                 filteredState
             } else {
-                filteredState.filter { it.title?.startsWith(searchText, ignoreCase = true) ?: false }
+                filteredState.filter {
+                    it.title?.startsWith(searchText, ignoreCase = true) ?: false
+                }
             }
         }
     }
@@ -206,11 +209,11 @@ fun CategoriesScreen(navController:NavHostController) {
             state = "success"
             productsList =
                 (productsState as UiState.Success<Products>).data.body()?.products!!
-            filteredState =  productsList.filter { item ->
+            filteredState = productsList.filter { item ->
                 //  item.variants?.get(0)?.price?.let { it1 -> Log.i("hla", it1) }
                 item.variants?.get(0)?.price?.toFloat()!! >= productPrice
             }
-            Log.i("hala",productPrice.toString())
+            Log.i("hala", productPrice.toString())
 
             // filteredState = productsList
             //   Log.i("menna", productsList.toString())
@@ -221,43 +224,42 @@ fun CategoriesScreen(navController:NavHostController) {
         }
     }
     Scaffold(
-        bottomBar = { Bottombar(navController = navController)},
+        bottomBar = { Bottombar(navController = navController) },
         //floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
-            FloatingButton(items = items, onMiniFABClicked = {
+            FloatingButton(
+                items = items, onMiniFABClicked = {
 
-                viewModel.type = it
-                viewModel.getProductsBySubcategory()
-                floatingButtonState = FloatingButtonState.Collapsed
-                FABIcon = when (it){
-                    "ACCESSORIES" -> {
-                        R.drawable.hat
+                    viewModel.type = it
+                    viewModel.getProductsBySubcategory()
+                    floatingButtonState = FloatingButtonState.Collapsed
+                    FABIcon = when (it) {
+                        "ACCESSORIES" -> {
+                            R.drawable.hat
+                        }
+
+                        "T-SHIRTS" -> {
+                            R.drawable.shirt
+                        }
+
+                        "SHOES" -> {
+                            R.drawable.sneakers
+                        }
+
+                        else -> {
+                            viewModel.type = ""
+                            R.drawable.app
+                        }
                     }
 
-                    "T-SHIRTS" -> {
-                        R.drawable.shirt
-                    }
 
-                    "SHOES" ->{
-                        R.drawable.sneakers
-                    }
-
-                    else -> {
-                        viewModel.type = ""
-                        R.drawable.app
-                    }
-                }
-
-
-
-
-            }, onFABCLicked =
-            {
+                }, onFABCLicked =
+                {
 
                     floatingButtonState = FloatingButtonState.Expanded
 
 
-                },FABIcon,floatingButtonState
+                }, FABIcon, floatingButtonState
             )
         }
 
@@ -326,17 +328,15 @@ fun CategoriesScreen(navController:NavHostController) {
                 // viewModel.type = ""
                 ProductsCards(
                     navController = navController,
-                    viewModel=viewModel2,
+                    viewModel = viewModel2,
                     modifier = Modifier.height(600.dp),
                     products = searchFilteredList,
                     isFavourite = false,
                     onFavouriteClicked = {}
-                ) {
-                        product ->
-                    viewModel2.addItemToCart(product.id,product.variants[0].id)
+                ) { product ->
+                    viewModel2.addItemToCart(product.id, product.variants[0].id)
                 }
-            }
-            else{
+            } else {
 
                 if (state == "success" && filteredState.isEmpty()) {
                     Column {
@@ -428,22 +428,22 @@ fun MainFilters(
 }
 
 
-    @Composable
-    fun SliderComponent(onPriceValueChanged: (Float) -> List<ProductSample>) {
-        var sliderValue by remember {
-            mutableStateOf(0f)
-        }
-        Slider(
-            value = sliderValue,
-            onValueChange = { sliderValue_ ->
-                sliderValue = sliderValue_
-            },
-            onValueChangeFinished = { onPriceValueChanged(sliderValue) },
-            valueRange = 0f..250f,
-            steps = 4
-        )
-        Text(text = "> $sliderValue")
+@Composable
+fun SliderComponent(onPriceValueChanged: (Float) -> List<ProductSample>) {
+    var sliderValue by remember {
+        mutableStateOf(0f)
     }
+    Slider(
+        value = sliderValue,
+        onValueChange = { sliderValue_ ->
+            sliderValue = sliderValue_
+        },
+        onValueChangeFinished = { onPriceValueChanged(sliderValue) },
+        valueRange = 0f..250f,
+        steps = 4
+    )
+    Text(text = "> $sliderValue")
+}
 
 @Composable
 fun CategoriesItems() {
@@ -518,7 +518,7 @@ fun MiniFAB(
             contentDescription = "content description"
         )
 
-        }
+    }
 
 }
 

@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.shopify.R
-import com.example.shopify.Utilities.ShopifyApplication
+import com.example.shopify.utilities.ShopifyApplication
 import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.data.repositories.authentication.IAuthRepository
 import java.io.IOException

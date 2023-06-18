@@ -4,7 +4,6 @@ import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.core.helpers.KeyFirebase
 import com.example.shopify.data.models.CustomerFirebase
 import com.example.shopify.data.models.CustomerRequestBody
-import com.example.shopify.data.models.CustomerResponseBody
 import com.google.firebase.auth.AuthCredential
 
 

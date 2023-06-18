@@ -16,19 +16,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.shopify.R
-import com.example.shopify.Utilities.ShopifyApplication
+import com.example.shopify.utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
-import com.example.shopify.data.managers.CartManager
-import com.example.shopify.data.managers.WishlistManager
+import com.example.shopify.data.managers.cart.CartManager
+import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.models.Image
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.SingleProduct
 import com.example.shopify.data.models.SingleProductResponseBody
 import com.example.shopify.data.repositories.product.IProductRepository
-import com.example.shopify.data.repositories.user.IUserDataRepository
-import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
-import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModelFactory
-import com.example.shopify.presentation.screens.settingsscreen.TAG
 
 @Composable
 fun ProductDetailsScreen(navController: NavHostController, productId: Long) {

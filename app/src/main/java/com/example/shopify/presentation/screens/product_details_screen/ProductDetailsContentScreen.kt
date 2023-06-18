@@ -9,7 +9,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,15 +27,11 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomNavigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -48,10 +42,6 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -73,15 +63,11 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
-import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.data.models.SingleProduct
-import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.WarningDialog
-import com.example.shopify.ui.theme.backgroundColor
 import com.example.shopify.ui.theme.ibarraBold
 import com.example.shopify.ui.theme.ibarraRegular
 import com.example.shopify.ui.theme.mainColor
-import kotlinx.coroutines.delay
 import kotlin.random.Random
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -230,21 +216,21 @@ fun ProductDetailsContentScreen(
                                     )
                                 }
                             }
-                           /* Box {
+                            /* Box {
 
-                                Box(
-                                    Modifier
-                                        .fillMaxSize()
-                                        .background(Color.Transparent)
-                                        .align(Alignment.BottomCenter)
-                                ) {
-                                    LaunchedEffect(Unit) {
-                                        delay(2000L)
-                                    }
-                                    LottieAnimation(animation = R.raw.swipe_image/*,progress = progress*/)
+                                 Box(
+                                     Modifier
+                                         .fillMaxSize()
+                                         .background(Color.Transparent)
+                                         .align(Alignment.BottomCenter)
+                                 ) {
+                                     LaunchedEffect(Unit) {
+                                         delay(2000L)
+                                     }
+                                     LottieAnimation(animation = R.raw.swipe_image/*,progress = progress*/)
 
-                                }
-                            }*/
+                                 }
+                             }*/
                         }
 
                     }
@@ -407,7 +393,10 @@ fun AddToCartBottom(
     decrease: () -> Unit,
     itemCount: Int
 ) {
-    Box (Modifier.fillMaxWidth().padding(start = 30.dp, end = 30.dp)){
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .padding(start = 30.dp, end = 30.dp)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()

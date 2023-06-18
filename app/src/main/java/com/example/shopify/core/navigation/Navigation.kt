@@ -18,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -32,9 +31,11 @@ import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
 import com.example.shopify.presentation.screens.authentication.login.LoginScreen
 import com.example.shopify.presentation.screens.authentication.registeration.SignupScreen
 import com.example.shopify.presentation.screens.brands.BrandsScreen
+import com.example.shopify.presentation.screens.cartscreen.CartScreen
 import com.example.shopify.presentation.screens.categories.CategoriesScreen
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 import com.example.shopify.presentation.screens.product_details_screen.ProductDetailsScreen
+import com.example.shopify.presentation.screens.wishlist.WishlistScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -61,6 +62,15 @@ fun NavGraph(navController: NavHostController) {
             CategoriesScreen(navController)
         }
 
+        composable(route = Screens.Cart.route) {
+            CartScreen(navController)
+        }
+
+        composable(route = Screens.Wishlist.route) {
+            WishlistScreen(navController)
+        }
+
+
         composable(route = Screens.Settings.route) {
             SettingsNavigation(bottomNavController = navController)
         }
@@ -81,7 +91,7 @@ fun NavGraph(navController: NavHostController) {
             })
         ) {
             it.arguments?.getLong("productId")
-                ?.let { it1 -> ProductDetailsScreen(navController, it1) }
+                ?.let { productID -> ProductDetailsScreen(navController, productID) }
         }
     }
 }
@@ -113,7 +123,7 @@ val bottomNavItems = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(modifier: Modifier = Modifier, title: String, onSearch:() ->Unit) {
+fun TopBar(modifier: Modifier = Modifier, title: String, onSearch: () -> Unit) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.surfaceTint

@@ -1,4 +1,6 @@
-package com.example.shopify.data.models
+package com.example.shopify.data.models.currency
+
+import com.example.shopify.data.models.ItemWithName
 
 data class Currency(val symbol: String, val country: String): ItemWithName {
     companion object {
@@ -33,5 +35,7 @@ data class Currency(val symbol: String, val country: String): ItemWithName {
     override fun getShortName(): String = country
 
 
-    override fun getItemName(): String = "$country: $symbol"
+    override fun getFullName(): String = "$country: $symbol"
+
+    override fun getName():String = symbol
 }

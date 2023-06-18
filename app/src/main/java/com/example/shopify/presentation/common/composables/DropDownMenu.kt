@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.shopify.data.models.Currency
+import com.example.shopify.data.models.currency.Currency
 import com.example.shopify.data.models.ItemWithName
 import com.example.shopify.presentation.screens.settingsscreen.TAG
 
@@ -36,7 +36,7 @@ fun MenuPrev() {
 fun <T> SingleSelectionDropdownMenu(
     title: String,
     items: List<T>,
-    onSelect: (index: Int) -> Unit
+    onSelect: (String) -> Unit
 ) where T : ItemWithName {
     var selection by remember { mutableStateOf(title) }
     var expandedState by remember { mutableStateOf(false) }
@@ -69,13 +69,13 @@ fun <T> SingleSelectionDropdownMenu(
                         text = {
                             Text(
                                 modifier = Modifier.fillMaxWidth(),
-                                text = it.getItemName(),
+                                text = it.getFullName(),
                                 style = TextStyle(textAlign = TextAlign.Center)
                             )
                         },
                         onClick = {
                             selection = it.getShortName()
-                            onSelect(items.indexOf(it))
+                            onSelect(it.getName())
                             expandedState = false
                         })
                 }
