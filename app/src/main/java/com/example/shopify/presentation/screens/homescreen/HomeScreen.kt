@@ -183,7 +183,7 @@ Scaffold(
 //
 //                    }
                 }, onAddToCard = {product ->
-                    viewModel.addItemToCart(product)
+                    viewModel.addItemToCart(product.id,product.variants[0].id)
 
                 })
 
@@ -548,11 +548,11 @@ fun ItemCards(
                             product ->
                         isFavourite = !isFavourite
                         if (isFavourite) {
-                            viewModel.addWishlistItem(product)
+                            viewModel.addWishlistItem(product.id,product.variants[0].id)
 
                         }
                         if (!isFavourite) {
-                            viewModel.removeWishlistItem(product)
+                            viewModel.removeWishlistItem(product.id)
 
                         }
                        },

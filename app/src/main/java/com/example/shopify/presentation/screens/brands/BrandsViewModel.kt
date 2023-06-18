@@ -45,21 +45,20 @@ class BrandsViewModel(
         }
     }
 
-    fun addWishlistItem(product: ProductSample) {
+    fun addWishlistItem(productId: Long,variantId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            wishlistManager.addWishlistItem(product)
+            wishlistManager.addWishlistItem(productId,variantId)
+        }
+    }
+    fun removeWishlistItem(productId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            wishlistManager.removeWishlistItem(productId)
         }
     }
 
-    fun removeWishlistItem(product: ProductSample) {
+    fun addItemToCart(productId: Long,variantId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            wishlistManager.removeWishlistItem(product)
-        }
-    }
-
-    fun addItemToCart(product: ProductSample) {
-        viewModelScope.launch(Dispatchers.IO) {
-            cartManager.addCartItem(product)
+            cartManager.addCartItem(productId,variantId)
         }
 
     }

@@ -121,7 +121,7 @@ fun BrandsScreen(navController: NavHostController, id: Long?){
 
                 },
                 onAddToCard = { product ->
-                              viewModel.addItemToCart(product)
+                              viewModel.addItemToCart(product.id,product.variants[0].id)
                 },
                 products = productsList,
             )
@@ -163,11 +163,11 @@ fun BrandsScreen(navController: NavHostController, id: Long?){
                             product ->
                         isFavourite = !isFavourite
                         if (isFavourite) {
-                            viewModel.addWishlistItem(product)
+                            viewModel.addWishlistItem(product.id,product.variants[0].id)
 
                         }
                         if (!isFavourite) {
-                            viewModel.removeWishlistItem(product)
+                            viewModel.removeWishlistItem(product.id)
 
                         }
 

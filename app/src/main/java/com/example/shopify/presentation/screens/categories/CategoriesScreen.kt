@@ -309,7 +309,7 @@ fun CategoriesScreen(navController: NavHostController) {
                     onFavouriteClicked = {}
                 ) {
                         product ->
-                    viewModel2.addItemToCart(product)
+                    viewModel2.addItemToCart(product.id,product.variants[0].id)
                 }
             }
             else{
