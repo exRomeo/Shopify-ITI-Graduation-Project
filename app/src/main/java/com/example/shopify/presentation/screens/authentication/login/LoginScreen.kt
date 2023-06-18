@@ -11,12 +11,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.AuthenticationResponseState
+import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.navigation.Screens
+import com.example.shopify.data.managers.CartManager
+import com.example.shopify.data.managers.WishlistManager
 import com.example.shopify.data.repositories.authentication.IAuthRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.IOException
 
 @Composable
 fun LoginScreen(loginNavController: NavController) { //state hoisting move state to the caller of composable
@@ -62,22 +71,33 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
         }
 
         is AuthenticationResponseState.Error -> {
+            when (authResponse.message) {
+                is IOException ->
+                    error = stringResource(id = R.string.please_check_network)
+
+                else -> error = stringResource(id = R.string.please_check_email_password)
+            }
             Log.i("TAG", " ERROR ${authResponse.message}")
-            error = authResponse.message.toString()
+
         }
 
         else -> {
             Log.i("TAG", "THERE'S SOMETHING WRONG ")
         }
     }
-    LoginContentScreen(
-        loginViewModel = loginViewModel,
-        email = email,
-        onEmailChanged = { email = it },
-        password = password,
-        onPasswordChanged = { password = it },
-        isDataEntered = isDataEntered,
-        errorResponse = error,
-        loginNavController = loginNavController
-    )
+    if (authRepository.checkedLoggedIn()) {
+        loginNavController.navigate(Screens.Home.route)
+
+    } else { //Not logged in
+        LoginContentScreen(
+            loginViewModel = loginViewModel,
+            email = email,
+            onEmailChanged = { email = it },
+            password = password,
+            onPasswordChanged = { password = it },
+            isDataEntered = isDataEntered,
+            errorResponse = error,
+            loginNavController = loginNavController
+        )
+    }
 }

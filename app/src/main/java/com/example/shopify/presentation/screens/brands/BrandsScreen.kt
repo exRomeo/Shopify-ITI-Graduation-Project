@@ -5,9 +5,12 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +52,7 @@ import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.repositories.product.IProductRepository
+import com.example.shopify.presentation.common.composables.CustomSearchbar
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.screens.homescreen.CardDesign
 import com.example.shopify.presentation.screens.homescreen.FavoriteButton
@@ -67,11 +72,24 @@ fun BrandsScreen(navController: NavHostController, id: Long?){
     )
     )
 
-//    var isFavourite by remember {
-//        mutableStateOf(false)
-//    }
     val productsState: UiState by viewModel.brandList.collectAsState()
     var productsList: List<ProductSample> = listOf()
+    var searchText by remember { mutableStateOf("") }
+    val isSearching by remember {
+        derivedStateOf {
+            searchText.isNotEmpty()
+        }
+    }
+    val filteredList by remember {
+        derivedStateOf {
+            if (searchText.isEmpty()) {
+                productsList
+            } else {
+
+                productsList.filter { it.title?.startsWith(searchText, ignoreCase = true) ?: false }
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
 
@@ -100,8 +118,17 @@ fun BrandsScreen(navController: NavHostController, id: Long?){
             Log.i("homepage", (productsState as UiState.Error).error.toString())
         }
     }
-        if(productsList.isNotEmpty()){
 
+    if (filteredList.isNotEmpty()) {
+        Column() {
+            CustomSearchbar(
+                searchText = searchText,
+                onTextChange = { searchText = it },
+                hintText = R.string.search_brands,
+                isSearching = isSearching,
+                onCloseSearch = { searchText = "" }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
             ProductsCards(
                navController = navController,
                viewModel= viewModel,
@@ -125,14 +152,15 @@ fun BrandsScreen(navController: NavHostController, id: Long?){
                 },
                 products = productsList,
             )
-
-            }
         }
 
 
+    }
+}
+
 
 @Composable
-    fun ProductsCards(
+fun ProductsCards(
     navController: NavHostController,
     viewModel: BrandsViewModel,
     modifier: Modifier = Modifier,
@@ -185,10 +213,10 @@ fun ProductItem(
     modifier: Modifier = Modifier, isFavourite: Boolean,
     onFavouritesClicked: (item:ProductSample) -> Unit, onAddToCard: (item: ProductSample) -> Unit, item: ProductSample
 ) {
-Card(onClick = {
-    navController.navigate(route ="${Screens.Details.route}/${item.id}")
-}, modifier = Modifier.height(200.dp)) {
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    Card(onClick = {
+        navController.navigate(route = "${Screens.Details.route}/${item.id}")
+    }, modifier = Modifier.height(200.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
 
         item.image?.src?.let {
             ImageFromNetwork(image = it,

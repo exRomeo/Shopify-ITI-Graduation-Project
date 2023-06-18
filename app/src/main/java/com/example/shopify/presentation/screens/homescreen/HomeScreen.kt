@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -70,26 +71,29 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
+import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.Screens
-import com.example.shopify.core.navigation.TopBar
 import com.example.shopify.data.managers.CartManager
 import com.example.shopify.data.managers.WishlistManager
 import com.example.shopify.data.models.Brand
-import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.SmartCollections
+import com.example.shopify.data.repositories.authentication.IAuthRepository
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.common.composables.WarningDialog
 
+import com.example.shopify.presentation.common.composables.CustomSearchbar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
 
 
   val repository: IProductRepository = (LocalContext.current.applicationContext as ShopifyApplication) .repository
+    val authRepository: IAuthRepository = (LocalContext.current.applicationContext as ShopifyApplication) .authRepository
     val wishlistManager: WishlistManager =
         (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
     val cartManager: CartManager =
@@ -98,9 +102,29 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
 
     val brandsState: UiState by viewModel.brandList.collectAsState()
     val randomsState: UiState by viewModel.randomList.collectAsState()
-    var brandList: List<Brand> = listOf()
+    var brandList: List<Brand> by remember { mutableStateOf(listOf()) }
     var randomList: List<ProductSample> = listOf()
-
+    var searchText by remember { mutableStateOf("") }
+    val isSearching by remember {
+        derivedStateOf {
+            searchText.isNotEmpty()
+        }
+    }
+    val filteredList by remember {
+        derivedStateOf {
+            if (searchText.isEmpty()) {
+                brandList
+            } else {
+                brandList.filter { it.name?.startsWith(searchText, ignoreCase = true) ?: false }
+            }
+        }
+    }
+    //GET USER DATA
+   /* LaunchedEffect(Unit){
+        CurrentUserHelper.initialize(authRepository)
+        cartManager.getCartItems()
+        wishlistManager.getWishlistItems()
+    }*/
 //    var isFavourite by remember {
 //        mutableStateOf(false)
 //    }
@@ -122,6 +146,7 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
         }
 
         is UiState.Success<*> -> {
+            Log.i("menna", "success")
             brandList =
                 (brandsState as UiState.Success<SmartCollections>).data.body()?.smart_collections!!
         }
@@ -144,30 +169,41 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
         }
     }
 
-Scaffold(
-    topBar = { TopBar(title = "Home") {
-        
-    }},
-    bottomBar = {
-        Bottombar(navController = navController)
-    }
-) {
-    if (brandList.isNotEmpty() && randomList.isNotEmpty()) {
-    Column(
-        modifier = modifier
-            .padding(it)
-            .verticalScroll(rememberScrollState())
-            .padding(paddingValues = PaddingValues(10.dp))
-    )
-    {
-        HomeSection(sectionTitle = R.string.special_offers) {
-            AdsCarousel()
-        }
 
-        HomeSection(sectionTitle = R.string.brands) {
+    //  ScaffoldStructure("home",navController) {
+    // Scaffold (bottomBar = {Bottombar(navController = rememberNavController())}) {
+    Scaffold(
+        bottomBar = { Bottombar(navController = navController) }
+    ) {
+        Spacer(modifier = Modifier.height(8.dp))
 
-            BrandCards(brands = brandList, navController = navController)
-        }
+        if (brandList.isNotEmpty() && randomList.isNotEmpty()) {
+            Column(
+                modifier = modifier
+                    .padding(it)
+                    .verticalScroll(rememberScrollState())
+                    .padding(paddingValues = PaddingValues(10.dp))
+            )
+            {
+                CustomSearchbar(
+                    searchText = searchText,
+                    onTextChange = { searchText = it },
+                    hintText = R.string.search_brands,
+                    isSearching = isSearching,
+                    onCloseSearch = { searchText = "" }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if (!isSearching)
+                    HomeSection(sectionTitle = R.string.special_offers) {
+                        AdsCarousel()
+                    }
+
+                HomeSection(sectionTitle = R.string.brands) {
+
+                    //  (brandsState as UiState.Success).data.body()?.let {
+                    BrandCards(brands = filteredList, navController = navController)
+                }
 
         HomeSection(sectionTitle = R.string.trending_products) {
             ItemCards(navController =navController,viewModel,products = randomList,
@@ -187,11 +223,34 @@ Scaffold(
 
                 })
 
+                }
+            }
         }
     }
 }
-        }
-        }
+
+
+@Composable
+fun ScaffoldStructure(
+    screenTitle: String,
+    navController: NavHostController,
+    screen: @Composable (PaddingValues) -> Unit
+) {
+
+    Scaffold(
+        topBar = {
+
+//            TopBar(title = screenTitle, onSearch = {})
+
+        },
+        content = {
+            screen(it)
+        },
+        bottomBar = { Bottombar(navController = navController) }
+    )
+}
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardDesign(
@@ -220,9 +279,10 @@ fun ItemCardContent(
     modifier: Modifier = Modifier, isFavourite: Boolean,
     onFavouritesClicked: (item:ProductSample) -> Unit, onAddToCard: (item: ProductSample) -> Unit, item: ProductSample
 ) {
-    Column(modifier = modifier.clickable {
-        navController.navigate(route ="${Screens.Details.route}/${item.id}")
-    }
+    Column(modifier = modifier
+        .clickable {
+            navController.navigate(route = "${Screens.Details.route}/${item.id}")
+        }
         .padding(horizontal = 20.dp, vertical = 10.dp)
         .height(330.dp)
         .width(200.dp)) {
@@ -284,7 +344,11 @@ fun ItemCardContent(
 }
 
 @Composable
-fun BrandCardContent(modifier: Modifier = Modifier, brand: Brand,navController:NavHostController) {
+fun BrandCardContent(
+    modifier: Modifier = Modifier,
+    brand: Brand,
+    navController: NavHostController
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -507,7 +571,11 @@ fun HomeSection(
 }
 
 @Composable
-fun BrandCards(modifier: Modifier = Modifier, brands: List<Brand>,navController:NavHostController) {
+fun BrandCards(
+    modifier: Modifier = Modifier,
+    brands: List<Brand>,
+    navController: NavHostController
+) {
     LazyRow(
         modifier = modifier.padding(start = 6.dp, end = 6.dp)
     ) {

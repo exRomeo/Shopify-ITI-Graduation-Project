@@ -1,13 +1,11 @@
 package com.example.shopify.presentation.screens.product_details_screen
 
 
-import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,10 +13,12 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,22 +29,26 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomNavigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -52,7 +56,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
@@ -66,62 +69,81 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
-import com.example.shopify.data.models.Image
-import com.example.shopify.data.models.ProductSample
+import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.data.models.SingleProduct
+import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.WarningDialog
-import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 import com.example.shopify.ui.theme.backgroundColor
-import com.example.shopify.ui.theme.hintColor
 import com.example.shopify.ui.theme.ibarraBold
 import com.example.shopify.ui.theme.ibarraRegular
 import com.example.shopify.ui.theme.mainColor
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProductDetailsContentScreen(
     modifier: Modifier = Modifier,
-    isFavorite: Boolean,
     productNavController: NavHostController,
-    onFavoriteChanged: () -> Unit,
-    onAcceptFavChanged: () -> Unit,
-    itemCount: Int,
-    increase: () -> Unit,
-    decrease: () -> Unit,
-    showDialog: Boolean,
+    isFavorite: Boolean,
     showFavWarningDialog: Boolean,
     showReviewsDialog: Boolean,
     showToast: Boolean,
+    showCartDialog: Boolean,
+    @StringRes dialogMessage: Int,
     @StringRes toastMessage: Int,
-    onShowDialogAction: () -> Unit,
-    onShowFavDialogAction: () -> Unit,
+    itemCount: Int,
+    product: SingleProduct,
+
+    onFavoriteChanged: () -> Unit,
+    onAcceptFavChanged: () -> Unit,
+    onDismissFavChanged: () -> Unit,
+
+    increaseItemCount: () -> Unit,
+    decreaseItemCount: () -> Unit,
+
     addToCartAction: () -> Unit,
+    onAcceptRemoveCart: () -> Unit,
+    onDismissRemoveCart: () -> Unit,
+
     showReviews: () -> Unit,
     onDismissShowReview: () -> Unit,
-    product: SingleProduct
-) {
-    var rating: Double = 2.3
-    LaunchedEffect(Unit) { rating = Random.nextDouble(2.0, 5.0) }
 
+    ) {
+    var rating by remember {
+        mutableStateOf(3.5)
+    }
+    LaunchedEffect(Unit) { rating = Random.nextDouble(3.0, 5.0) }
+    val progress by animateFloatAsState(
+        targetValue = 1f,
+        animationSpec = tween(durationMillis = 2000)
+    )
     Log.i("TAG", "ProductDetailsContentScreen: $product")
-    Scaffold { values ->
-        LazyColumn(contentPadding = values) {
+    Scaffold(containerColor = Color.Transparent, bottomBar =
+    {
+        NavigationBar(
+            containerColor = Color.Transparent,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        {
+            AddToCartBottom(addToCartAction, increaseItemCount, decreaseItemCount, itemCount)
+        }
+    }) { values ->
+        LazyColumn(
+            contentPadding = values,
+            modifier = Modifier.padding(paddingValues = PaddingValues(20.dp))
+        ) {
             items(1) {
                 val pagerState = rememberPagerState()
                 val colorMatrix = remember { ColorMatrix() }
 
                 Card(
-                    modifier = modifier
-                        .padding(bottom = 50.dp),
+//                    modifier = modifier
+//                        .padding(bottom = 30.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
                     ),
@@ -178,7 +200,7 @@ fun ProductDetailsContentScreen(
                             ) {
                                 IconButton(onClick = {
                                     Log.i("TAG", "back to previous screen")
-//                                    productNavController.popBackStack()
+                                    productNavController.popBackStack()
                                 }) {
                                     Icon(
                                         Icons.Default.ArrowBack,
@@ -208,6 +230,21 @@ fun ProductDetailsContentScreen(
                                     )
                                 }
                             }
+                           /* Box {
+
+                                Box(
+                                    Modifier
+                                        .fillMaxSize()
+                                        .background(Color.Transparent)
+                                        .align(Alignment.BottomCenter)
+                                ) {
+                                    LaunchedEffect(Unit) {
+                                        delay(2000L)
+                                    }
+                                    LottieAnimation(animation = R.raw.swipe_image/*,progress = progress*/)
+
+                                }
+                            }*/
                         }
 
                     }
@@ -324,37 +361,29 @@ fun ProductDetailsContentScreen(
                 }
             }
         }
-        if (showDialog) {
+        if (showCartDialog) {
             WarningDialog(
                 dialogTitle = stringResource(id = R.string.remove_product),
                 message = stringResource(id = R.string.cart_item_removal_warning),
                 dismissButtonText = stringResource(id = R.string.cancel),
                 confirmButtonText = stringResource(id = R.string.remove),
-                onConfirm = onShowDialogAction,
-                onDismiss = decrease
+                onConfirm = onAcceptRemoveCart,
+                onDismiss = onDismissRemoveCart
 
             )
         }
         if (showFavWarningDialog) {
-            val title: String?
-            val message: String
-            val confirmButtonText: String
-            if (isFavorite) {
-                title = stringResource(id = R.string.remove_product_from_fav)
-                message = stringResource(id = R.string.fav_item_removal_warning)
-                confirmButtonText = stringResource(id = R.string.remove)
-            } else {
-                title = stringResource(id = R.string.add_product_to_fav)
-                message = stringResource(id = R.string.add_item_to_fav_message)
-                confirmButtonText = stringResource(id = R.string.add)
-            }
             WarningDialog(
-                dialogTitle = title,
-                message = message,
+                dialogTitle = if (isFavorite) stringResource(id = R.string.remove_product_from_fav) else stringResource(
+                    id = R.string.add_product_to_fav
+                ),
+                message = stringResource(id = dialogMessage),
                 dismissButtonText = stringResource(id = R.string.cancel),
-                confirmButtonText = confirmButtonText,
+                confirmButtonText = if (isFavorite) stringResource(id = R.string.remove) else if (!isFavorite) stringResource(
+                    id = R.string.add
+                ) else "",
                 onConfirm = onAcceptFavChanged,
-                onDismiss = onShowFavDialogAction
+                onDismiss = onDismissFavChanged
             )
 
         }
@@ -369,19 +398,29 @@ fun ProductDetailsContentScreen(
             ).show()
         }
     }
-    Box() {
+}
+
+@Composable
+fun AddToCartBottom(
+    addToCartAction: () -> Unit,
+    increase: () -> Unit,
+    decrease: () -> Unit,
+    itemCount: Int
+) {
+    Box (Modifier.fillMaxWidth().padding(start = 30.dp, end = 30.dp)){
         Row(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth()
+                .padding(bottom = 10.dp)
+                .background(Color.Transparent)
+//                .align(Alignment.BottomCenter),
+//            verticalAlignment = Alignment.BottomCenter
         ) {
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp))
-                    .background(Color.LightGray)
+                    .background(Color.Gray)
                     .width(200.dp)
-                    .combinedClickable {}
                     .clickable {
                         addToCartAction()
                         Log.i("TAG", "view model to cart: ")
@@ -411,7 +450,7 @@ fun ProductDetailsContentScreen(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))
-                    .background(MaterialTheme.colorScheme.onPrimary)
+                    .background(Color.White)
                     .width(125.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -447,5 +486,4 @@ fun ProductDetailsContentScreen(
             }
         }
     }
-
 }

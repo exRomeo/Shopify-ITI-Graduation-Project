@@ -46,8 +46,12 @@ class AuthenticationClient(
     ): AuthenticationResponseState =
         try {
             authenticationFirebase.createUserWithEmailAndPassword(email, password).await()
-            addCustomerIDs(customerID)
-            checkedLoggedIn()
+            addCustomerIDs(customerID) //throw exception if failure
+            if (authenticationFirebase.currentUser == null) {
+                AuthenticationResponseState.NotLoggedIn
+            } else {
+                AuthenticationResponseState.Success(null)
+            }
         } catch (ex: Exception) {
             AuthenticationResponseState.Error(ex)
         }
@@ -61,18 +65,23 @@ class AuthenticationClient(
             authenticationFirebase.signInWithEmailAndPassword(email, password).await()
             val responseBody = retrieveCustomerIDs()
             Log.i("TAG", "loginUserFirebase: $responseBody")
-            checkedLoggedIn()
+            if (authenticationFirebase.currentUser == null) {
+                AuthenticationResponseState.NotLoggedIn
+            } else {
+                //updateCustomerID(KeyFirebase.card_id,1523)
+                AuthenticationResponseState.Success(null)
+            }
         } catch (ex: Exception) {
             AuthenticationResponseState.Error(ex)
         }
 
-    override suspend fun signOutFirebase(): AuthenticationResponseState {
+    override suspend fun signOutFirebase(): Boolean {
         return try {
             authenticationFirebase.signOut()
             Log.i("TAG", "${authenticationFirebase.currentUser} is signout:")
-            AuthenticationResponseState.Success(null)
+            true
         } catch (ex: Exception) {
-            AuthenticationResponseState.Error(ex)
+            false
         }
     }
 
@@ -84,13 +93,8 @@ class AuthenticationClient(
             AuthenticationResponseState.Error(ex)
         }
 
-    override fun checkedLoggedIn(responseBody: CustomerResponseBody?): AuthenticationResponseState =
-        if (authenticationFirebase.currentUser == null) {
-            AuthenticationResponseState.NotLoggedIn
-        } else {
-            //updateCustomerID(KeyFirebase.card_id,1523)
-            AuthenticationResponseState.Success(responseBody)
-        }
+    override fun checkedLoggedIn(): Boolean =
+        authenticationFirebase.currentUser != null
 
 
     override fun addCustomerIDs(customerID: Long) {
@@ -107,6 +111,7 @@ class AuthenticationClient(
             }
         } catch (ex: Exception) {
             Log.i("TAG", "addCustomerID: Failure")
+            throw ex
         }
     }
 
@@ -118,7 +123,8 @@ class AuthenticationClient(
                     .await()
             }
         } catch (ex: Exception) {
-            Log.i("TAG", "addCustomerID: Failure")
+            Log.i("TAG", "updateCustomerID: Failure")
+            throw ex
         }
     }
 

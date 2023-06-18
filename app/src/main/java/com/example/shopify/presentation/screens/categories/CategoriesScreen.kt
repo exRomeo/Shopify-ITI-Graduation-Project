@@ -28,6 +28,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,7 +47,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.shopify.R
@@ -61,6 +62,7 @@ import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
+import com.example.shopify.presentation.common.composables.CustomSearchbar
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.screens.brands.BrandsViewModel
 import com.example.shopify.presentation.screens.brands.BrandsViewModelFactory
@@ -134,15 +136,15 @@ val items = listOf(
         icon = R.drawable.sneakers,
         label = "SHOES",
     ),
-    MiniFABItem(
-        icon = R.drawable.close,
-        label = "CLOSE",
-    )
+            MiniFABItem(
+            icon = R.drawable.close,
+           label = "CLOSE",
+)
 
 )
 
 @Composable
-fun CategoriesScreen(navController: NavHostController) {
+fun CategoriesScreen(navController:NavHostController) {
     val repository: IProductRepository =
         (LocalContext.current.applicationContext as ShopifyApplication).repository
     val wishlistManager: WishlistManager =
@@ -158,16 +160,21 @@ fun CategoriesScreen(navController: NavHostController) {
         repository,wishlistManager,cartManager
     ))
 
-    val productsState: UiState by viewModel.productsList.collectAsStateWithLifecycle()
+    val productsState: UiState by viewModel.productsList.collectAsState()
     var productsList: List<ProductSample> = listOf()
     var filteredList:List<ProductSample> = listOf()
      var state:String = "fail"
    // var FABIcon = R.drawable.ic_category
     var FABIcon by rememberSaveable {
-        mutableStateOf(R.drawable.app)
+        mutableStateOf( R.drawable.app)
 
     }
-
+    var searchText by remember { mutableStateOf("") }
+    val isSearching by remember {
+        derivedStateOf {
+            searchText.isNotEmpty()
+        }
+    }
 
     var p = 0f
     var productPrice by rememberSaveable {
@@ -177,7 +184,15 @@ fun CategoriesScreen(navController: NavHostController) {
         mutableStateOf(filteredList)
 
     }
-
+    val searchFilteredList by remember {
+        derivedStateOf {
+            if (searchText.isEmpty()) {
+                filteredState
+            } else {
+                filteredState.filter { it.title?.startsWith(searchText, ignoreCase = true) ?: false }
+            }
+        }
+    }
     var floatingButtonState by rememberSaveable {
         mutableStateOf(FloatingButtonState.Collapsed)
     }
@@ -191,11 +206,11 @@ fun CategoriesScreen(navController: NavHostController) {
             state = "success"
             productsList =
                 (productsState as UiState.Success<Products>).data.body()?.products!!
-            filteredState = productsList.filter { item ->
+            filteredState =  productsList.filter { item ->
                 //  item.variants?.get(0)?.price?.let { it1 -> Log.i("hla", it1) }
                 item.variants?.get(0)?.price?.toFloat()!! >= productPrice
             }
-            Log.i("hala", productPrice.toString())
+            Log.i("hala",productPrice.toString())
 
             // filteredState = productsList
             //   Log.i("menna", productsList.toString())
@@ -206,42 +221,43 @@ fun CategoriesScreen(navController: NavHostController) {
         }
     }
     Scaffold(
-        bottomBar = { Bottombar(navController = navController) },
+        bottomBar = { Bottombar(navController = navController)},
         //floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
-            FloatingButton(
-                items = items, onMiniFABClicked = {
+            FloatingButton(items = items, onMiniFABClicked = {
 
-                    viewModel.type = it
-                    viewModel.getProductsBySubcategory()
-                    floatingButtonState = FloatingButtonState.Collapsed
-                    FABIcon = when (it) {
-                        "ACCESSORIES" -> {
-                            R.drawable.hat
-                        }
-
-                        "T-SHIRTS" -> {
-                            R.drawable.shirt
-                        }
-
-                        "SHOES" -> {
-                            R.drawable.sneakers
-                        }
-
-                        else -> {
-                            viewModel.type = ""
-                            R.drawable.app
-                        }
+                viewModel.type = it
+                viewModel.getProductsBySubcategory()
+                floatingButtonState = FloatingButtonState.Collapsed
+                FABIcon = when (it){
+                    "ACCESSORIES" -> {
+                        R.drawable.hat
                     }
 
+                    "T-SHIRTS" -> {
+                        R.drawable.shirt
+                    }
 
-                }, onFABCLicked =
-                {
+                    "SHOES" ->{
+                        R.drawable.sneakers
+                    }
+
+                    else -> {
+                        viewModel.type = ""
+                        R.drawable.app
+                    }
+                }
+
+
+
+
+            }, onFABCLicked =
+            {
 
                     floatingButtonState = FloatingButtonState.Expanded
 
 
-                }, FABIcon, floatingButtonState
+                },FABIcon,floatingButtonState
             )
         }
 
@@ -253,6 +269,14 @@ fun CategoriesScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            CustomSearchbar(
+                searchText = searchText,
+                onTextChange = { searchText = it },
+                hintText = R.string.search_categories,
+                isSearching = isSearching,
+                onCloseSearch = { searchText = "" }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
             MainFilters(items = mainCategories, onItemSelection = { index ->
 
                 when (index) {
@@ -304,7 +328,7 @@ fun CategoriesScreen(navController: NavHostController) {
                     navController = navController,
                     viewModel=viewModel2,
                     modifier = Modifier.height(600.dp),
-                    products = filteredState,
+                    products = searchFilteredList,
                     isFavourite = false,
                     onFavouriteClicked = {}
                 ) {
@@ -494,7 +518,7 @@ fun MiniFAB(
             contentDescription = "content description"
         )
 
-    }
+        }
 
 }
 
