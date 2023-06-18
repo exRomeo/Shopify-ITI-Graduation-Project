@@ -5,22 +5,18 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,6 +24,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,37 +40,38 @@ import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Screens
+import com.example.shopify.data.managers.CartManager
+import com.example.shopify.data.managers.WishlistManager
 import com.example.shopify.data.models.Image
 import com.example.shopify.data.models.Product
 
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.Products
-import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.screens.homescreen.CardDesign
 import com.example.shopify.presentation.screens.homescreen.FavoriteButton
 import com.example.shopify.presentation.screens.homescreen.ImageFromNetwork
-import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
-import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModelFactory
 
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun BrandsScreen(navController: NavHostController, id: Long?){
     val repository: IProductRepository = (LocalContext.current.applicationContext as ShopifyApplication) .repository
-   // val repository2: I = (LocalContext.current.applicationContext as ShopifyApplication) .repository
+    val wishlistManager: WishlistManager =
+        (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
+    val cartManager: CartManager =
+        (LocalContext.current.applicationContext as ShopifyApplication).cartManager
     val viewModel: BrandsViewModel = viewModel(factory = BrandsViewModelFactory(
-        repository
+        repository,wishlistManager,cartManager
     )
     )
 
-
-
-
-
+//    var isFavourite by remember {
+//        mutableStateOf(false)
+//    }
     val productsState: UiState by viewModel.brandList.collectAsState()
-    var productsList: List<Variant> = listOf()
+    var productsList: List<ProductSample> = listOf()
 
     LaunchedEffect(Unit) {
 
@@ -104,11 +104,25 @@ fun BrandsScreen(navController: NavHostController, id: Long?){
 
             ProductsCards(
                navController = navController,
-               // viewModel= settingsViewModel,
+               viewModel= viewModel,
                 modifier = Modifier,
-                isFavourite = true,
-                onFavouriteClicked = {},
-                onAddToCard = {},
+                isFavourite = false,
+                onFavouriteClicked = {
+//                        product ->
+//                    isFavourite = !isFavourite
+//                    if (isFavourite) {
+//                        viewModel.addWishlistItem(product)
+//
+//                    }
+//                    if (!isFavourite) {
+//                        viewModel.removeWishlistItem(product)
+//
+//                    }
+
+                },
+                onAddToCard = { product ->
+                              viewModel.addItemToCart(product.id,product.variants[0].id)
+                },
                 products = productsList,
             )
 
@@ -120,12 +134,12 @@ fun BrandsScreen(navController: NavHostController, id: Long?){
 @Composable
     fun ProductsCards(
     navController: NavHostController,
-    //viewModel: SettingsViewModel,
-        modifier: Modifier = Modifier,
-        products: List<Variant>,
-        isFavourite: Boolean,
-        onFavouriteClicked: (Boolean) -> Unit,
-        onAddToCard: (item: Product) -> Unit
+    viewModel: BrandsViewModel,
+    modifier: Modifier = Modifier,
+    products: List<ProductSample>,
+    isFavourite: Boolean,
+    onFavouriteClicked: (item:ProductSample) -> Unit,
+    onAddToCard: (item: ProductSample) -> Unit
     ){
         LazyColumn(
             modifier = modifier,
@@ -136,39 +150,40 @@ fun BrandsScreen(navController: NavHostController, id: Long?){
                 top = 16.dp,
                 end = 12.dp,
                 bottom = 16.dp
-            ),
-            content = {
-                items(products) { item ->
-                CardDesign(onCardClicked = {
-                 navController.navigate(route ="${Screens.Details.route}/${item.id}")
-                }) {
-                 ProductItem(isFavourite = isFavourite, onFavouritesClicked ={
-                     var productSample: ProductSample =
-                         ProductSample(
-                             id= item.id,
-                             title=item.title!!,
-                             variants =item.variants!!,
-                             images = listOf(item.image)!! as List<Image>,
-                             image = item.image!!
-                             )
-                     
-               //   viewModel.addWishlistItem(productSample)
-
-
-                 }, onAddToCard = onAddToCard , item = item, navController = navController)
-
+            )
+        ) {
+            items(products) { item ->
+                var isFavourite by remember {
+                    mutableStateOf(false)
                 }
+                CardDesign(onCardClicked = {
+                    navController.navigate(route = "${Screens.Details.route}/${item.id}")
+                }) {
+                    ProductItem(isFavourite = isFavourite, onFavouritesClicked = {
+                            product ->
+                        isFavourite = !isFavourite
+                        if (isFavourite) {
+                            viewModel.addWishlistItem(product.id,product.variants[0].id)
+
+                        }
+                        if (!isFavourite) {
+                            viewModel.removeWishlistItem(product.id)
+
+                        }
+
+                    }, onAddToCard = {onAddToCard(item)}, item = item, navController = navController)
+
                 }
             }
-        )
-    }
+        }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductItem(
     navController:NavHostController,
     modifier: Modifier = Modifier, isFavourite: Boolean,
-    onFavouritesClicked: (Boolean) -> Unit, onAddToCard: (item: Product) -> Unit, item: Variant
+    onFavouritesClicked: (item:ProductSample) -> Unit, onAddToCard: (item: ProductSample) -> Unit, item: ProductSample
 ) {
 Card(onClick = {
     navController.navigate(route ="${Screens.Details.route}/${item.id}")
@@ -208,14 +223,14 @@ Card(onClick = {
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                FavoriteButton(isFavourite = isFavourite, onClicked = onFavouritesClicked)
+                FavoriteButton(isFavourite = isFavourite, onClicked = {onFavouritesClicked(item)})
             }
             Button(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(10.dp),
                 shape = RoundedCornerShape(20.dp),
-                onClick = { onAddToCard },
+                onClick = { onAddToCard(item) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary,

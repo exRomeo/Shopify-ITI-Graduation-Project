@@ -187,7 +187,9 @@ fun WarningDialog(
     dismissButtonText: String,
     confirmButtonText: String,
     onConfirm: () -> Unit,
-    onDismiss: () -> Unit
+    addDismissButton :Boolean = true,
+    onDismiss: () -> Unit,
+
 ) {
     AlertDialog(
         onDismissRequest = {
@@ -222,12 +224,14 @@ fun WarningDialog(
             }
         },
         dismissButton = {
-            TextButton(
-                onClick = {
-                    onDismiss()
+            if (addDismissButton) {
+                TextButton(
+                    onClick = {
+                        onDismiss()
+                    }
+                ) {
+                    Text(text = dismissButtonText)
                 }
-            ) {
-                Text(text = dismissButtonText)
             }
         }
     )

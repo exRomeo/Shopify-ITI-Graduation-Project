@@ -52,12 +52,18 @@ import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
+import com.example.shopify.data.managers.CartManager
+import com.example.shopify.data.managers.WishlistManager
+
 import com.example.shopify.data.models.Image
 import com.example.shopify.data.models.Product
+import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.common.composables.LottieAnimation
+import com.example.shopify.presentation.screens.brands.BrandsViewModel
+import com.example.shopify.presentation.screens.brands.BrandsViewModelFactory
 import com.example.shopify.presentation.screens.brands.ProductsCards
 import com.example.shopify.ui.theme.ShopifyTheme
 
@@ -139,17 +145,24 @@ val items = listOf(
 fun CategoriesScreen(navController: NavHostController) {
     val repository: IProductRepository =
         (LocalContext.current.applicationContext as ShopifyApplication).repository
+    val wishlistManager: WishlistManager =
+        (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
+    val cartManager: CartManager =
+        (LocalContext.current.applicationContext as ShopifyApplication).cartManager
     val viewModel: CategoriesViewModel = viewModel(
         factory = CategoriesViewModelFactory(
             repository
         )
     )
+    val viewModel2: BrandsViewModel = viewModel(factory = BrandsViewModelFactory(
+        repository,wishlistManager,cartManager
+    ))
 
     val productsState: UiState by viewModel.productsList.collectAsStateWithLifecycle()
-    var productsList: List<Variant> = listOf()
-    var filteredList: List<Variant> = listOf()
-    var state: String = "fail"
-    // var FABIcon = R.drawable.ic_category
+    var productsList: List<ProductSample> = listOf()
+    var filteredList:List<ProductSample> = listOf()
+     var state:String = "fail"
+   // var FABIcon = R.drawable.ic_category
     var FABIcon by rememberSaveable {
         mutableStateOf(R.drawable.app)
 
@@ -289,12 +302,17 @@ fun CategoriesScreen(navController: NavHostController) {
                 // viewModel.type = ""
                 ProductsCards(
                     navController = navController,
+                    viewModel=viewModel2,
                     modifier = Modifier.height(600.dp),
                     products = filteredState,
-                    isFavourite = true,
-                    onFavouriteClicked = {},
-                    onAddToCard = {})
-            } else {
+                    isFavourite = false,
+                    onFavouriteClicked = {}
+                ) {
+                        product ->
+                    viewModel2.addItemToCart(product.id,product.variants[0].id)
+                }
+            }
+            else{
 
                 if (state == "success" && filteredState.isEmpty()) {
                     Column {
@@ -386,22 +404,22 @@ fun MainFilters(
 }
 
 
-@Composable
-fun SliderComponent(onPriceValueChanged: (Float) -> List<Variant>) {
-    var sliderValue by remember {
-        mutableStateOf(0f)
+    @Composable
+    fun SliderComponent(onPriceValueChanged: (Float) -> List<ProductSample>) {
+        var sliderValue by remember {
+            mutableStateOf(0f)
+        }
+        Slider(
+            value = sliderValue,
+            onValueChange = { sliderValue_ ->
+                sliderValue = sliderValue_
+            },
+            onValueChangeFinished = { onPriceValueChanged(sliderValue) },
+            valueRange = 0f..250f,
+            steps = 4
+        )
+        Text(text = "> $sliderValue")
     }
-    Slider(
-        value = sliderValue,
-        onValueChange = { sliderValue_ ->
-            sliderValue = sliderValue_
-        },
-        onValueChangeFinished = { onPriceValueChanged(sliderValue) },
-        valueRange = 0f..250f,
-        steps = 4
-    )
-    Text(text = "> $sliderValue")
-}
 
 @Composable
 fun CategoriesItems() {
