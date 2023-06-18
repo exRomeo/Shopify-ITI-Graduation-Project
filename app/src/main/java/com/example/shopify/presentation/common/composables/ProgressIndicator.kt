@@ -39,6 +39,7 @@ fun ProgressIndicatorPreview() {
 @Composable
 fun LottieAnimation(
     modifier: Modifier = Modifier.size(150.dp),
+//    progress : progress,
     @RawRes animation: Int
 ) {
     Column(
@@ -56,7 +57,8 @@ fun LottieAnimation(
             LottieAnimation(
                 composition = composition,
                 iterations = LottieConstants.IterateForever,
-            )
+
+                )
         }
     }
 }

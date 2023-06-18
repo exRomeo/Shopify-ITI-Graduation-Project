@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ShoppingCartCheckout
 import androidx.compose.material3.BottomAppBar
@@ -51,7 +50,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.shopify.R
-import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.data.models.ProductSample
@@ -63,6 +61,7 @@ import com.example.shopify.presentation.common.composables.CartItemCard
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.SingleSelectionDropdownMenu
 import com.example.shopify.presentation.common.composables.WarningDialog
+import com.example.shopify.utilities.ShopifyApplication
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -127,16 +126,6 @@ fun CartScreen(
                         Icon(Icons.Default.ArrowBack, "")
                     }
                 },
-                actions = {
-                    IconButton(onClick = {
-                        viewModel.addCartItem(
-                            productID = 8398826111282,
-                            variantID = 45344376652082
-                        )
-                    }) {
-                        Icon(Icons.Default.Add, "")
-                    }
-                },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp)
                 ),
@@ -180,10 +169,11 @@ fun CartScreen(
     ) {
         Column(Modifier.padding(it)) {
             val state by viewModel.screenState.collectAsState()
-            when(state){
+            when (state) {
                 is UserScreenUISState.Loading -> {
                     LottieAnimation(animation = R.raw.loading_animation)
                 }
+
                 is UserScreenUISState.Success<*> -> {
 
                     CartScreenContent(

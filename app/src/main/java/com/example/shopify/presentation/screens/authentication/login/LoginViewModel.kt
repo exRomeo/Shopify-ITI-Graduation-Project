@@ -35,23 +35,8 @@ class LoginViewModel(private val authRepository: IAuthRepository) : ViewModel() 
         }
     }
 
-    fun logoutUser() {
-        viewModelScope.launch {
-            _logoutState.value = authRepository.signOutFirebase()
-        }
-        when (_logoutState.value) {
-            is AuthenticationResponseState.Success -> {
-                Log.i("TAG", "logoutUser success: ")
-            }
-
-            is AuthenticationResponseState.Error -> {
-                Log.i("TAG", "logoutUser: Failed")
-            }
-
-            else -> {
-                Log.i("TAG", "NOT ")
-            }
-        }
+    suspend fun logoutUser(): Boolean {
+        return authRepository.signOutFirebase()
     }
 
     fun googleSignIn(credential: AuthCredential) {

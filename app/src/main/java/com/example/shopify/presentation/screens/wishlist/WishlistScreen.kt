@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.shopify.R
-import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.data.models.ProductSample
@@ -45,6 +43,7 @@ import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.presentation.common.composables.WishlistItemCard
 import com.example.shopify.presentation.screens.settingsscreen.TAG
+import com.example.shopify.utilities.ShopifyApplication
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,16 +72,6 @@ fun WishlistScreen(
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(Icons.Default.ArrowBack, "")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = {
-                        viewModel.addWishlistItem(
-                            productID = 8398826111282,
-                            variantID = 45344376652082
-                        )
-                    }) {
-                        Icon(Icons.Default.Add, "")
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(

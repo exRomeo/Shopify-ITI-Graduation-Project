@@ -51,7 +51,7 @@ object CurrentUserHelper {
     fun isLoggedIn(): Boolean {
         if (!::authRepo.isInitialized)
             return false
-        return authRepo.checkedLoggedIn() is AuthenticationResponseState.Success
+        return authRepo.checkedLoggedIn()
     }
 
     fun hasWishlist(): Boolean {

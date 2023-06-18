@@ -1,7 +1,6 @@
-package com.example.shopify.Utilities
+package com.example.shopify.utilities
 
 import android.app.Application
-import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.RetrofitHelper
 import com.example.shopify.core.utils.ConnectionUtil
@@ -56,30 +55,26 @@ class ShopifyApplication : Application() {
         )
     }
     var currentCustomer: CollectCurrentCustomerData? = null
-
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
         ConnectionUtil.initialize(applicationContext)
-        when (authRepository.checkedLoggedIn()) {
-            is AuthenticationResponseState.Success -> { //Is loggedIn
-                GlobalScope.launch {
-                    currentCustomer = getCurrentCustomer(authRepository)
-                    CurrentUserHelper.initialize(authRepository)
-                    cartManager.getCartItems()
-                    wishlistManager.getWishlistItems()
-                    val userData = userDataRepository.getAddresses(CurrentUserHelper.customerID)
-                        .body()?.addresses?.get(0)
-                    CurrentUserHelper.customerName =
-                        ("${userData?.firstName} ${userData?.lastName}")
-                }
+        if (authRepository.checkedLoggedIn()) { //Is loggedIn
+            GlobalScope.launch {
+                currentCustomer = getCurrentCustomer(authRepository)
+                CurrentUserHelper.initialize(authRepository)
+                cartManager.getCartItems()
+                wishlistManager.getWishlistItems()
+                val userData = userDataRepository.getAddresses(CurrentUserHelper.customerID)
+                    .body()?.addresses?.get(0)
+                CurrentUserHelper.customerName =
+                    ("${userData?.firstName} ${userData?.lastName}")
             }
-
-            else -> {  //IsNot LoggedIn
-                currentCustomer = null
-            }
+        } else {  //IsNot LoggedIn
+            currentCustomer = null
         }
     }
+
 
     val cartManager: CartManager by lazy {
         CartManager(ShopifyAPIClient.draftOrderAPI)

@@ -4,7 +4,7 @@ import java.io.Serializable
 import com.google.gson.annotations.SerializedName
 
 data class Products(
-    val products:List<Variant>?,
+    val products:List<ProductSample>?,
 ): Serializable
 
 data class Variant(
