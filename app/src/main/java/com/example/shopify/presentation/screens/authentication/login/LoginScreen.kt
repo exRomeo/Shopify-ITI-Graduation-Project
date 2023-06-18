@@ -47,10 +47,6 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
     }
     val authRepository: IAuthRepository =
         (LocalContext.current.applicationContext as ShopifyApplication).authRepository
-    val cartManager: CartManager =
-        (LocalContext.current.applicationContext as ShopifyApplication).cartManager
-    val wishlistManager: WishlistManager =
-        (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
     val loginViewModelFactory = LoginViewModelFactory(authRepository)
     val loginViewModel: LoginViewModel = viewModel(factory = loginViewModelFactory)
 
@@ -90,12 +86,7 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
         }
     }
     if (authRepository.checkedLoggedIn()) {
-        LaunchedEffect(key1 = Unit) {
-            CurrentUserHelper.initialize(authRepository)
-            cartManager.getCartItems()
-            wishlistManager.getWishlistItems()
-            loginNavController.navigate(Screens.Home.route)
-        }
+        loginNavController.navigate(Screens.Home.route)
 
     } else { //Not logged in
         LoginContentScreen(

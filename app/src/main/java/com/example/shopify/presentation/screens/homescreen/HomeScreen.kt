@@ -71,17 +71,17 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.shopify.R
 import com.example.shopify.Utilities.ShopifyApplication
+import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.Screens
-import com.example.shopify.core.navigation.TopBar
 import com.example.shopify.data.managers.CartManager
 import com.example.shopify.data.managers.WishlistManager
 import com.example.shopify.data.models.Brand
-import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.SmartCollections
+import com.example.shopify.data.repositories.authentication.IAuthRepository
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.common.composables.WarningDialog
 
@@ -93,6 +93,7 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
 
 
   val repository: IProductRepository = (LocalContext.current.applicationContext as ShopifyApplication) .repository
+    val authRepository: IAuthRepository = (LocalContext.current.applicationContext as ShopifyApplication) .authRepository
     val wishlistManager: WishlistManager =
         (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
     val cartManager: CartManager =
@@ -118,6 +119,12 @@ fun HomeScreen(navController: NavHostController,modifier: Modifier = Modifier) {
             }
         }
     }
+    //GET USER DATA
+   /* LaunchedEffect(Unit){
+        CurrentUserHelper.initialize(authRepository)
+        cartManager.getCartItems()
+        wishlistManager.getWishlistItems()
+    }*/
 //    var isFavourite by remember {
 //        mutableStateOf(false)
 //    }
@@ -244,11 +251,6 @@ fun ScaffoldStructure(
 }
 
 
-        }
-    }
-}
-        }
-        }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardDesign(
@@ -277,9 +279,10 @@ fun ItemCardContent(
     modifier: Modifier = Modifier, isFavourite: Boolean,
     onFavouritesClicked: (item:ProductSample) -> Unit, onAddToCard: (item: ProductSample) -> Unit, item: ProductSample
 ) {
-    Column(modifier = modifier.clickable {
-        navController.navigate(route ="${Screens.Details.route}/${item.id}")
-    }
+    Column(modifier = modifier
+        .clickable {
+            navController.navigate(route = "${Screens.Details.route}/${item.id}")
+        }
         .padding(horizontal = 20.dp, vertical = 10.dp)
         .height(330.dp)
         .width(200.dp)) {

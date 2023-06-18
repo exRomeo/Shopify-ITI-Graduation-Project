@@ -74,7 +74,6 @@ fun BrandsScreen(navController: NavHostController, id: Long?){
 
     val productsState: UiState by viewModel.brandList.collectAsState()
     var productsList: List<ProductSample> = listOf()
-    var productsList: List<Variant> = listOf()
     var searchText by remember { mutableStateOf("") }
     val isSearching by remember {
         derivedStateOf {

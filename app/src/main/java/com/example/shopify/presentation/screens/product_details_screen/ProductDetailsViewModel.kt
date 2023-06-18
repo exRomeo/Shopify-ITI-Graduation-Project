@@ -30,23 +30,23 @@ class ProductDetailsViewModel(
     }
     fun addWishlistItem(product: ProductSample)  {
         viewModelScope.launch(Dispatchers.IO) {
-            wishlistManager.addWishlistItem(product)
+            wishlistManager.addWishlistItem(product.id,product.variants.get(0).id)
         }
     }
     fun removeWishlistItem(product: ProductSample)  {
         viewModelScope.launch(Dispatchers.IO) {
-            wishlistManager.removeWishlistItem(product)
+            wishlistManager.removeWishlistItem(product.id)
         }
     }
     fun addItemToCart(product: ProductSample ){
         viewModelScope.launch(Dispatchers.IO) {
-            cartManager.addCartItem(product)
+            cartManager.addCartItem(product.id,product.variants.get(0).id)
         }
 
     }
     fun removeItemFromCart(product: ProductSample){
         viewModelScope.launch(Dispatchers.IO) {
-            cartManager.removeCart(product)
+            cartManager.removeCart(product.id)
         }
 
     }

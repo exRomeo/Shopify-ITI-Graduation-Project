@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -74,11 +75,13 @@ import coil.request.ImageRequest
 import com.example.shopify.R
 import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.data.models.SingleProduct
+import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.ui.theme.backgroundColor
 import com.example.shopify.ui.theme.ibarraBold
 import com.example.shopify.ui.theme.ibarraRegular
 import com.example.shopify.ui.theme.mainColor
+import kotlinx.coroutines.delay
 import kotlin.random.Random
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -115,7 +118,10 @@ fun ProductDetailsContentScreen(
         mutableStateOf(3.5)
     }
     LaunchedEffect(Unit) { rating = Random.nextDouble(3.0, 5.0) }
-
+    val progress by animateFloatAsState(
+        targetValue = 1f,
+        animationSpec = tween(durationMillis = 2000)
+    )
     Log.i("TAG", "ProductDetailsContentScreen: $product")
     Scaffold(containerColor = Color.Transparent, bottomBar =
     {
@@ -123,19 +129,13 @@ fun ProductDetailsContentScreen(
             containerColor = Color.Transparent,
             modifier = Modifier.fillMaxWidth(),
         )
-        /*BottomNavigation(
-            modifier = Modifier.fillMaxWidth()
-                .background(Color.Transparent)
-                .align(),
-            backgroundColor = Color.Transparent,
-            contentColor = Color.Transparent,
-        ) */{
+        {
             AddToCartBottom(addToCartAction, increaseItemCount, decreaseItemCount, itemCount)
         }
     }) { values ->
         LazyColumn(
             contentPadding = values,
-            modifier = Modifier.padding(paddingValues = PaddingValues(0.dp))
+            modifier = Modifier.padding(paddingValues = PaddingValues(20.dp))
         ) {
             items(1) {
                 val pagerState = rememberPagerState()
@@ -230,6 +230,21 @@ fun ProductDetailsContentScreen(
                                     )
                                 }
                             }
+                           /* Box {
+
+                                Box(
+                                    Modifier
+                                        .fillMaxSize()
+                                        .background(Color.Transparent)
+                                        .align(Alignment.BottomCenter)
+                                ) {
+                                    LaunchedEffect(Unit) {
+                                        delay(2000L)
+                                    }
+                                    LottieAnimation(animation = R.raw.swipe_image/*,progress = progress*/)
+
+                                }
+                            }*/
                         }
 
                     }

@@ -160,7 +160,7 @@ fun CategoriesScreen(navController:NavHostController) {
         repository,wishlistManager,cartManager
     ))
 
-    val productsState: UiState by viewModel.productsList.collectAsStateWithLifecycle()
+    val productsState: UiState by viewModel.productsList.collectAsState()
     var productsList: List<ProductSample> = listOf()
     var filteredList:List<ProductSample> = listOf()
      var state:String = "fail"
@@ -272,7 +272,7 @@ fun CategoriesScreen(navController:NavHostController) {
             CustomSearchbar(
                 searchText = searchText,
                 onTextChange = { searchText = it },
-                hintText = R.string.search_brands,
+                hintText = R.string.search_categories,
                 isSearching = isSearching,
                 onCloseSearch = { searchText = "" }
             )
