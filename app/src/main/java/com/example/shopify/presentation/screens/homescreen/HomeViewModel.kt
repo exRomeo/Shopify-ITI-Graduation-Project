@@ -1,5 +1,6 @@
 package com.example.shopify.presentation.screens.homescreen
 
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +19,7 @@ import kotlinx.coroutines.withContext
 class HomeViewModel(
     private val repository: IProductRepository,
     private val wishlistManager: WishlistManager,
-    private val cartManager: CartManager
+    private val cartManager: CartManager,
 ) : ViewModel() {
 
     private var _brandsList: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
@@ -95,14 +96,14 @@ class HomeViewModel(
 class HomeViewModelFactory(
     private val repository: IProductRepository,
     private val wishlistManager: WishlistManager,
-    private val cartManager: CartManager
+    private val cartManager: CartManager,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(HomeViewModel::class.java))
             HomeViewModel(
                 repository,
                 wishlistManager,
-                cartManager
+                cartManager,
             ) as T else throw IllegalArgumentException("View Model Class Not Found !!!")
     }
 }

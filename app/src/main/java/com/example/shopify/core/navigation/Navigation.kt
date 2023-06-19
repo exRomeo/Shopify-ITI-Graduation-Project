@@ -27,6 +27,7 @@ import com.example.shopify.presentation.screens.brands.BrandsScreen
 import com.example.shopify.presentation.screens.cartscreen.CartScreen
 import com.example.shopify.presentation.screens.categories.CategoriesScreen
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
+import com.example.shopify.presentation.screens.onBoarding.OnBoardingScreen
 import com.example.shopify.presentation.screens.product_details_screen.ProductDetailsScreen
 import com.example.shopify.presentation.screens.wishlist.WishlistScreen
 
@@ -34,7 +35,7 @@ import com.example.shopify.presentation.screens.wishlist.WishlistScreen
 fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Screens.Login.route
+        startDestination = Screens.OnBoarding.route
     ) {
 
         composable(route = Screens.Login.route) {
@@ -74,7 +75,7 @@ fun NavGraph(navController: NavHostController) {
                 type = NavType.LongType
             })
         ) {
-            BrandsScreen(navController, it.arguments?.getLong("collectionId"))
+            it.arguments?.getLong("collectionId")?.let { it1 -> BrandsScreen(navController, it1) }
         }
 
         composable(
@@ -86,6 +87,11 @@ fun NavGraph(navController: NavHostController) {
             it.arguments?.getLong("productId")
                 ?.let { productID -> ProductDetailsScreen(navController, productID) }
         }
+
+        composable(route = Screens.OnBoarding.route) {
+            OnBoardingScreen(navController)
+        }
+
     }
 }
 

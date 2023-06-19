@@ -1,6 +1,8 @@
 package com.example.shopify.utilities
 
 import android.app.Application
+import android.content.SharedPreferences
+import androidx.compose.ui.platform.LocalContext
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.RetrofitHelper
 import com.example.shopify.core.utils.ConnectionUtil
@@ -37,8 +39,10 @@ class ShopifyApplication : Application() {
         ProductRepository(
             RemoteResource.getInstance(context = applicationContext)
         )
+    }
 
-
+     val sharedPreference by lazy{
+        SharedPreference.customPreference(applicationContext,CUSTOMER_PREF_NAME)
     }
     private val authenticationClient: IAuthenticationClient by lazy {
         AuthenticationClient(

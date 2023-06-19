@@ -4,6 +4,7 @@ package com.example.shopify.presentation.screens.homescreen
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.animation.ContentTransform
@@ -73,6 +74,9 @@ import com.example.shopify.R
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.Screens
+import com.example.shopify.core.utils.SharedPreference
+import com.example.shopify.core.utils.SharedPreference.discountPercentage
+import com.example.shopify.core.utils.applyDiscount
 import com.example.shopify.data.managers.cart.CartManager
 import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.models.Brand
@@ -87,8 +91,6 @@ import com.example.shopify.utilities.ShopifyApplication
 
 @Composable
 fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
-
-
     val repository: IProductRepository =
         (LocalContext.current.applicationContext as ShopifyApplication).repository
     val authRepository: IAuthRepository =
@@ -97,6 +99,9 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
         (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
     val cartManager: CartManager =
         (LocalContext.current.applicationContext as ShopifyApplication).cartManager
+
+//    val sharedPreference: SharedPreference =
+//        (LocalContext.current.applicationContext as ShopifyApplication).
     val viewModel: HomeViewModel =
         viewModel(factory = HomeViewModelFactory(repository, wishlistManager, cartManager))
 
@@ -337,10 +342,7 @@ fun BrandCardContent(
             .padding(15.dp)
             .clickable {
                 Log.i("menna", brand.id.toString())
-
                 navController.navigate("${Screens.Brands.route}/${brand.id}")
-
-
             }
     ) {
 
@@ -376,10 +378,13 @@ fun AdsCarousel(
         "https://fitsmallbusiness.com/wp-content/uploads/2018/05/23-Best-Sales-Promotion-Ideas.png",
         "https://a.storyblok.com/f/140059/720x400/ab918c4aa1/sales-promotion-examples-to-help-boost-your-business-main.jpg"
     )
+   // val sharedPreference = SharedPreference.customPreference(LocalContext.current,"customer")
 
     val couponsList: List<String> =
         listOf("Cf56u%erdHJJ", "AAgf8876GFd", "GRTO#kl76C", "PTYR%&R#dw")
     val offers: List<String> = listOf("5%", "20%", "50%", "70%")
+        val sharedPreference: SharedPreferences =
+      (LocalContext.current.applicationContext as ShopifyApplication).sharedPreference
     var openDialogue by remember {
         mutableStateOf(false)
     }
@@ -448,6 +453,8 @@ fun AdsCarousel(
                                     val clip =
                                         ClipData.newPlainText("coupon", couponsList[itemIndex])
                                     clipboardManager.setPrimaryClip(clip)
+                                   sharedPreference.discountPercentage = offers[itemIndex]
+
                                     WarningDialog(
                                         dialogTitle = "GREAT OFFERS !!",
                                         message = "Your have got ${offers[itemIndex]} discount ,your coupon ${couponsList[itemIndex]} has been copied to" +

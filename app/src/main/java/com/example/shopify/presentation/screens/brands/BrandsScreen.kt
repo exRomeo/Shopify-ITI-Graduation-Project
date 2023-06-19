@@ -28,6 +28,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,8 +44,11 @@ import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.data.managers.cart.CartManager
 import com.example.shopify.data.managers.wishlist.WishlistManager
+import com.example.shopify.data.models.Image
+import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.Products
+import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.common.composables.CustomSearchbar
 import com.example.shopify.presentation.common.composables.LottieAnimation
@@ -56,7 +60,7 @@ import com.example.shopify.utilities.ShopifyApplication
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun BrandsScreen(navController: NavHostController, id: Long?) {
+fun BrandsScreen(navController: NavHostController, id: Long) {
     val repository: IProductRepository =
         (LocalContext.current.applicationContext as ShopifyApplication).repository
     val wishlistManager: WishlistManager =
@@ -70,45 +74,54 @@ fun BrandsScreen(navController: NavHostController, id: Long?) {
     )
 
     val productsState: UiState by viewModel.brandList.collectAsState()
-    var productsList: List<ProductSample> = listOf()
+    var productsList:List<ProductSample> by remember {
+        mutableStateOf(listOf())
+    }
+
+
+
     var searchText by remember { mutableStateOf("") }
     val isSearching by remember {
         derivedStateOf {
             searchText.isNotEmpty()
         }
     }
+
+    var filteredState by rememberSaveable {
+        mutableStateOf(productsList)
+    }
     val filteredList by remember {
         derivedStateOf {
-            if (searchText.isEmpty()) {
-                productsList
-            } else {
+            if (searchText.isEmpty()|| searchText == "") {
+                 productsList
 
-                productsList.filter { it.title?.startsWith(searchText, ignoreCase = true) ?: false }
+            }else {
+
+               productsList.filter { it.title?.contains(searchText, ignoreCase = true) ?: false }
+
             }
         }
     }
 
-    LaunchedEffect(Unit) {
+     LaunchedEffect(Unit) {
 
-        if (id != null) {
-            viewModel.id = id
-            //Log.i("menna", id.toString())
-            viewModel.getSpecificBrandProducts()
-        }
+         if (id != null) {
+             viewModel.id = id
+             viewModel.getSpecificBrandProducts(id)
+         }
 
-    }
+     }
+
+
     when (productsState) {
         is UiState.Loading -> {
-
             LottieAnimation(animation = R.raw.loading_animation)
-
         }
 
         is UiState.Success<*> -> {
-            // Log.i("menna", "success")
             productsList =
                 (productsState as UiState.Success<Products>).data.body()?.products!!
-            Log.i("menna", productsList.toString())
+
         }
 
         else -> {
@@ -116,8 +129,8 @@ fun BrandsScreen(navController: NavHostController, id: Long?) {
         }
     }
 
-    if (filteredList.isNotEmpty()) {
         Column() {
+
             CustomSearchbar(
                 searchText = searchText,
                 onTextChange = { searchText = it },
@@ -126,6 +139,8 @@ fun BrandsScreen(navController: NavHostController, id: Long?) {
                 onCloseSearch = { searchText = "" }
             )
             Spacer(modifier = Modifier.height(8.dp))
+
+            if (filteredList.isNotEmpty()) {
             ProductsCards(
                 navController = navController,
                 viewModel = viewModel,
@@ -147,7 +162,7 @@ fun BrandsScreen(navController: NavHostController, id: Long?) {
                 onAddToCard = { product ->
                     viewModel.addItemToCart(product.id, product.variants[0].id)
                 },
-                products = productsList,
+                products = filteredList,
             )
         }
 
