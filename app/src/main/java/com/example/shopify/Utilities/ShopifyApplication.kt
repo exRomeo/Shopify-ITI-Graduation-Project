@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private const val BASE_URL = "https://mad43-alex-and-team2.myshopify.com/"
@@ -55,6 +56,7 @@ class ShopifyApplication : Application() {
         )
     }
     var currentCustomer: CollectCurrentCustomerData? = null
+
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
@@ -63,6 +65,7 @@ class ShopifyApplication : Application() {
             GlobalScope.launch {
                 currentCustomer = getCurrentCustomer(authRepository)
                 CurrentUserHelper.initialize(authRepository)
+
                 cartManager.getCartItems()
                 wishlistManager.getWishlistItems()
                 val userData = userDataRepository.getAddresses(CurrentUserHelper.customerID)
@@ -92,7 +95,9 @@ class ShopifyApplication : Application() {
 
     val userDataRepository: IUserDataRepository by lazy {
         UserDataRepository(
-            userDataRemoteSource
+            userDataRemoteSource,
+            wishlistManager,
+            cartManager
         )
     }
 }
