@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -206,32 +207,20 @@ fun ProductDetailsContentScreen(
                                     IconButton(onClick = onFavoriteChanged) {
                                         if (isFavorite) Icon(
                                             Icons.Default.Favorite,
+                                            tint = MaterialTheme.colorScheme.primary,
                                             contentDescription = stringResource(
                                                 id = R.string.is_fav
                                             )
                                         ) else Icon(
                                             painter = painterResource(id = R.drawable.is_not_fav),
+                                            tint = MaterialTheme.colorScheme.primary,
                                             contentDescription = stringResource(
                                                 id = R.string.is_not_fav
                                             )
                                         )
                                     }
                                 }
-                                /* Box {
 
-                                 Box(
-                                     Modifier
-                                         .fillMaxSize()
-                                         .background(Color.Transparent)
-                                         .align(Alignment.BottomCenter)
-                                 ) {
-                                     LaunchedEffect(Unit) {
-                                         delay(2000L)
-                                     }
-                                     LottieAnimation(animation = R.raw.swipe_image/*,progress = progress*/)
-
-                                 }
-                             }*/
                             }
 
                         }

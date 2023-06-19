@@ -31,6 +31,8 @@ import com.example.shopify.data.models.SingleProductResponseBody
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.ShowCustomDialog
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import java.io.IOException
 import kotlin.random.Random
 
@@ -53,7 +55,6 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
         )
     var product: SingleProduct? by remember { mutableStateOf(null) }
     val productState by productDetailsViewModel.productInfoState.collectAsState()
-    val favoriteState: Boolean by productDetailsViewModel.favProduct.collectAsState()
     val productSample = ProductSample(
         id = product?.id ?: 0,
         title = product?.title ?: "",
@@ -68,35 +69,30 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
     var showFavDialog by remember { mutableStateOf(false) }
     var showToast by remember { mutableStateOf(false) }
     var showReviewsDialog by remember { mutableStateOf(false) }
+    var isFavorite by remember { mutableStateOf(false) }
     var toastMessage by remember { mutableStateOf(0) }
     var dialogMessage by remember { mutableStateOf(0) }
-    var hasNetworkConnection by remember { mutableStateOf(false) }
-    var isFavorite by remember { mutableStateOf(favoriteState) }
 
     var rating by remember {
         mutableStateOf(3.5)
     }
     LaunchedEffect(Unit) { rating = Random.nextDouble(3.0, 5.0) }
 
-    Log.i("TAG", "ProductDetailsScreen: ${ConnectionUtil.isConnected()}")
-
     LaunchedEffect(Unit) {
         productDetailsViewModel.getProductInfo(productId/*8398820573490*/)
+        productDetailsViewModel.isFavorite(productId)
+        productDetailsViewModel.favProduct.collect() { state ->
+            if (state) {
+                isFavorite = true
+            }
+        }
     }
-
-    productDetailsViewModel.isFavorite(productId)
-    isFavorite = favoriteState
 
     when (val state = productState) {
         is UiState.Success<*> -> {
-            LaunchedEffect(key1 = state) {
+            LaunchedEffect(key1 = state /*, favoriteState*/) {
                 product =
                     (productState as UiState.Success<SingleProductResponseBody>).data.body()?.product
-                if (product != null)
-                    Log.i("TAG", "ProductDetailsScreen: $product")
-                else {
-                    Log.i("TAG", "ProductDetailsScreen: NOT FOUND")
-                }
             }
             if (product != null) {
                 ProductDetailsContentScreen(
@@ -104,9 +100,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                         .fillMaxSize()
                         .padding(16.dp),
                     productNavController = navController,
-//        hasNetworkConnection = hasNetworkConnection,
                     isFavorite = isFavorite,
-//        showNetworkDialog = showNetworkDialog,
                     showFavWarningDialog = showFavDialog,
                     showReviewsDialog = showReviewsDialog,
                     showToast = showToast,
@@ -120,11 +114,14 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                         showFavDialog = true
                         showToast = false
                         dialogMessage =
-                            if (isFavorite) R.string.fav_item_removal_warning else R.string.add_item_to_fav_message
+                            if (isFavorite) R.string.fav_item_removal_warning else
+                                R.string.add_item_to_fav_message
                     },
                     onAcceptFavChanged = {
                         showFavDialog = false
                         showToast = true
+//                        productDetailsViewModel.isFavorite(productId)
+//                        isFavorite = favoriteState
                         isFavorite = !isFavorite
                         toastMessage = if (isFavorite) {
                             productDetailsViewModel.addWishlistItem(productSample)
@@ -132,6 +129,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                         } else {
                             productDetailsViewModel.removeWishlistItem(productSample)
                             R.string.product_remove_from_fav_success
+
                         }
 
                     },

@@ -156,7 +156,6 @@ class WishlistManager(
              getWishlistItems()
              false
          } else{
-             getWishlistItems()
              wishlistDraftOrder.draftOrder.lineItems.any {
                  it.productID == productID/* && it.variantID == variantID*/
              }
