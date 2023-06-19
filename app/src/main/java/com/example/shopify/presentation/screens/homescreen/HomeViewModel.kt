@@ -29,13 +29,15 @@ class HomeViewModel(
     val randomList: StateFlow<UiState> = _randomList
 
 
-    init {
-        getBrands()
-        getRandomProducts()
+//    init {
+//        getBrands()
+//        getRandomProducts()
+//
+//
+//    }
 
-    }
-
-    private fun getBrands() {
+     fun getBrands() {
+        Log.i("nada","home")
         viewModelScope.launch(Dispatchers.IO) {
             val response = repository.getBrands()
             withContext(Dispatchers.Main) {
@@ -45,7 +47,7 @@ class HomeViewModel(
 
                     }
                     .collect {
-                        Log.i("menna", "getbrands")
+                        Log.i("nada", "getbrands")
                         _brandsList.value = UiState.Success(it)
                         Log.i("TAG", "getBrands: =======================>")
 
@@ -55,7 +57,7 @@ class HomeViewModel(
         }
     }
 
-    private fun getRandomProducts() {
+     fun getRandomProducts() {
         viewModelScope.launch(Dispatchers.IO) {
             val response = repository.getRandomProducts()
             withContext(Dispatchers.Main) {

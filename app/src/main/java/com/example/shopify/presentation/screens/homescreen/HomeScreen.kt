@@ -108,7 +108,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
     val brandsState: UiState by viewModel.brandList.collectAsState()
     val randomsState: UiState by viewModel.randomList.collectAsState()
     var brandList: List<Brand> by remember { mutableStateOf(listOf()) }
-    var randomList: List<ProductSample> = listOf()
+    var randomList: List<ProductSample>  by remember { mutableStateOf(listOf()) }
     var searchText by remember { mutableStateOf("") }
     val isSearching by remember {
         derivedStateOf {
@@ -125,11 +125,11 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
         }
     }
     //GET USER DATA
-    /* LaunchedEffect(Unit){
-         CurrentUserHelper.initialize(authRepository)
-         cartManager.getCartItems()
-         wishlistManager.getWishlistItems()
-     }*/
+     LaunchedEffect(brandsState) {
+        viewModel.getBrands()
+        viewModel.getRandomProducts()
+
+     }
 //    var isFavourite by remember {
 //        mutableStateOf(false)
 //    }
