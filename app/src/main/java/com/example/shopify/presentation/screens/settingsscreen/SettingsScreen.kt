@@ -1,6 +1,5 @@
 package com.example.shopify.presentation.screens.settingsscreen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -169,7 +168,6 @@ fun SettingsItemList(
         }
         item {
             val wishlist by settingsViewModel.wishlist.collectAsState()
-            Log.i(TAG, "SettingsItemList: ${wishlist.size}")
             SettingItemCard(
                 mainText = stringResource(id = R.string.wishlist),
                 subText = stringResource(id = R.string.you_have) + " ${wishlist.size} " + stringResource(
@@ -245,13 +243,13 @@ fun SettingsPreview() {
                 UserDataRepository(
                     UserDataRemoteSource(
                         ShopifyAPIClient.customerAddressAPI
+                    ),
+                    WishlistManager(
+                        ShopifyAPIClient.draftOrderAPI
+                    ),
+                    CartManager(
+                        ShopifyAPIClient.draftOrderAPI
                     )
-                ),
-                wishlistManager = WishlistManager(
-                    ShopifyAPIClient.draftOrderAPI
-                ),
-                cartManager = CartManager(
-                    ShopifyAPIClient.draftOrderAPI
                 )
             ),
             rememberNavController(),

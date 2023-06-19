@@ -7,13 +7,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.shopify.utilities.ShopifyApplication
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.presentation.screens.settingsscreen.SettingsScreen
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModelFactory
 import com.example.shopify.presentation.screens.settingsscreen.subscreens.addressesscreen.AddressScreen
 import com.example.shopify.presentation.screens.settingsscreen.subscreens.ordersscreen.OrdersScreen
+import com.example.shopify.utilities.ShopifyApplication
 
 @Composable
 fun SettingsNavigation(
@@ -21,9 +21,7 @@ fun SettingsNavigation(
     bottomNavController: NavHostController,
     settingsViewModel: SettingsViewModel = viewModel(
         factory = SettingsViewModelFactory(
-            (LocalContext.current.applicationContext as ShopifyApplication).userDataRepository,
-            (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager,
-            (LocalContext.current.applicationContext as ShopifyApplication).cartManager
+            (LocalContext.current.applicationContext as ShopifyApplication).userDataRepository
         )
     )
 ) {

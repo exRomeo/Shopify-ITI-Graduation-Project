@@ -8,8 +8,6 @@ import com.example.shopify.R
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.utils.ConnectionUtil
-import com.example.shopify.data.managers.cart.CartManager
-import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.repositories.user.IUserDataRepository
@@ -22,9 +20,7 @@ import kotlinx.coroutines.launch
 
 
 class SettingsViewModel(
-    private val userDataRepository: IUserDataRepository,
-    private val wishlistManager: WishlistManager,
-    private val cartManager: CartManager
+    private val userDataRepository: IUserDataRepository
 ) : ViewModel() {
 
     private var _settingsState: MutableStateFlow<UserScreenUISState> =
@@ -39,7 +35,7 @@ class SettingsViewModel(
     }
 
     init {
-        if(ConnectionUtil.isConnected()){
+        if (ConnectionUtil.isConnected()) {
             if (CurrentUserHelper.isLoggedIn()) {
                 getAddresses()
                 getWishlistItems()
@@ -159,16 +155,19 @@ class SettingsViewModel(
 
     private fun getWishlistItems() {
         viewModelScope.launch {
-            wishlistManager.getWishlistItems()
-            wishlistManager.wishlist.collect {
-                _wishlist.value = it
+            userDataRepository.getWishlistItems()
+            userDataRepository.wishlist.collect {
+                if (_wishlist != null)
+                    _wishlist.value = it
+                else
+                    _wishlist = MutableStateFlow(listOf())
             }
         }
     }
 
 
     /**
-     * Cart Functions
+     * Cart Size
      */
 
 
@@ -176,9 +175,12 @@ class SettingsViewModel(
     val cart = _cart.asStateFlow()
     private fun getCartItems() {
         viewModelScope.launch {
-            cartManager.getCartItems()
-            cartManager.cart.collect {
-                _cart.value = it
+            userDataRepository.getCartItems()
+            userDataRepository.cart.collect {
+                if (_cart != null)
+                    _cart.value = it
+                else
+                    _cart = MutableStateFlow(listOf())
             }
         }
     }
@@ -192,14 +194,12 @@ class SettingsViewModel(
 }
 
 class SettingsViewModelFactory(
-    private val userDataRepository: IUserDataRepository,
-    private val wishlistManager: WishlistManager,
-    private val cartManager: CartManager
+    private val userDataRepository: IUserDataRepository
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(SettingsViewModel::class.java))
-            SettingsViewModel(userDataRepository, wishlistManager, cartManager) as T
+            SettingsViewModel(userDataRepository) as T
         else
             throw Exception("ViewModel Not Found")
     }
