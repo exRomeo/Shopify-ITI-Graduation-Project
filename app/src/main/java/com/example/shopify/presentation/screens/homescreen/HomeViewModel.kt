@@ -27,7 +27,8 @@ class HomeViewModel(
     private var _randomList: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val randomList: StateFlow<UiState> = _randomList
 
-
+    private var _favProduct: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val favProduct: StateFlow<Boolean> = _favProduct
     init {
         getBrands()
         getRandomProducts()
@@ -78,6 +79,12 @@ class HomeViewModel(
         }
     }
 
+    fun isFavorite(productId: Long/*, variantId: Long*/) {
+        viewModelScope.launch(Dispatchers.IO) {
+         _favProduct.value = wishlistManager.isFavorite(productId/*, variantId*/)
+        }
+    }
+
     fun removeWishlistItem(productId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             wishlistManager.removeWishlistItem(productId)
@@ -90,6 +97,7 @@ class HomeViewModel(
         }
 
     }
+
 }
 
 class HomeViewModelFactory(

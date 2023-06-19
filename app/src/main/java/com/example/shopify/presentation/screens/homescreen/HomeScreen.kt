@@ -614,5 +614,3 @@ fun ItemCards(
         }
     }
 }
-
-

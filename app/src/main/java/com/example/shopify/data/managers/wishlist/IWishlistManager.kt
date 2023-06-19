@@ -12,4 +12,5 @@ interface IWishlistManager {
     suspend fun addWishlistItem(productID: Long, variantID: Long)
 
     suspend fun removeWishlistItem(productID: Long)
+    suspend fun isFavorite(productID: Long/*, variantID: Long*/) : Boolean
 }
