@@ -2,23 +2,16 @@ package com.example.shopify.core.navigation
 
 import android.util.Log
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.List
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
@@ -110,61 +103,15 @@ val bottomNavItems = listOf(
     ),
     BottomNavItem(
         name = "Categories",
-        route = "categories",
+        route = Screens.Categories.route,
         icon = Icons.Rounded.List,
     ),
     BottomNavItem(
-        name = "Settings",
+        name = "Profile",
         route = Screens.Settings.route,
-        icon = Icons.Rounded.Settings,
+        icon = Icons.Rounded.Person,
     ),
 )
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopBar(modifier: Modifier = Modifier, title: String, onSearch: () -> Unit) {
-    CenterAlignedTopAppBar(
-        colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceTint
-        ),
-        title = {
-            Text(
-                text = title,
-                color = MaterialTheme.colorScheme.onPrimary
-            )
-
-
-        },
-//        navigationIcon = {
-//            IconButton(onClick = onSearch) {
-//                Icon(
-//                    imageVector = Icons.Filled.Search, contentDescription = "Navigation icon",
-//                    tint = MaterialTheme.colorScheme.onPrimary
-//                )
-//            }
-//        },
-        actions = {
-            //navigate to carts
-            IconButton(onClick = {
-            }) {
-                Icon(
-                    imageVector = Icons.Outlined.ShoppingCart, contentDescription = "shopping cart",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-            }
-            //navigate to favourites
-            IconButton(onClick = {
-            }) {
-                Icon(
-                    imageVector = Icons.Outlined.Favorite, contentDescription = "Favourite",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-            }
-
-        }
-    )
-}
 
 
 @Composable
