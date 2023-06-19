@@ -207,7 +207,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
 
                 HomeSection(sectionTitle = R.string.trending_products) {
                     ItemCards(navController = navController, viewModel, products = randomList,
-//                        isFavourite = false, onFavouriteClicked = {
+                        isFavourite = false, onFavouriteClicked = {
 //                        product ->
 //                    isFavourite = !isFavourite
 //                    if (isFavourite) {
@@ -218,8 +218,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
 //                        viewModel.removeWishlistItem(product)
 //
 //                    }
-//                        },
-                        onAddToCard = { product ->
+                        }, onAddToCard = { product ->
                             viewModel.addItemToCart(product.id, product.variants[0].id)
 
                         })
@@ -256,19 +255,12 @@ fun CardDesign(
 @Composable
 fun ItemCardContent(
     navController: NavHostController,
-    viewModel: HomeViewModel,
     modifier: Modifier = Modifier,
-//    onFavouritesClicked: (item: ProductSample) -> Unit,
+    isFavourite: Boolean,
+    onFavouritesClicked: (item: ProductSample) -> Unit,
     onAddToCard: (item: ProductSample) -> Unit,
     item: ProductSample
 ) {
-    val favoriteState: Boolean by viewModel.favProduct.collectAsState()
-    var isFavourite by remember {
-        mutableStateOf(favoriteState)
-    }
-    viewModel.isFavorite(item.id)
-    isFavourite = favoriteState
-
     Column(modifier = modifier
         .clickable {
             navController.navigate(route = "${Screens.Details.route}/${item.id}")
@@ -307,17 +299,7 @@ fun ItemCardContent(
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            FavoriteButton(isFavourite = isFavourite, onClicked = {
-                isFavourite = !isFavourite
-                if (isFavourite) {
-                    viewModel.addWishlistItem(item.id, item.variants[0].id)
-
-                }
-                if (!isFavourite) {
-                    viewModel.removeWishlistItem(item.id)
-
-                }
-            })
+            FavoriteButton(isFavourite = isFavourite, onClicked = { onFavouritesClicked(item) })
 
         }
         Button(
@@ -596,21 +578,34 @@ fun ItemCards(
     viewModel: HomeViewModel,
     modifier: Modifier = Modifier,
     products: List<ProductSample>,
+    isFavourite: Boolean,
+    onFavouriteClicked: (item: ProductSample) -> Unit,
     onAddToCard: (item: ProductSample) -> Unit
 ) {
-
     LazyRow(
         modifier = modifier.padding(start = 6.dp, end = 6.dp)
     ) {
         items(products) { item ->
 
+            var isFavourite by remember {
+                mutableStateOf(false)
+            }
             CardDesign(onCardClicked = {}) {
                 ItemCardContent(
                     navController = navController,
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
-                    viewModel = viewModel,
-//                    isFavourite = isFavourite,
+                    isFavourite = isFavourite,
+                    onFavouritesClicked = { product ->
+                        isFavourite = !isFavourite
+                        if (isFavourite) {
+                            viewModel.addWishlistItem(product.id, product.variants[0].id)
 
+                        }
+                        if (!isFavourite) {
+                            viewModel.removeWishlistItem(product.id)
+
+                        }
+                    },
                     onAddToCard = { onAddToCard(item) },
                     item = item
                 )
