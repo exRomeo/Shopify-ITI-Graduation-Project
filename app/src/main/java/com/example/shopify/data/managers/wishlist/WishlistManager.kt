@@ -1,5 +1,6 @@
 package com.example.shopify.data.managers.wishlist
 
+import android.util.Log
 import com.example.shopify.BuildConfig
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.KeyFirebase
@@ -8,6 +9,7 @@ import com.example.shopify.data.models.draftorder.DraftOrder
 import com.example.shopify.data.models.draftorder.DraftOrderBody
 import com.example.shopify.data.models.draftorder.LineItem
 import com.example.shopify.data.repositories.user.remote.retrofitclient.DraftOrderAPI
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -149,8 +151,16 @@ class WishlistManager(
         wishlistDraftOrder.draftOrder.lineItems = mutableListOf()
     }
 
-    fun isFavorite(productID: Long, variantID: Long): Boolean =
-        wishlistDraftOrder.draftOrder.lineItems.any {
-            it.productID == productID && it.variantID == variantID
-        }
+     override suspend fun isFavorite(productID: Long/*, variantID: Long*/): Boolean {
+         return if (!::wishlistDraftOrder.isInitialized) {
+             getWishlistItems()
+             false
+         } else{
+             getWishlistItems()
+             wishlistDraftOrder.draftOrder.lineItems.any {
+                 it.productID == productID/* && it.variantID == variantID*/
+             }
+         }
+
+    }
 }
