@@ -15,7 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ShoppingCartCheckout
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -113,7 +113,7 @@ fun CartScreen(
                     )
                     Icon(
                         modifier = Modifier.size(30.dp),
-                        imageVector = Icons.Default.ShoppingCartCheckout,
+                        imageVector = Icons.Default.ShoppingCart,
                         contentDescription = ""
                     )
                 }

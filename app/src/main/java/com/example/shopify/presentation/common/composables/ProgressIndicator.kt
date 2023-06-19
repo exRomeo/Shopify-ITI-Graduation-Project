@@ -57,7 +57,7 @@ fun LottieAnimation(
             LottieAnimation(
                 composition = composition,
                 iterations = LottieConstants.IterateForever,
-
+                modifier = modifier
                 )
         }
     }

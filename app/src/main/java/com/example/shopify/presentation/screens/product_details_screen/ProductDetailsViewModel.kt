@@ -10,6 +10,7 @@ import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.repositories.product.IProductRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class ProductDetailsViewModel(
@@ -20,7 +21,8 @@ class ProductDetailsViewModel(
 
     private var _productInfoState = MutableStateFlow<UiState>(UiState.Loading)
     val productInfoState = _productInfoState
-
+    private var _favProduct: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val favProduct: StateFlow<Boolean> = _favProduct
     fun getProductInfo(productId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             val response = productRepository.getSingleProductDetails(productId)
@@ -39,7 +41,12 @@ class ProductDetailsViewModel(
             wishlistManager.removeWishlistItem(product.id)
         }
     }
-
+    fun isFavorite(productId: Long/*, variantId: Long*/) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _favProduct.value = wishlistManager.isFavorite(productId/*, variantId*/)
+            Log.i("TAG", "isFavorite: ViewModel id ${_favProduct.value}")
+        }
+    }
     fun addItemToCart(product: ProductSample) {
         viewModelScope.launch(Dispatchers.IO) {
             cartManager.addCartItem(product.id, product.variants.get(0).id)

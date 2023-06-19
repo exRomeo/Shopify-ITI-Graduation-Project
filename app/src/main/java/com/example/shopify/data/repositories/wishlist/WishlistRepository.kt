@@ -21,4 +21,8 @@ class WishlistRepository(
     override suspend fun removeWishlistItem(productID: Long) =
         wishlistManager.removeWishlistItem(productID = productID)
 
+    override suspend fun isFavorite(productID: Long, variantID: Long) {
+        wishlistManager.isFavorite(productID/*, variantID*/)
+    }
+
 }
