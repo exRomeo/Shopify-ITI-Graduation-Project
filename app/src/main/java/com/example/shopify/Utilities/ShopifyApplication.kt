@@ -8,7 +8,6 @@ import com.example.shopify.core.helpers.RetrofitHelper
 import com.example.shopify.core.utils.ConnectionUtil
 import com.example.shopify.core.utils.SharedPreference
 import com.example.shopify.data.managers.cart.CartManager
-import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.models.CollectCurrentCustomerData
 import com.example.shopify.data.models.GetCurrentCustomer.getCurrentCustomer
 import com.example.shopify.data.remote.authentication.AuthenticationClient
@@ -84,9 +83,9 @@ class ShopifyApplication : Application() {
         CartManager(ShopifyAPIClient.draftOrderAPI)
     }
 
-    val wishlistManager: WishlistManager by lazy {
+     val wishlistManager: WishlistManager by lazy {
         WishlistManager(ShopifyAPIClient.draftOrderAPI)
-    }
+     }
 
     private val userDataRemoteSource: IUserDataRemoteSource by lazy {
         UserDataRemoteSource(
