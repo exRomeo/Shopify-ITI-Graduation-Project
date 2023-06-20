@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.data.managers.cart.CartManager
+import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.repositories.product.IProductRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
