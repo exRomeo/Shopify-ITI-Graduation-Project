@@ -14,13 +14,25 @@ data class OrderResponse(
     val order: OrderIn
 )
 
+data class OrdersResponse(
+    @field:SerializedName("orders")
+    val orders: List<OrderIn>
+)
+
 data class OrderOut(
     @field:SerializedName("shipping_address")
     val shippingAddress: Address,
     @field:SerializedName("line_items")
     val lineItems: List<LineItem>,
     @field:SerializedName("discount_codes")
-    val discountCodes: List<DiscountCode>? = null
+    val discountCodes: List<DiscountCode>? = null,
+    @field:SerializedName("customer")
+    val customer: Customer
+)
+
+data class Customer(
+    @field:SerializedName("id")
+    var id:Long = 0L
 )
 
 data class DiscountCode(

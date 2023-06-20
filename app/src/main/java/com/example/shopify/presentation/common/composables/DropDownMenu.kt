@@ -84,44 +84,56 @@ fun <T> SingleSelectionDropdownMenu(
         }
     }
 }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun <T> SelectionDropdownMenu(
+    title: String,
+    items: List<T>,
+    onSelect: (T) -> Unit
+) where T : ItemWithName {
+    var selection by remember { mutableStateOf(title) }
+    var expandedState by remember { mutableStateOf(false) }
+    Box(
+        contentAlignment = Alignment.TopCenter
+    ) {
+        ExposedDropdownMenuBox(
+            expanded = expandedState,
+            onExpandedChange = { expandedState = !expandedState },
+        ) {
+            OutlinedTextField(
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
+                value = selection,
+                onValueChange = {},
+                readOnly = true,
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = expandedState
+                    )
+                },
+                colors = ExposedDropdownMenuDefaults.textFieldColors()
+            )
+            ExposedDropdownMenu(
+                expanded = expandedState,
+                onDismissRequest = { expandedState = false }) {
+                items.forEach {
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = it.getFullName(),
+                                style = TextStyle(textAlign = TextAlign.Center)
+                            )
+                        },
+                        onClick = {
+                            selection = it.getShortName()
+                            onSelect(it)
+                            expandedState = false
+                        })
+                }
+            }
 
-
-//
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Preview
-//@Composable
-//fun SingleSelectDropdownMenu() {
-//    var selection by remember { mutableStateOf("choose a currency :D") }
-//    var expandedState by remember { mutableStateOf(false) }
-//    Box(
-//        modifier = Modifier.fillMaxSize(),
-//        contentAlignment = Alignment.Center
-//    ) {
-//        TextField(
-//            value = selection,
-//            onValueChange = {},
-//            readOnly = true,
-//            trailingIcon = {
-//                ExposedDropdownMenuDefaults.TrailingIcon(
-//                    expanded = expandedState
-//                )
-//            },
-//            colors = ExposedDropdownMenuDefaults.textFieldColors()
-//        )
-//        DropdownMenu(
-//            expanded = expandedState,
-//            onDismissRequest = { expandedState = false }
-//        ) {
-//            LazyColumn() {
-//                items(Currency.list) {
-//                    DropdownMenuItem(
-//                        text = { Text(text = "${it.country}\n${it.symbol}") },
-//                        onClick = {
-//                            selection = it.symbol
-//                            expandedState = false
-//                        })
-//                }
-//            }
-//        }
-//    }
-//}
+        }
+    }
+}

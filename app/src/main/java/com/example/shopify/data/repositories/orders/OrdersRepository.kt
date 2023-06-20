@@ -3,6 +3,7 @@ package com.example.shopify.data.repositories.orders
 import com.example.shopify.data.managers.orders.IOrdersManager
 import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.models.draftorder.DraftOrder
+import com.example.shopify.data.models.order.Customer
 import com.example.shopify.data.models.order.DiscountCode
 import com.example.shopify.data.models.order.OrderBody
 import com.example.shopify.data.models.order.OrderIn
@@ -23,7 +24,8 @@ class OrdersRepository(private val ordersManager: IOrdersManager) : IOrdersRepos
                     OrderOut(
                         shippingAddress = address,
                         lineItems = draftOrder.lineItems,
-                        discountCodes = discountCodes
+                        discountCodes = discountCodes,
+                        Customer()
                     )
                 )
             )

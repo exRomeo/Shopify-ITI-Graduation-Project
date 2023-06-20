@@ -92,19 +92,23 @@ fun OrdersScreen(navController: NavHostController) {
             val state by viewModel.state.collectAsState()
             when (state) {
                 is UserScreenUISState.Loading -> {
+                    Log.i(TAG, "OrdersScreen: LOADING")
                     LottieAnimation(animation = R.raw.loading_animation)
                 }
 
                 is UserScreenUISState.Success<*> -> {
                     val orders = (state as UserScreenUISState.Success<*>).data as List<OrderIn>
+                    Log.i(TAG, "OrdersScreen: SUCESS")
                     OrdersScreenContent(viewModel = viewModel, orders = orders)
                 }
 
                 is UserScreenUISState.NoData -> {
+                    Log.i(TAG, "OrdersScreen: NO DADA")
                     NoData(message = "Make Some Orders!")
                 }
 
                 is UserScreenUISState.NotConnected -> {
+                    Log.i(TAG, "OrdersScreen: NOD GONEECdED")
                     NoConnectionScreen()
                 }
 

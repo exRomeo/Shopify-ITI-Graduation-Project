@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -295,8 +296,6 @@ fun CartItemCard(
                 }
             }
         }
-
-
     }
 }
 
@@ -353,7 +352,7 @@ fun OrderItemCard(
                     .padding(start = 8.dp, top = 4.dp, bottom = 4.dp, end = 4.dp)
                     .weight(1f)
             ) {
-                LazyColumn {
+                LazyColumn(modifier = Modifier.heightIn(0.dp, 150.dp)) {
                     items(order.lineItems) {
                         Text(
                             text = "${it.title} x ${it.quantity} = ${it.getTotalPrice()}",

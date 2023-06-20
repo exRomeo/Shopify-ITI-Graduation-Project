@@ -16,6 +16,10 @@ import com.example.shopify.data.remote.authentication.IAuthenticationClient
 import com.example.shopify.data.remote.product.RemoteResource
 import com.example.shopify.data.repositories.authentication.AuthRepository
 import com.example.shopify.data.repositories.authentication.IAuthRepository
+import com.example.shopify.data.repositories.cart.remote.CurrencyRemote
+import com.example.shopify.data.repositories.cart.remote.apilayerclient.APILayerClient
+import com.example.shopify.data.repositories.checkout.CheckoutRepository
+import com.example.shopify.data.repositories.checkout.ICheckoutRepository
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.data.repositories.product.ProductRepository
 import com.example.shopify.data.repositories.user.IUserDataRepository
@@ -96,6 +100,15 @@ class ShopifyApplication : Application() {
             wishlistManager,
             cartManager,
             ordersManager
+        )
+    }
+
+    val checkoutRepository: ICheckoutRepository by lazy {
+        CheckoutRepository(
+            cartManager = cartManager,
+            ordersManager = ordersManager,
+            addressManager = addressManager,
+            currencyRemote = CurrencyRemote(currencyAPI = APILayerClient.currencyAPI)
         )
     }
 }

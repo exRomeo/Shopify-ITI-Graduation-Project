@@ -175,4 +175,9 @@ class CartManager(
         _cart.emit(listOf())
         cartDraftOrder.draftOrder.lineItems = mutableListOf()
     }
+
+
+    override fun getLineItems(): List<LineItem> =
+        cartDraftOrder.draftOrder.lineItems
+
 }

@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 class CartViewModel(private val cartRepository: ICartRepository) : ViewModel() {
 
@@ -24,10 +23,6 @@ class CartViewModel(private val cartRepository: ICartRepository) : ViewModel() {
         MutableStateFlow(UserScreenUISState.Loading)
     val screenState = _screenState.asStateFlow()
 
-
-    private var currencySymbol: String = "EGP"
-
-    private var currencyRate: Double = 1.00
 
     private var _cart: MutableStateFlow<List<ProductSample>> = MutableStateFlow(listOf())
     val cart = _cart.asStateFlow()
@@ -60,10 +55,10 @@ class CartViewModel(private val cartRepository: ICartRepository) : ViewModel() {
             viewModelScope.launch {
                 cartRepository.getCartItems()
                 cartRepository.cart.collect {
-                    if (it.isNotEmpty()) {
+                    if (_cart != null) {
                         _cart.value = it
                         _screenState.value = UserScreenUISState.Success(it)
-                        calculatePrice()
+
                     } else {
                         _screenState.value = UserScreenUISState.NoData
                     }
@@ -73,12 +68,6 @@ class CartViewModel(private val cartRepository: ICartRepository) : ViewModel() {
             _screenState.value = UserScreenUISState.NotConnected
     }
 
-    fun addCartItem(productID: Long, variantID: Long) {
-        viewModelScope.launch {
-            cartRepository.addCartItem(productID = productID, variantID = variantID)
-        }
-
-    }
 
     fun removeCart(productID: Long) {
         viewModelScope.launch {
@@ -86,37 +75,8 @@ class CartViewModel(private val cartRepository: ICartRepository) : ViewModel() {
         }
     }
 
-    fun getExchangeRate(symbol: String) {
-        viewModelScope.launch {
-            val response =
-                cartRepository.exchangeRate(to = symbol, from = "EGP", amount = "1")
-            if (response.isSuccessful) {
-                currencySymbol = symbol
-                currencyRate = response.body()?.info?.rate!!
-                calculatePrice()
-            }
-        }
-    }
-
-    private var _totalItems: MutableStateFlow<String> = MutableStateFlow("")
-    val totalItems = _totalItems.asStateFlow()
-
-    private var _totalPrice: MutableStateFlow<String> = MutableStateFlow("")
-    val totalPrice = _totalPrice.asStateFlow()
-
-    fun calculatePrice() {
-        var itemsCount = 0L
-        var itemsPrice = 0.00
-        _cart.value.forEach {
-            itemsCount += getCartItemCount(it)
-            itemsPrice += ((it.variants[0].price)?.trim()?.toDouble()
-                ?: 0.00) * getCartItemCount(it).toDouble() * currencyRate
-        }
-        _totalItems.value = "Total Items = $itemsCount item(s)"
-        _totalPrice.value =
-            "Total Price = $currencySymbol ${(itemsPrice * 100).roundToInt() / 100.00}"
-    }
 }
+
 
 @Suppress("UNCHECKED_CAST")
 class CartViewModelFactory(private val cartRepository: ICartRepository) :

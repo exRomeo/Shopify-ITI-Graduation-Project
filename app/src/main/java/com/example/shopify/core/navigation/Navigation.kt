@@ -26,6 +26,7 @@ import com.example.shopify.presentation.screens.authentication.registeration.Sig
 import com.example.shopify.presentation.screens.brands.BrandsScreen
 import com.example.shopify.presentation.screens.cartscreen.CartScreen
 import com.example.shopify.presentation.screens.categories.CategoriesScreen
+import com.example.shopify.presentation.screens.checkout.CheckoutScreen
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 import com.example.shopify.presentation.screens.onBoarding.OnBoardingScreen
 import com.example.shopify.presentation.screens.product_details_screen.ProductDetailsScreen
@@ -101,6 +102,10 @@ fun NavGraph(navController: NavHostController) {
 
         composable(route = Screens.OnBoarding.route) {
             OnBoardingScreen(navController)
+        }
+
+        composable(route = Screens.Checkout.route) {
+            CheckoutScreen(navController)
         }
 
     }

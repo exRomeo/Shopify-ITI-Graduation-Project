@@ -2,14 +2,10 @@ package com.example.shopify.data.repositories.cart
 
 import com.example.shopify.data.managers.cart.ICartManager
 import com.example.shopify.data.models.ProductSample
-import com.example.shopify.data.models.currency.CurrencyResponse
-import com.example.shopify.data.repositories.cart.remote.ICurrencyRemote
 import kotlinx.coroutines.flow.SharedFlow
-import retrofit2.Response
 
 class CartRepository(
-    private val cartManager: ICartManager,
-    private val currencyRemote: ICurrencyRemote
+    private val cartManager: ICartManager
 ) : ICartRepository {
     override val cart: SharedFlow<List<ProductSample>> = cartManager.cart
 
@@ -34,14 +30,5 @@ class CartRepository(
 
     override suspend fun removeCart(productID: Long) =
         cartManager.removeCart(productID = productID)
-
-
-    override suspend fun exchangeRate(
-        to: String,
-        from: String,
-        amount: String
-    ): Response<CurrencyResponse> =
-        currencyRemote.exchangeRate(to = to, from = from, amount = amount)
-
 
 }

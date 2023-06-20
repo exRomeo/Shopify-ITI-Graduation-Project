@@ -2,6 +2,7 @@ package com.example.shopify.data.repositories.user.remote.retrofitclient
 
 import com.example.shopify.data.models.order.OrderBody
 import com.example.shopify.data.models.order.OrderResponse
+import com.example.shopify.data.models.order.OrdersResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -33,4 +34,10 @@ interface OrdersAPI {
         @Header("X-Shopify-Access-Token") accessToken: String,
         @Path("order_id") orderID: Long
     ): Response<OrderResponse>
+
+    @GET("admin/api/2023-04/customers/{customer_id}/orders.json")
+    suspend fun getCustomerOrders(
+        @Header("X-Shopify-Access-Token") accessToken: String,
+        @Path("customer_id") customerID: Long
+    ): Response<OrdersResponse>
 }
