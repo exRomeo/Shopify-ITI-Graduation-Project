@@ -180,4 +180,10 @@ class CartManager(
     override fun getLineItems(): List<LineItem> =
         cartDraftOrder.draftOrder.lineItems
 
+    override suspend fun clearCart() {
+        deleteDraftOrder(
+            draftOrder = cartDraftOrder.draftOrder,
+            draftOrderType = KeyFirebase.card_id
+        )
+    }
 }

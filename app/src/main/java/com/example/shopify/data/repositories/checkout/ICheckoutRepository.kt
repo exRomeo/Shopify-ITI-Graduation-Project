@@ -5,6 +5,7 @@ import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.models.currency.CurrencyResponse
 import com.example.shopify.data.models.draftorder.LineItem
 import com.example.shopify.data.models.order.OrderBody
+import com.example.shopify.data.models.payment.PaymentIntentApiModel
 import kotlinx.coroutines.flow.SharedFlow
 import retrofit2.Response
 
@@ -23,4 +24,12 @@ interface ICheckoutRepository {
     suspend fun exchangeRate(to: String, from: String, amount: String): Response<CurrencyResponse>
 
     suspend fun getCustomerAddresses()
+
+    suspend fun createCustomer()
+
+    suspend fun refreshCustomerEphemeralKey()
+
+    suspend fun createPaymentIntent(amount: Double): PaymentIntentApiModel
+
+    suspend fun clearCart()
 }

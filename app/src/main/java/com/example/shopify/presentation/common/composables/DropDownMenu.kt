@@ -7,8 +7,9 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,8 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.shopify.data.models.currency.Currency
 import com.example.shopify.data.models.ItemWithName
+import com.example.shopify.data.models.currency.Currency
 import com.example.shopify.presentation.screens.settingsscreen.TAG
 
 @Preview(showSystemUi = true)
@@ -47,7 +48,7 @@ fun <T> SingleSelectionDropdownMenu(
             expanded = expandedState,
             onExpandedChange = { expandedState = !expandedState },
         ) {
-            OutlinedTextField(
+            TextField(
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
@@ -59,7 +60,7 @@ fun <T> SingleSelectionDropdownMenu(
                         expanded = expandedState
                     )
                 },
-                colors = ExposedDropdownMenuDefaults.textFieldColors()
+                colors = ExposedDropdownMenuDefaults.textFieldColors(unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer)
             )
             ExposedDropdownMenu(
                 expanded = expandedState,
@@ -84,6 +85,7 @@ fun <T> SingleSelectionDropdownMenu(
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> SelectionDropdownMenu(
@@ -100,7 +102,7 @@ fun <T> SelectionDropdownMenu(
             expanded = expandedState,
             onExpandedChange = { expandedState = !expandedState },
         ) {
-            OutlinedTextField(
+            TextField(
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
@@ -112,7 +114,7 @@ fun <T> SelectionDropdownMenu(
                         expanded = expandedState
                     )
                 },
-                colors = ExposedDropdownMenuDefaults.textFieldColors()
+                colors = ExposedDropdownMenuDefaults.textFieldColors(unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer)
             )
             ExposedDropdownMenu(
                 expanded = expandedState,

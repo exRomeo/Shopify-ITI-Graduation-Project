@@ -12,6 +12,6 @@ sealed class Screens(val route: String) {
     object Cart : Screens("cart")
     object Brands : Screens("brands")
     object Details : Screens("details")
-    object OnBoarding:Screens("onBoarding")
-    object Checkout:Screens("checkout")
+    object OnBoarding : Screens("onBoarding")
+    object Checkout : Screens("checkout")
 }
