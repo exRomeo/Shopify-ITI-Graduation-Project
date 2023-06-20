@@ -75,7 +75,7 @@ fun OnBoardingScreen(navController:NavHostController ) {
         infiniteLoop = false,
         initialPage = 0,
     )
-       val sharedPreference = (LocalContext.current.applicationContext as ShopifyApplication).sharedPreference
+    val sharedPreference = (LocalContext.current.applicationContext as ShopifyApplication).sharedPreference
             if (sharedPreference.hasCompletedOnBoarding) {
                 Log.i("menna","true")
                 navController.navigate(Screens.Home.route)

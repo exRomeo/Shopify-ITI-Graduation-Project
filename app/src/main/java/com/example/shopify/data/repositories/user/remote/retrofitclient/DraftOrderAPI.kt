@@ -39,14 +39,13 @@ interface DraftOrderAPI {
     ): Response<DraftOrderBody>
 
 
-
     @DELETE("admin/api/2023-04/draft_orders/{draft_order_id}.json")
     suspend fun deleteDraftOrder(
         @Header("X-Shopify-Access-Token") accessToken: String,
         @Path("draft_order_id") draftOrderID: Long
     )
 
-@GET("admin/api/2023-04/products/{product_id}.json")
+    @GET("admin/api/2023-04/products/{product_id}.json")
     suspend fun getProductByID(
         @Header("X-Shopify-Access-Token") accessToken: String,
         @Path("product_id") productID: Long

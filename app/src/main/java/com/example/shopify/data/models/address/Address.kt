@@ -1,5 +1,6 @@
 package com.example.shopify.data.models.address
 
+import com.example.shopify.data.models.ItemWithName
 import com.google.gson.annotations.SerializedName
 
 data class Address(
@@ -17,8 +18,13 @@ data class Address(
     var fullAddress: String,
     @field:SerializedName("default")
     var default: Boolean = false
-) {
+) : ItemWithName {
     fun getAddressString(): String = "$firstName $lastName\n$fullAddress"
+    override fun getShortName(): String = fullAddress
+
+    override fun getFullName(): String = "$firstName $lastName\n $fullAddress\n$phoneNumber"
+
+    override fun getName(): String = "$firstName $lastName"
 
 }
 

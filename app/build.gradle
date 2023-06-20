@@ -26,6 +26,8 @@ android {
         properties.load(project.rootProject.file("local.properties").newDataInputStream())
         buildConfigField "String", "ACCESS_TOKEN", "\"${properties.getProperty("ACCESS_TOKEN")}\""
         buildConfigField "String", "CURRENCY_APIKEY", "\"${properties.getProperty("CURRENCY_APIKEY")}\""
+        buildConfigField "String", "STRIPE_SECRET", "\"${properties.getProperty("STRIPE_SECRET")}\""
+        buildConfigField "String", "STRIP_PUB_KEY", "\"${properties.getProperty("STRIP_PUB_KEY")}\""
     }
 
     buildTypes {
@@ -136,6 +138,10 @@ dependencies {
     //for pager image
     implementation "com.google.accompanist:accompanist-pager: 0.13.0"
     implementation "com.google.accompanist:accompanist-pager-indicators:0.13.0"
+
+    // Stripe Android SDK
+    implementation 'com.stripe:stripe-android:20.25.6'
+
 
 }
 
