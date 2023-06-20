@@ -37,8 +37,10 @@ class ShopifyApplication : Application() {
         ProductRepository(
             RemoteResource.getInstance(context = applicationContext)
         )
+    }
 
-
+     val sharedPreference by lazy{
+        SharedPreference.customPreference(applicationContext,CUSTOMER_PREF_NAME)
     }
     private val authenticationClient: IAuthenticationClient by lazy {
         AuthenticationClient(
@@ -80,9 +82,9 @@ class ShopifyApplication : Application() {
         CartManager(ShopifyAPIClient.draftOrderAPI)
     }
 
-    val wishlistManager: WishlistManager by lazy {
+     val wishlistManager: WishlistManager by lazy {
         WishlistManager(ShopifyAPIClient.draftOrderAPI)
-    }
+     }
 
     private val userDataRemoteSource: IUserDataRemoteSource by lazy {
         UserDataRemoteSource(
