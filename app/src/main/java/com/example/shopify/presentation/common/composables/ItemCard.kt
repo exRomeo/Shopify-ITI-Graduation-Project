@@ -2,6 +2,7 @@ package com.example.shopify.presentation.common.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,6 +42,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -354,13 +356,7 @@ fun OrderItemCard(
             ) {
                 LazyColumn(modifier = Modifier.heightIn(0.dp, 150.dp)) {
                     items(order.lineItems) {
-                        Text(
-                            text = "${it.title} x ${it.quantity} = ${it.getTotalPrice()}",
-                            style = TextStyle(fontSize = MaterialTheme.typography.bodyLarge.fontSize),
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis
-                        )
-
+                        LineItemCard(it)
                     }
                     item {
                         Divider(Modifier.padding(horizontal = 8.dp))
@@ -377,6 +373,40 @@ fun OrderItemCard(
 
             }
 
+        }
+    }
+}
+
+@Composable
+@Preview
+fun LineItemCard(lineItem: LineItem = LineItem(1, 0, "Product TITLE", 10, "item", "5200.00")) {
+    Box(
+        modifier = Modifier
+            .padding(4.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(Color.White)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(4.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = "${lineItem.title} x ${lineItem.quantity}",
+                style = TextStyle(fontSize = MaterialTheme.typography.bodyLarge.fontSize),
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = lineItem.getTotalPrice(),
+                style = TextStyle(fontSize = MaterialTheme.typography.bodyLarge.fontSize, fontWeight = FontWeight.Bold),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }

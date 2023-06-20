@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.shopify.R
 import com.example.shopify.core.helpers.UserScreenUISState
+import com.example.shopify.core.navigation.Screens
 import com.example.shopify.core.utils.ConnectionUtil
 import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.models.draftorder.LineItem
@@ -14,6 +15,7 @@ import com.example.shopify.data.models.order.OrderBody
 import com.example.shopify.data.models.order.OrderOut
 import com.example.shopify.data.repositories.checkout.ICheckoutRepository
 import com.stripe.android.paymentsheet.PaymentSheetResult
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -25,6 +27,9 @@ import kotlin.math.roundToInt
 class CheckoutViewModel(private val checkoutRepository: ICheckoutRepository) : ViewModel() {
     private var _snackbarMessage: MutableSharedFlow<Int> = MutableSharedFlow()
     val snackbarMessage = _snackbarMessage.asSharedFlow()
+
+    private var _forceNav: MutableSharedFlow<Screens> = MutableSharedFlow()
+    val forceNav = _forceNav.asSharedFlow()
 
     private var _state: MutableStateFlow<UserScreenUISState> =
         MutableStateFlow(UserScreenUISState.Loading)
@@ -94,6 +99,7 @@ class CheckoutViewModel(private val checkoutRepository: ICheckoutRepository) : V
 
     fun confirmOrder() {
         viewModelScope.launch {
+            showMessage(R.string.payment_succeeded)
             checkoutRepository.makeOrder(
                 OrderBody(
                     OrderOut(
@@ -102,9 +108,10 @@ class CheckoutViewModel(private val checkoutRepository: ICheckoutRepository) : V
                         customer = Customer(id = chosenAddress.customerID)
                     )
                 )
-
             )
             checkoutRepository.clearCart()
+            delay(500)
+            forceNavigate(Screens.Home)
         }
     }
 
@@ -130,9 +137,17 @@ class CheckoutViewModel(private val checkoutRepository: ICheckoutRepository) : V
         }
     }
 
+
+    fun forceNavigate(destination: Screens) {
+        viewModelScope.launch {
+            _forceNav.emit(destination)
+        }
+    }
+
     /**
      * Payment
      * */
+    private var paymentMethod: PaymentMethod = PaymentMethod.Credit
     private val _clientSecret = MutableStateFlow<String?>(null)
     val clientSecret = _clientSecret.asStateFlow()
 
@@ -142,11 +157,29 @@ class CheckoutViewModel(private val checkoutRepository: ICheckoutRepository) : V
         }
     }
 
+    fun paymentMethod(paymentMethod: PaymentMethod) {
+        this.paymentMethod = paymentMethod
+    }
+
+
+    fun confirmPayment() {
+        when (paymentMethod) {
+            PaymentMethod.Credit -> {
+                makePayment()
+            }
+
+            PaymentMethod.Cod -> {
+                confirmOrder()
+            }
+        }
+    }
+
     fun makePayment() {
         viewModelScope.launch {
             val paymentIntent = checkoutRepository.createPaymentIntent(totalPrice.value)
             _clientSecret.update { paymentIntent.clientSecret }
         }
+
     }
 
     fun onPaymentLaunched() {
@@ -174,4 +207,9 @@ class CheckoutViewModelFactory(private val checkoutRepository: ICheckoutReposito
             CheckoutViewModel(checkoutRepository) as T
         else throw Exception("View Model Not Found!")
     }
+}
+
+enum class PaymentMethod(val value: Int) {
+    Credit(1),
+    Cod(0)
 }

@@ -33,7 +33,7 @@ class OrdersManager(private val ordersAPI: OrdersAPI) : IOrdersManager {
         ordersAPI.deleteOrder(
             accessToken = BuildConfig.ACCESS_TOKEN, orderID = orderID
         )
-        _orders.emit(listOf())
+        getOrders()
     }
 
 }

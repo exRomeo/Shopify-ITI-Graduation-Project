@@ -43,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -56,6 +57,7 @@ import com.example.shopify.R
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.data.models.currency.Currency
 import com.example.shopify.data.models.draftorder.LineItem
+import com.example.shopify.presentation.common.composables.LineItemCard
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.NoConnectionScreen
 import com.example.shopify.presentation.common.composables.NoData
@@ -81,6 +83,14 @@ fun CheckoutScreen(navController: NavHostController) {
             snackbarHostState.showSnackbar(context.getString(it))
         }
     }
+    LaunchedEffect(Unit) {
+        viewModel.forceNav.collect {
+            navController.navigate(it.route, builder = {
+                launchSingleTop = true
+                popUpTo(it.route)
+            })
+        }
+    }
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
 
@@ -88,11 +98,7 @@ fun CheckoutScreen(navController: NavHostController) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 ExtendedFloatingActionButton(
                     modifier = Modifier.fillMaxWidth(0.92f), onClick = {
-//PaymentConfiguration.init(context,BuildConfig.STRIP_PUB_KEY);
-//                        val paymentSheet = PaymentSheet(this@Row, )
-//                        viewModel.confirmOrder()
-//                        navController.navigate(Screens.Payment.route)
-                        viewModel.makePayment()
+                        viewModel.confirmPayment()
                     }
                 ) {
                     Row(
@@ -211,95 +217,104 @@ fun CheckoutItems(cartItems: List<LineItem>, viewModel: CheckoutViewModel) {
         ) {
             LazyColumn(contentPadding = PaddingValues(8.dp)) {
                 item {
-                    Column(
+                    Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        verticalArrangement = Arrangement.SpaceEvenly
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Color.White)
                     ) {
-                        Text(
-                            text = "Order Details",
-                            style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Divider(thickness = 2.dp, modifier = Modifier.padding(top = 8.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            verticalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            Text(
+                                text = "Order Details",
+                                style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Divider(thickness = 1.dp, modifier = Modifier.padding(top = 8.dp))
+                        }
                     }
                 }
                 items(cartItems) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                            .padding(horizontal = 16.dp),
                         verticalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Text(
-                            text = "${it.title} x ${it.quantity} = ${it.getTotalPrice()}",
-                            style = TextStyle(fontSize = MaterialTheme.typography.bodyLarge.fontSize),
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                        LineItemCard(it)
                     }
                 }
             }
         }
         Spacer(modifier = Modifier.padding(top = 8.dp))
-        val itemsCount by viewModel.totalItems.collectAsState()
-        val totalPrice by viewModel.totalPrice.collectAsState()
-        Box(
+        OrderSummary(viewModel = viewModel)
+    }
+}
+
+@Composable
+fun OrderSummary(viewModel: CheckoutViewModel) {
+    val itemsCount by viewModel.totalItems.collectAsState()
+    val totalPrice by viewModel.totalPrice.collectAsState()
+    Box(
+        modifier = Modifier
+            .fillMaxWidth(0.92f)
+            .clip(RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
+            .background(MaterialTheme.colorScheme.primaryContainer)
+    ) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth(0.92f)
-                .clip(RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.SpaceEvenly,
-                horizontalAlignment = Alignment.CenterHorizontally
+            Text(text = itemsCount)
+            Text(text = "Total Price = ${viewModel.currencySymbol} $totalPrice")
+            var code by remember { mutableStateOf("") }
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = itemsCount)
-                Text(text = "Total Price = ${viewModel.currencySymbol} $totalPrice")
-                var code by remember { mutableStateOf("") }
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    OutlinedTextField(modifier = Modifier.fillMaxWidth(0.7f),
-                        value = code,
-                        onValueChange = { code = it },
-                        label = {
-                            Text(
-                                text = stringResource(id = R.string.discount_code)
-                            )
-                        }
-                    )
-                }
-                Text(text = stringResource(id = R.string.payment_method))
-                var selectedOption by remember { mutableStateOf(1) }
+                OutlinedTextField(modifier = Modifier.fillMaxWidth(0.7f),
+                    value = code,
+                    onValueChange = { code = it },
+                    label = {
+                        Text(
+                            text = stringResource(id = R.string.discount_code)
+                        )
+                    }
+                )
+            }
+            Text(text = stringResource(id = R.string.payment_method))
+            var selectedOption by remember { mutableStateOf(PaymentMethod.Credit) }
 
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = stringResource(id = R.string.cod))
-                    RadioButton(
-                        selected = selectedOption == 0,
-                        onClick = {
-                            if (totalPrice.toInt() < 1000)
-                                selectedOption = 0
-                            else
-                                viewModel.showMessage(R.string.no_cod)
-                        },
-                    )
-                    Text(text = stringResource(id = R.string.credit))
-                    RadioButton(
-                        selected = selectedOption == 1,
-                        onClick = { selectedOption = 1 }
-                    )
-                }
-
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = stringResource(id = R.string.cod))
+                RadioButton(
+                    selected = selectedOption == PaymentMethod.Cod,
+                    onClick = {
+                        if (totalPrice.toInt() < 1000) {
+                            selectedOption = PaymentMethod.Cod
+                            viewModel.paymentMethod(PaymentMethod.Cod)
+                        } else
+                            viewModel.showMessage(R.string.no_cod)
+                    },
+                )
+                Text(text = stringResource(id = R.string.credit))
+                RadioButton(
+                    selected = selectedOption == PaymentMethod.Credit,
+                    onClick = {
+                        selectedOption = PaymentMethod.Credit
+                        viewModel.paymentMethod(PaymentMethod.Credit)
+                    }
+                )
             }
         }
     }

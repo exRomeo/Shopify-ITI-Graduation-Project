@@ -43,7 +43,6 @@ class OrdersViewModel(private val ordersRepository: OrdersRepository) : ViewMode
     fun cancelOrder(orderID: Long) {
         viewModelScope.launch {
             ordersRepository.deleteOrder(orderID)
-            _state.value = UserScreenUISState.NoData
         }
     }
 }
