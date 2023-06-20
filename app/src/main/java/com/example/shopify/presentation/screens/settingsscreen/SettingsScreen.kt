@@ -29,39 +29,39 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.shopify.R
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.Screens
-import com.example.shopify.data.managers.address.AddressManager
-import com.example.shopify.data.managers.cart.CartManager
-import com.example.shopify.data.managers.wishlist.WishlistManager
-import com.example.shopify.data.repositories.user.UserDataRepository
-import com.example.shopify.data.repositories.user.remote.retrofitclient.ShopifyAPIClient
 import com.example.shopify.presentation.common.composables.NoConnectionScreen
 import com.example.shopify.presentation.common.composables.SettingItemCard
 import com.example.shopify.ui.theme.ShopifyTheme
+import com.example.shopify.utilities.ShopifyApplication
 
 const val TAG = "TAG"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    settingsViewModel: SettingsViewModel,
-    bottomNavController: NavHostController,
-    settingsNav: NavHostController
+    navController: NavHostController
 ) {
-
-    val state by settingsViewModel.settingsState.collectAsState()
-    val userName by settingsViewModel.userName.collectAsState()
+    val viewModel: SettingsViewModel = viewModel(
+        factory = SettingsViewModelFactory(
+            (LocalContext.current.applicationContext as ShopifyApplication).userDataRepository
+        )
+    )
+    val state by viewModel.settingsState.collectAsState()
+    val userName by viewModel.userName.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -78,8 +78,8 @@ fun SettingsScreen(
                 actions = {
                     if (state is UserScreenUISState.LoggedIn)
                         IconButton(onClick = {
-                            settingsViewModel.logout()
-                            bottomNavController.navigate(Screens.Login.route, builder = {
+                            viewModel.logout()
+                            navController.navigate(Screens.Login.route, builder = {
                                 popUpTo(route = Screens.Login.route) {
                                     inclusive = true
                                 }
@@ -90,7 +90,7 @@ fun SettingsScreen(
                             Icon(Icons.Default.Logout, stringResource(id = R.string.logout))
                         }
                     else IconButton(onClick = {
-                        bottomNavController.navigate(Screens.Login.route, builder = {
+                        navController.navigate(Screens.Login.route, builder = {
                             popUpTo(route = Screens.Login.route) {
                                 inclusive = true
                             }
@@ -101,15 +101,14 @@ fun SettingsScreen(
                 }
             )
         },
-        bottomBar = { Bottombar(navController = bottomNavController) }
+        bottomBar = { Bottombar(navController = navController) }
     ) {
         Column(modifier = Modifier.padding(it)) {
             when (state) {
                 is UserScreenUISState.LoggedIn -> {
                     SettingsScreenContent(
-                        settingsViewModel = settingsViewModel,
-                        bottomNavController = bottomNavController,
-                        settingsNav = settingsNav
+                        viewModel = viewModel,
+                        navController = navController
                     )
                 }
 
@@ -118,7 +117,7 @@ fun SettingsScreen(
                 }
 
                 else -> {
-                    NotLoggedInSettings(navController = bottomNavController)
+                    NotLoggedInSettings(navController = navController)
                 }
 
             }
@@ -129,31 +128,15 @@ fun SettingsScreen(
 
 @Composable
 fun SettingsScreenContent(
-    settingsViewModel: SettingsViewModel,
-    bottomNavController: NavHostController,
-    settingsNav: NavHostController
-) {
-
-    SettingsItemList(
-        settingsViewModel = settingsViewModel,
-        bottomNavController = bottomNavController,
-        settingsNav = settingsNav
-    )
-}
-
-
-@Composable
-fun SettingsItemList(
-    settingsViewModel: SettingsViewModel,
-    bottomNavController: NavHostController,
-    settingsNav: NavHostController
+    viewModel: SettingsViewModel,
+    navController: NavHostController
 ) {
     LazyColumn(
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-            val addresses by settingsViewModel.addresses.collectAsState()
+            val addresses by viewModel.addresses.collectAsState()
             SettingItemCard(
                 mainText = stringResource(id = R.string.addresses),
                 subText = stringResource(id = R.string.you_have) + " ${addresses.size} " + stringResource(
@@ -163,11 +146,11 @@ fun SettingsItemList(
                     Icon(Icons.Default.Place, stringResource(id = R.string.addresses))
                 }
             ) {
-                bottomNavController.navigate(Screens.Addresses.route)
+                navController.navigate(Screens.Addresses.route)
             }
         }
         item {
-            val wishlist by settingsViewModel.wishlist.collectAsState()
+            val wishlist by viewModel.wishlist.collectAsState()
             SettingItemCard(
                 mainText = stringResource(id = R.string.wishlist),
                 subText = stringResource(id = R.string.you_have) + " ${wishlist.size} " + stringResource(
@@ -177,11 +160,11 @@ fun SettingsItemList(
                     Icon(Icons.Default.Favorite, stringResource(id = R.string.wishlist))
                 }
             ) {
-                bottomNavController.navigate(Screens.Wishlist.route)
+                navController.navigate(Screens.Wishlist.route)
             }
         }
         item {
-            val orders by settingsViewModel.orders.collectAsState()
+            val orders by viewModel.orders.collectAsState()
             SettingItemCard(
                 mainText = stringResource(id = R.string.track_orders),
                 subText = stringResource(id = R.string.you_have) + " ${orders.size} " + stringResource(
@@ -191,11 +174,11 @@ fun SettingsItemList(
                     Icon(Icons.Default.Info, stringResource(id = R.string.track_orders))
                 }
             ) {
-                settingsNav.navigate(Screens.Orders.route)
+                navController.navigate(Screens.Orders.route)
             }
         }
         item {
-            val cart by settingsViewModel.cart.collectAsState()
+            val cart by viewModel.cart.collectAsState()
             SettingItemCard(
                 mainText = stringResource(id = R.string.cart),
                 subText = stringResource(id = R.string.you_have) + " ${cart.size} " + stringResource(
@@ -205,7 +188,7 @@ fun SettingsItemList(
                     Icon(Icons.Default.ShoppingCart, stringResource(id = R.string.cart))
                 }
             ) {
-                bottomNavController.navigate(Screens.Cart.route)
+                navController.navigate(Screens.Cart.route)
             }
         }
     }
@@ -239,18 +222,6 @@ fun NotLoggedInSettings(modifier: Modifier = Modifier, navController: NavHostCon
 fun SettingsPreview() {
     ShopifyTheme() {
         SettingsScreen(
-            SettingsViewModel(
-                UserDataRepository(
-                    AddressManager(ShopifyAPIClient.customerAddressAPI),
-                    WishlistManager(
-                        ShopifyAPIClient.draftOrderAPI
-                    ),
-                    CartManager(
-                        ShopifyAPIClient.draftOrderAPI
-                    )
-                )
-            ),
-            rememberNavController(),
             rememberNavController()
         )
     }

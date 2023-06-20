@@ -35,7 +35,7 @@ import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OrdersScreen(viewModel: SettingsViewModel, navController: NavHostController) {
+fun OrdersScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -59,7 +59,7 @@ fun OrdersScreen(viewModel: SettingsViewModel, navController: NavHostController)
     ) {
 
         Column(Modifier.padding(it)) {
-            OrdersScreenContent(viewModel = viewModel)
+//            OrdersScreenContent(viewModel = )
         }
     }
 }
