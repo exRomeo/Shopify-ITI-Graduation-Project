@@ -39,6 +39,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -140,7 +141,9 @@ fun WishlistItemCard(
                 ) {
                     Text(
                         text = product.title,
-                        style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize)
+                        style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize),
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Spacer(modifier = Modifier.padding(vertical = 4.dp))
                     Text(
@@ -234,7 +237,9 @@ fun CartItemCard(
             ) {
                 Text(
                     text = product.title,
-                    style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize)
+                    style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize),
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.padding(vertical = 4.dp))
                 Text(
@@ -358,7 +363,9 @@ fun OrderItemCard(
             ) {
                 Text(
                     text = product.title,
-                    style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize)
+                    style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.padding(vertical = 4.dp))
                 Text(text = stringResource(id = R.string.expected_to_arrive))

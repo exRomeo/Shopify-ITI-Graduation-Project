@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.shopify.R
+import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.repositories.address.IAddressRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,6 +18,10 @@ class AddressesViewModel(private val addressRepository: IAddressRepository) : Vi
     private var _snackbarMessage: MutableSharedFlow<Int> = MutableSharedFlow()
     val snackbarMessage = _snackbarMessage.asSharedFlow()
 
+    private var _screenState: MutableStateFlow<UserScreenUISState> =
+        MutableStateFlow(UserScreenUISState.Loading)
+    val screenState = _screenState.asStateFlow()
+
     private var _addresses: MutableStateFlow<List<Address>> =
         MutableStateFlow(listOf())
     val addresses = _addresses.asStateFlow()
@@ -29,11 +34,8 @@ class AddressesViewModel(private val addressRepository: IAddressRepository) : Vi
         viewModelScope.launch {
             addressRepository.getAddresses()
             addressRepository.address.collect {
-                if (_addresses != null) {
-                    _addresses.value = it
-                } else {
-                    _addresses = MutableStateFlow(listOf())
-                }
+                _addresses.value = it
+                _screenState.value = UserScreenUISState.Success(it)
             }
         }
     }

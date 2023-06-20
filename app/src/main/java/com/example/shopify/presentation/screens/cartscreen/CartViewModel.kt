@@ -60,6 +60,8 @@ class CartViewModel(private val cartRepository: ICartRepository) : ViewModel() {
             cartRepository.cart.collect {
                 _cart.value = it
                 _screenState.value = UserScreenUISState.Success(it)
+                if (it.isNotEmpty())
+                    calculatePrice()
             }
         }
     }

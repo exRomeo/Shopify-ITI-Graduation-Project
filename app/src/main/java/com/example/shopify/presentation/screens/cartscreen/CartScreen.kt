@@ -59,6 +59,7 @@ import com.example.shopify.data.repositories.cart.remote.CurrencyRemote
 import com.example.shopify.data.repositories.cart.remote.apilayerclient.APILayerClient
 import com.example.shopify.presentation.common.composables.CartItemCard
 import com.example.shopify.presentation.common.composables.LottieAnimation
+import com.example.shopify.presentation.common.composables.NoConnectionScreen
 import com.example.shopify.presentation.common.composables.SingleSelectionDropdownMenu
 import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.utilities.ShopifyApplication
@@ -80,7 +81,7 @@ fun CartScreen(
         )
     )
 
-    val cartItems by viewModel.cart.collectAsState()
+    var cartHasItems by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -102,7 +103,7 @@ fun CartScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = if (cartItems.isNotEmpty())
+                        text = if (cartHasItems)
                             stringResource(id = R.string.checkout)
                         else
                             stringResource(id = R.string.add_items_to_cart),
@@ -139,15 +140,12 @@ fun CartScreen(
             )
         },
         bottomBar = {
-            if (cartItems.isNotEmpty())
+            if (cartHasItems)
                 BottomAppBar(
                     containerColor = MaterialTheme.colorScheme.onPrimary
                 ) {
                     val itemsCount by viewModel.totalItems.collectAsState()
                     val totalPrice by viewModel.totalPrice.collectAsState()
-                    LaunchedEffect(key1 = cartItems) {
-                        viewModel.calculatePrice()
-                    }
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -175,10 +173,16 @@ fun CartScreen(
                 }
 
                 is UserScreenUISState.Success<*> -> {
-
+                    val cartItems =
+                        (state as UserScreenUISState.Success<*>).data as List<ProductSample>
+                    cartHasItems = cartItems.isNotEmpty()
                     CartScreenContent(
                         viewModel = viewModel, cartItems = cartItems, navController = navController
                     )
+                }
+
+                is UserScreenUISState.NotConnected -> {
+                    NoConnectionScreen()
                 }
 
                 else -> {}
