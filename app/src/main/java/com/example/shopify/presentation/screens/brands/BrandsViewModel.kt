@@ -1,6 +1,5 @@
 package com.example.shopify.presentation.screens.brands
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -23,19 +22,23 @@ class BrandsViewModel(
     private var _products: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val brandList: StateFlow<UiState> = _products
     var id:Long = 0
+    init{
+     //   getSpecificBrandProducts(id)
+    }
 
-
-     fun getSpecificBrandProducts() {
+     fun getSpecificBrandProducts(id:Long) {
         viewModelScope.launch(Dispatchers.IO) {
             val response = repository.getSpecificBrandProducts(id)
             withContext(Dispatchers.Main) {
                 response
                     .catch {
                         _products.value = UiState.Error(it)
+
                     }
                     .collect {
-                        Log.i("menna", "getproducts")
+
                         _products.value = UiState.Success(it)
+
 
                     }
 
@@ -62,7 +65,6 @@ class BrandsViewModel(
     }
 
 }
-
 
     class BrandsViewModelFactory( private val repository: IProductRepository,
                                   private val wishlistManager: WishlistManager,

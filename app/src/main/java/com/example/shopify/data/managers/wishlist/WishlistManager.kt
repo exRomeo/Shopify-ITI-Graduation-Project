@@ -151,15 +151,15 @@ class WishlistManager(
         wishlistDraftOrder.draftOrder.lineItems = mutableListOf()
     }
 
-     override suspend fun isFavorite(productID: Long/*, variantID: Long*/): Boolean {
-         return if (!::wishlistDraftOrder.isInitialized) {
-             getWishlistItems()
-             false
-         } else{
-             wishlistDraftOrder.draftOrder.lineItems.any {
-                 it.productID == productID/* && it.variantID == variantID*/
-             }
-         }
+    override suspend fun isFavorite(productID: Long/*, variantID: Long*/): Boolean {
+        return if (!::wishlistDraftOrder.isInitialized) {
+            getWishlistItems()
+            false
+        } else{
+            wishlistDraftOrder.draftOrder.lineItems.any {
+                it.productID == productID/* && it.variantID == variantID*/
+            }
+        }
 
     }
 }
