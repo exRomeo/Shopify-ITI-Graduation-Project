@@ -11,7 +11,6 @@ import com.example.shopify.core.navigation.Screens
 import com.example.shopify.presentation.screens.settingsscreen.SettingsScreen
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
 import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModelFactory
-import com.example.shopify.presentation.screens.settingsscreen.subscreens.addressesscreen.AddressScreen
 import com.example.shopify.presentation.screens.settingsscreen.subscreens.ordersscreen.OrdersScreen
 import com.example.shopify.utilities.ShopifyApplication
 
@@ -35,9 +34,6 @@ fun SettingsNavigation(
             )
         }
 
-        composable(route = Screens.Addresses.route) {
-            AddressScreen(settingsViewModel, navController = settingsNavController)
-        }
 
         composable(route = Screens.Orders.route) {
             OrdersScreen(settingsViewModel, navController = settingsNavController)

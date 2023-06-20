@@ -5,6 +5,7 @@ import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.RetrofitHelper
 import com.example.shopify.core.utils.ConnectionUtil
 import com.example.shopify.core.utils.SharedPreference
+import com.example.shopify.data.managers.address.AddressManager
 import com.example.shopify.data.managers.cart.CartManager
 import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.models.CollectCurrentCustomerData
@@ -24,8 +25,8 @@ import com.example.shopify.data.repositories.user.remote.retrofitclient.ShopifyA
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private const val BASE_URL = "https://mad43-alex-and-team2.myshopify.com/"
@@ -62,29 +63,29 @@ class ShopifyApplication : Application() {
         super.onCreate()
         ConnectionUtil.initialize(applicationContext)
         if (authRepository.checkedLoggedIn()) { //Is loggedIn
-            GlobalScope.launch {
+
+            GlobalScope.launch(Dispatchers.IO) {
                 currentCustomer = getCurrentCustomer(authRepository)
                 CurrentUserHelper.initialize(authRepository)
-
                 cartManager.getCartItems()
                 wishlistManager.getWishlistItems()
-                val userData = userDataRepository.getAddresses(CurrentUserHelper.customerID)
-                    .body()?.addresses?.get(0)
-                CurrentUserHelper.customerName =
-                    ("${userData?.firstName} ${userData?.lastName}")
+                addressManager.getAddresses()
             }
         } else {  //IsNot LoggedIn
             currentCustomer = null
         }
     }
 
-
-    val cartManager: CartManager by lazy {
-        CartManager(ShopifyAPIClient.draftOrderAPI)
+    val addressManager: AddressManager by lazy {
+        AddressManager(ShopifyAPIClient.customerAddressAPI)
     }
 
     val wishlistManager: WishlistManager by lazy {
         WishlistManager(ShopifyAPIClient.draftOrderAPI)
+    }
+
+    val cartManager: CartManager by lazy {
+        CartManager(ShopifyAPIClient.draftOrderAPI)
     }
 
     private val userDataRemoteSource: IUserDataRemoteSource by lazy {
@@ -95,7 +96,7 @@ class ShopifyApplication : Application() {
 
     val userDataRepository: IUserDataRepository by lazy {
         UserDataRepository(
-            userDataRemoteSource,
+            addressManager,
             wishlistManager,
             cartManager
         )

@@ -41,10 +41,10 @@ import com.example.shopify.R
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.Screens
+import com.example.shopify.data.managers.address.AddressManager
 import com.example.shopify.data.managers.cart.CartManager
 import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.repositories.user.UserDataRepository
-import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
 import com.example.shopify.data.repositories.user.remote.retrofitclient.ShopifyAPIClient
 import com.example.shopify.presentation.common.composables.NoConnectionScreen
 import com.example.shopify.presentation.common.composables.SettingItemCard
@@ -163,7 +163,7 @@ fun SettingsItemList(
                     Icon(Icons.Default.Place, stringResource(id = R.string.addresses))
                 }
             ) {
-                settingsNav.navigate(Screens.Addresses.route)
+                bottomNavController.navigate(Screens.Addresses.route)
             }
         }
         item {
@@ -241,9 +241,7 @@ fun SettingsPreview() {
         SettingsScreen(
             SettingsViewModel(
                 UserDataRepository(
-                    UserDataRemoteSource(
-                        ShopifyAPIClient.customerAddressAPI
-                    ),
+                    AddressManager(ShopifyAPIClient.customerAddressAPI),
                     WishlistManager(
                         ShopifyAPIClient.draftOrderAPI
                     ),

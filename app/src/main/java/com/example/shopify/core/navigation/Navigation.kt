@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
+import com.example.shopify.presentation.screens.addressesscreen.AddressScreen
 import com.example.shopify.presentation.screens.authentication.login.LoginScreen
 import com.example.shopify.presentation.screens.authentication.registeration.SignupScreen
 import com.example.shopify.presentation.screens.brands.BrandsScreen
@@ -47,6 +48,11 @@ fun NavGraph(navController: NavHostController) {
 
         composable(route = Screens.Home.route) {
             HomeScreen(navController)
+        }
+
+
+        composable(route = Screens.Addresses.route) {
+            AddressScreen(navController = navController)
         }
 
         composable(

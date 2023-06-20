@@ -1,10 +1,8 @@
 package com.example.shopify.presentation.screens.settingsscreen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.shopify.R
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.utils.ConnectionUtil
@@ -59,61 +57,33 @@ class SettingsViewModel(
      * Address Functions
      */
 
-    private var _addresses: MutableStateFlow<List<Address>> = MutableStateFlow(
-        listOf()
-    )
+    private var _addresses: MutableStateFlow<List<Address>> =
+        MutableStateFlow(listOf())
+
     val addresses = _addresses.asStateFlow()
 
     private fun getAddresses() {
         viewModelScope.launch {
-            val response = userDataRepository.getAddresses(CurrentUserHelper.customerID)
-            if (response.isSuccessful && response.body() != null) {
-                val data = response.body()!!.addresses
-                _addresses.value = data
-                _userName.value = "${data[0].firstName} ${data[0].lastName}"
+            userDataRepository.getAddresses()
+            userDataRepository.address.collect {
+                if (_addresses != null) {
+                    _addresses.value = it
+                    setUserName()
+                } else {
+                    _addresses = MutableStateFlow(listOf())
+                }
             }
         }
     }
 
-    fun updateAddress(address: Address) {
-        viewModelScope.launch {
-            val response = userDataRepository.updateAddress(address)
-            _snackbarMessage.emit(
-                if (response.isSuccessful)
-                    R.string.address_updated
-                else
-                    R.string.address_not_updated
-            )
-            getAddresses()
+
+    private fun setUserName() {
+        if (_userName.value.isEmpty()) {
+            val address = _addresses.value[0]
+            _userName.value = "${address.firstName} ${address.lastName}"
         }
     }
 
-    fun addAddress(address: Address) {
-        viewModelScope.launch {
-            Log.i(TAG, "addAddress: Called")
-            val response = userDataRepository.addAddress(CurrentUserHelper.customerID, address)
-            _snackbarMessage.emit(
-                if (response.isSuccessful)
-                    R.string.address_added
-                else
-                    R.string.address_not_added
-            )
-            getAddresses()
-        }
-    }
-
-    fun removeAddress(address: Address) {
-        viewModelScope.launch {
-            val response = userDataRepository.removeAddress(address)
-            _snackbarMessage.emit(
-                if (response.isSuccessful)
-                    R.string.address_removed
-                else
-                    R.string.address_not_removed
-            )
-            getAddresses()
-        }
-    }
 
     /**
      * Orders Functions
