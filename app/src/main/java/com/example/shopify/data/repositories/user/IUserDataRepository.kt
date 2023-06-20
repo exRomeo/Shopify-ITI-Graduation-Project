@@ -1,31 +1,22 @@
 package com.example.shopify.data.repositories.user
 
+import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.address.Address
-import com.example.shopify.data.models.address.AddressesResponse
-import com.example.shopify.data.models.address.DeleteResponse
-import com.example.shopify.data.models.address.NewAddressResponse
-import retrofit2.Response
+import com.example.shopify.data.models.order.OrderIn
+import kotlinx.coroutines.flow.SharedFlow
 
 interface IUserDataRepository {
+    val address: SharedFlow<List<Address>>
+    val wishlist: SharedFlow<List<ProductSample>>
+    val cart: SharedFlow<List<ProductSample>>
+    val orders: SharedFlow<List<OrderIn>>
 
     /**
      * Address Functions
      */
 
-    suspend fun getAddresses(userID: Long): Response<AddressesResponse>
-
-    suspend fun addAddress(
-        userID: Long,
-        address: Address
-    ): Response<NewAddressResponse>
-
-    suspend fun updateAddress(
-        address: Address
-    ): Response<NewAddressResponse>
-
-    suspend fun removeAddress(
-        address: Address
-    ): Response<DeleteResponse>
-
-
+    suspend fun getAddresses()
+    suspend fun getWishlistItems()
+    suspend fun getCartItems()
+    suspend fun  getOrders()
 }

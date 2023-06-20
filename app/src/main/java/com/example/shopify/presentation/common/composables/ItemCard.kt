@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -39,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -47,6 +51,8 @@ import com.example.shopify.R
 import com.example.shopify.data.models.Image
 import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.ProductSample
+import com.example.shopify.data.models.draftorder.LineItem
+import com.example.shopify.data.models.order.OrderIn
 
 
 @Composable
@@ -140,7 +146,9 @@ fun WishlistItemCard(
                 ) {
                     Text(
                         text = product.title,
-                        style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize)
+                        style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize),
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Spacer(modifier = Modifier.padding(vertical = 4.dp))
                     Text(
@@ -184,7 +192,7 @@ fun WishlistItemCardPreview() {
         product = ProductSample(
             5,
             "Very Long Product Title1235",
-            listOf(Product(1, 0, "Product TITLE", "10.254",10L)),
+            listOf(Product(1, 0, "Product TITLE", "10.254", 10L)),
             listOf(Image("")),
             Image(""),
         ),
@@ -234,7 +242,9 @@ fun CartItemCard(
             ) {
                 Text(
                     text = product.title,
-                    style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize)
+                    style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize),
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.padding(vertical = 4.dp))
                 Text(
@@ -286,8 +296,6 @@ fun CartItemCard(
                 }
             }
         }
-
-
     }
 }
 
@@ -298,7 +306,7 @@ fun CartItemCardPreview() {
         product = ProductSample(
             5,
             "Very Long Product Title1235",
-            listOf(Product(1, 0, "Product TITLE", "10.254",10L)),
+            listOf(Product(1, 0, "Product TITLE", "10.254", 10L)),
             listOf(Image("")),
             Image(""),
         ),
@@ -313,7 +321,7 @@ fun CartItemCardPreview() {
 @Composable
 fun OrderItemCard(
     modifier: Modifier = Modifier,
-    product: ProductSample,
+    order: OrderIn,
     onCancelClick: () -> Unit,
     onClick: () -> Unit
 ) {
@@ -325,8 +333,8 @@ fun OrderItemCard(
     ) {
         Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = "${stringResource(id = R.string.order_no)} ${product.id}")
-                Text(text = "${stringResource(id = R.string.placed_on)} ${"product.orderDate"}")
+                Text(text = "${stringResource(id = R.string.order_no)} ${order.id}")
+                Text(text = "${stringResource(id = R.string.placed_on)} ${order.getDateTime()[0]}")
             }
             TextButton(onClick = { onCancelClick() }) {
                 Text(
@@ -337,29 +345,33 @@ fun OrderItemCard(
         }
         Divider(Modifier.padding(horizontal = 8.dp))
         Row {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(product.images[0].src)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = stringResource(id = R.string.product_image),
-                placeholder = painterResource(id = R.drawable.product_image_placeholder),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .width(125.dp)
-                    .height(125.dp)
-            )
+
 
             Column(
                 modifier
                     .padding(start = 8.dp, top = 4.dp, bottom = 4.dp, end = 4.dp)
                     .weight(1f)
             ) {
-                Text(
-                    text = product.title,
-                    style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize)
-                )
+                LazyColumn(modifier = Modifier.heightIn(0.dp, 150.dp)) {
+                    items(order.lineItems) {
+                        Text(
+                            text = "${it.title} x ${it.quantity} = ${it.getTotalPrice()}",
+                            style = TextStyle(fontSize = MaterialTheme.typography.bodyLarge.fontSize),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+
+                    }
+                    item {
+                        Divider(Modifier.padding(horizontal = 8.dp))
+                        Text(
+                            text = "Total = ${order.currency} ${order.total}",
+                            style = TextStyle(fontSize = MaterialTheme.typography.bodyLarge.fontSize),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.padding(vertical = 4.dp))
                 Text(text = stringResource(id = R.string.expected_to_arrive))
 
@@ -373,12 +385,20 @@ fun OrderItemCard(
 @Preview
 fun OrderItemCardPreview() {
     OrderItemCard(
-        product = ProductSample(
-            5,
-            "Very Long Product Title1235",
-            listOf(Product(1, 0, "Product TITLE", "10.254",10L)),
-            listOf(Image("")),
-            Image(""),
+        order = OrderIn(
+            id = 54556464646454,
+            total = "500.0",
+            totalDiscounts = "10",
+            orderURL = "",
+            lineItems = listOf(
+                LineItem(1, 0, "Product TITLE", 10, "item", "5200.00"),
+                LineItem(1, 0, "Product TITLE", 10, "item", "520.00"),
+                LineItem(1, 0, "Product TITLE", 10, "item", "520.0"),
+                LineItem(1, 0, "Product TITLE", 10, "item", "520.0"),
+            ),
+            date = "2023-06-19T23:05:26-04:00",
+            currency = "EGP",
+            confirmed = false
         ),
         onCancelClick = {}
     ) {

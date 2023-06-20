@@ -20,15 +20,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
-import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
+import com.example.shopify.presentation.screens.addressesscreen.AddressScreen
 import com.example.shopify.presentation.screens.authentication.login.LoginScreen
 import com.example.shopify.presentation.screens.authentication.registeration.SignupScreen
 import com.example.shopify.presentation.screens.brands.BrandsScreen
 import com.example.shopify.presentation.screens.cartscreen.CartScreen
 import com.example.shopify.presentation.screens.categories.CategoriesScreen
+import com.example.shopify.presentation.screens.checkout.CheckoutScreen
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 import com.example.shopify.presentation.screens.onBoarding.OnBoardingScreen
 import com.example.shopify.presentation.screens.product_details_screen.ProductDetailsScreen
+import com.example.shopify.presentation.screens.settingsscreen.SettingsScreen
+import com.example.shopify.presentation.screens.ordersscreen.OrdersScreen
 import com.example.shopify.presentation.screens.wishlist.WishlistScreen
 
 @Composable
@@ -50,10 +53,19 @@ fun NavGraph(navController: NavHostController) {
             HomeScreen(navController)
         }
 
+
+        composable(route = Screens.Addresses.route) {
+            AddressScreen(navController = navController)
+        }
+
         composable(
             route = Screens.Categories.route
         ) {
             CategoriesScreen(navController)
+        }
+
+        composable(route = Screens.Orders.route) {
+            OrdersScreen(navController = navController)
         }
 
         composable(route = Screens.Cart.route) {
@@ -66,7 +78,7 @@ fun NavGraph(navController: NavHostController) {
 
 
         composable(route = Screens.Settings.route) {
-            SettingsNavigation(bottomNavController = navController)
+            SettingsScreen(navController)
         }
 
         composable(
@@ -90,6 +102,10 @@ fun NavGraph(navController: NavHostController) {
 
         composable(route = Screens.OnBoarding.route) {
             OnBoardingScreen(navController)
+        }
+
+        composable(route = Screens.Checkout.route) {
+            CheckoutScreen(navController)
         }
 
     }

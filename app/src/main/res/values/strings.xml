@@ -113,7 +113,7 @@
     <string name="product_remove_from_fav_success">Product remove from favorite</string>
     <string name="product_remove_from_cart_success">Product remove from cart</string>
     <string name="checkout">CHECKOUT</string>
-    <string name="add_items_to_cart">Add Items TO Cart</string>
+    <string name="add_items_to_cart">Add Items to Cart</string>
     <string name="not_connection">Please Check Your Internet Connection.</string>
     <string name="unexpected_error">Unexpected error, something is wrong\n Please try again!</string>
     <string name="search_brands">Search On Brands</string>
@@ -123,4 +123,6 @@
     <string name="search_categories">Search On Categories</string>
     <string name="network_connection">Network Connection !!</string>
     <string name="tryAgain">Try Again !!</string>
+    <string name="confirm">Confirm</string>
+
 </resources>

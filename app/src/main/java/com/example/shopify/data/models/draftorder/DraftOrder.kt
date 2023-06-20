@@ -20,7 +20,9 @@ data class LineItem(
     val name: String,
     @field:SerializedName("price")
     val price: String
-)
+) {
+    fun getTotalPrice(): String = (price.toDouble() * quantity).toString()
+}
 
 data class DraftOrder(
     @field:SerializedName("id")

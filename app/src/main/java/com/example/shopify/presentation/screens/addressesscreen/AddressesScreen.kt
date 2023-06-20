@@ -1,4 +1,4 @@
-package com.example.shopify.presentation.screens.settingsscreen.subscreens.addressesscreen
+package com.example.shopify.presentation.screens.addressesscreen
 
 
 import androidx.compose.foundation.layout.Arrangement
@@ -35,35 +35,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.shopify.R
+import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.data.models.address.Address
+import com.example.shopify.data.repositories.address.AddressRepository
 import com.example.shopify.presentation.common.composables.EditAddressDialog
+import com.example.shopify.presentation.common.composables.LottieAnimation
+import com.example.shopify.presentation.common.composables.NoConnectionScreen
+import com.example.shopify.presentation.common.composables.NotLoggedInScreen
 import com.example.shopify.presentation.common.composables.SettingItemCard
 import com.example.shopify.presentation.common.composables.WarningDialog
-import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
+import com.example.shopify.utilities.ShopifyApplication
 
 
-//@Preview(showSystemUi = true)
-//@Composable
-//fun AddressScreenPreview() {
-//
-//    val viewModel =
-//        SettingsViewModel(
-//            UserDataRepository(
-//                UserDataRemoteSource(
-//                    RetrofitClient.customerAddressAPI,
-//                    RetrofitClient.draftOrderAPI
-//                )
-//            )
-//        )
-//    AddressScreen(viewModel = viewModel)
-//}
+@Preview(showSystemUi = true)
+@Composable
+fun AddressScreenPreview() {
+    AddressScreen(rememberNavController())
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddressScreen(viewModel: SettingsViewModel, navController: NavHostController) {
+fun AddressScreen(navController: NavHostController) {
+
+    val viewModel: AddressesViewModel = viewModel(
+        factory = AddressesViewModelFactory(
+            addressRepository = AddressRepository(
+                addressManager =
+                (LocalContext.current.applicationContext as ShopifyApplication)
+                    .addressManager
+            )
+        )
+    )
     var showDialog by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -121,14 +129,34 @@ fun AddressScreen(viewModel: SettingsViewModel, navController: NavHostController
         }
     ) {
         Column(modifier = Modifier.padding(it)) {
-            val addresses by viewModel.addresses.collectAsState()
-            AddressScreenContent(addresses = addresses, viewModel = viewModel)
+            val state by viewModel.screenState.collectAsState()
+            when (state) {
+
+                is UserScreenUISState.Loading -> {
+                    LottieAnimation(animation = R.raw.loading_animation)
+                }
+
+                is UserScreenUISState.Success<*> -> {
+                    val addresses = (state as UserScreenUISState.Success<*>).data as List<Address>
+                    AddressScreenContent(addresses = addresses, viewModel = viewModel)
+                }
+
+                is UserScreenUISState.NotConnected -> {
+                    NoConnectionScreen()
+                }
+
+                is UserScreenUISState.NotLoggedIn -> {
+                    NotLoggedInScreen(navController = navController)
+                }
+
+                else -> {}
+            }
         }
     }
 }
 
 @Composable
-fun AddressScreenContent(addresses: List<Address>, viewModel: SettingsViewModel) {
+fun AddressScreenContent(addresses: List<Address>, viewModel: AddressesViewModel) {
     var addressToEdit: Address? by remember { mutableStateOf(null) }
 
     var showEditDialog by remember { mutableStateOf(false) }
@@ -159,7 +187,7 @@ fun AddressScreenContent(addresses: List<Address>, viewModel: SettingsViewModel)
 fun AddressList(
     modifier: Modifier = Modifier,
     addresses: List<Address>,
-    viewModel: SettingsViewModel,
+    viewModel: AddressesViewModel,
     onClick: (Address) -> Unit
 ) {
     var showRemoveConfirmationDialog by remember { mutableStateOf(false) }

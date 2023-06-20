@@ -1,30 +1,21 @@
 package com.example.shopify.presentation.screens.settingsscreen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.shopify.R
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.utils.ConnectionUtil
-import com.example.shopify.data.managers.cart.CartManager
-import com.example.shopify.data.managers.wishlist.WishlistManager
-import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.repositories.user.IUserDataRepository
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 
 class SettingsViewModel(
-    private val userDataRepository: IUserDataRepository,
-    private val wishlistManager: WishlistManager,
-    private val cartManager: CartManager
+    private val userDataRepository: IUserDataRepository
 ) : ViewModel() {
 
     private var _settingsState: MutableStateFlow<UserScreenUISState> =
@@ -39,7 +30,7 @@ class SettingsViewModel(
     }
 
     init {
-        if(ConnectionUtil.isConnected()){
+        if (ConnectionUtil.isConnected()) {
             if (CurrentUserHelper.isLoggedIn()) {
                 getAddresses()
                 getWishlistItems()
@@ -52,8 +43,6 @@ class SettingsViewModel(
         _settingsState.value = UserScreenUISState.NotConnected
     }
 
-    private var _snackbarMessage: MutableSharedFlow<Int> = MutableSharedFlow()
-    val snackbarMessage = _snackbarMessage.asSharedFlow()
 
     private var _userName = MutableStateFlow("")
     val userName = _userName.asStateFlow()
@@ -63,122 +52,90 @@ class SettingsViewModel(
      * Address Functions
      */
 
-    private var _addresses: MutableStateFlow<List<Address>> = MutableStateFlow(
-        listOf()
-    )
+    private var _addresses: MutableStateFlow<List<Address>> =
+        MutableStateFlow(listOf())
+
     val addresses = _addresses.asStateFlow()
 
     private fun getAddresses() {
         viewModelScope.launch {
-            val response = userDataRepository.getAddresses(CurrentUserHelper.customerID)
-            if (response.isSuccessful && response.body() != null) {
-                val data = response.body()!!.addresses
-                _addresses.value = data
-                _userName.value = "${data[0].firstName} ${data[0].lastName}"
+            userDataRepository.getAddresses()
+            userDataRepository.address.collect {
+                if (_addresses != null) {
+                    _addresses.value = it
+                    setUserName()
+                } else {
+                    _addresses = MutableStateFlow(listOf())
+                }
             }
         }
     }
 
-    fun updateAddress(address: Address) {
-        viewModelScope.launch {
-            val response = userDataRepository.updateAddress(address)
-            _snackbarMessage.emit(
-                if (response.isSuccessful)
-                    R.string.address_updated
-                else
-                    R.string.address_not_updated
-            )
-            getAddresses()
+
+    private fun setUserName() {
+        if (_userName.value.isEmpty()) {
+            val address = _addresses.value[0]
+            _userName.value = "${address.firstName} ${address.lastName}"
         }
     }
 
-    fun addAddress(address: Address) {
-        viewModelScope.launch {
-            Log.i(TAG, "addAddress: Called")
-            val response = userDataRepository.addAddress(CurrentUserHelper.customerID, address)
-            _snackbarMessage.emit(
-                if (response.isSuccessful)
-                    R.string.address_added
-                else
-                    R.string.address_not_added
-            )
-            getAddresses()
-        }
-    }
-
-    fun removeAddress(address: Address) {
-        viewModelScope.launch {
-            val response = userDataRepository.removeAddress(address)
-            _snackbarMessage.emit(
-                if (response.isSuccessful)
-                    R.string.address_removed
-                else
-                    R.string.address_not_removed
-            )
-            getAddresses()
-        }
-    }
 
     /**
      * Orders Functions
      */
 
-    private var _orders: MutableStateFlow<List<ProductSample>> = MutableStateFlow(
-        listOf()
+    private var _orders: MutableStateFlow<Int> = MutableStateFlow(
+        0
     )
     val orders = _orders.asStateFlow()
 
-    fun updateOrderItem(product: ProductSample) {
-        val index = _orders.value.indexOfFirst { it.id == product.id }
-        if (index >= 0) {
-            val arr = _orders.value.toMutableList()
-            arr[index] = product
-            _orders.value = arr
+    private fun getOrders() {
+        viewModelScope.launch {
+            userDataRepository.getOrders()
+            userDataRepository.orders.collect {
+                if (_orders != null)
+                    _orders.value = it.size
+                else
+                    _orders = MutableStateFlow(0)
+            }
         }
-    }
-
-    fun addOrderItem(product: ProductSample) {
-        product.id = _orders.value.size.toLong()
-        val arr = _orders.value.toMutableList()
-        arr.add(product)
-        _orders.value = arr
-    }
-
-    fun removeOrderItem(product: ProductSample) {
-        val arr = _orders.value.toMutableList()
-        arr.remove(product)
-        _orders.value = arr
     }
 
     /**
      * Wishlist Functions
      */
 
-    private var _wishlist: MutableStateFlow<List<ProductSample>> = MutableStateFlow(listOf())
+    private var _wishlist: MutableStateFlow<Int> = MutableStateFlow(0)
     val wishlist = _wishlist.asStateFlow()
 
     private fun getWishlistItems() {
         viewModelScope.launch {
-            wishlistManager.getWishlistItems()
-            wishlistManager.wishlist.collect {
-                _wishlist.value = it
+            userDataRepository.getWishlistItems()
+            userDataRepository.wishlist.collect {
+                if (_wishlist != null)
+                    _wishlist.value = it.size
+                else
+                    _wishlist = MutableStateFlow(0)
             }
         }
     }
 
 
     /**
-     * Cart Functions
+     * Cart Size
      */
 
 
-    private var _cart: MutableStateFlow<List<ProductSample>> = MutableStateFlow(listOf())
+    private var _cart: MutableStateFlow<Int> = MutableStateFlow(0)
     val cart = _cart.asStateFlow()
     private fun getCartItems() {
         viewModelScope.launch {
-            cartManager.getCartItems()
-            cartManager.cart.collect {
-                _cart.value = it
+            userDataRepository.getCartItems()
+            userDataRepository.cart.collect {
+                if (_cart != null)
+                    _cart.value = it.size
+                else
+                    _cart = MutableStateFlow(0)
             }
         }
     }
@@ -192,14 +149,12 @@ class SettingsViewModel(
 }
 
 class SettingsViewModelFactory(
-    private val userDataRepository: IUserDataRepository,
-    private val wishlistManager: WishlistManager,
-    private val cartManager: CartManager
+    private val userDataRepository: IUserDataRepository
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return if (modelClass.isAssignableFrom(SettingsViewModel::class.java))
-            SettingsViewModel(userDataRepository, wishlistManager, cartManager) as T
+            SettingsViewModel(userDataRepository) as T
         else
             throw Exception("ViewModel Not Found")
     }

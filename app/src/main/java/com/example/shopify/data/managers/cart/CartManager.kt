@@ -1,5 +1,6 @@
 package com.example.shopify.data.managers.cart
 
+import android.util.Log
 import com.example.shopify.BuildConfig
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.KeyFirebase
@@ -8,6 +9,7 @@ import com.example.shopify.data.models.draftorder.DraftOrder
 import com.example.shopify.data.models.draftorder.DraftOrderBody
 import com.example.shopify.data.models.draftorder.LineItem
 import com.example.shopify.data.repositories.user.remote.retrofitclient.DraftOrderAPI
+import com.example.shopify.presentation.screens.settingsscreen.TAG
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -51,6 +53,7 @@ class CartManager(
                 cartDraftOrder = response.body()!!
                 val draftOrderItems = cartDraftOrder.draftOrder.lineItems
                 _cart.emit(getProductsFromLineItems(draftOrderItems))
+                Log.i(TAG, "getCartItems: EMITTED!!!")
             } else {
                 CurrentUserHelper.updateListID(KeyFirebase.card_id, -1)
             }
@@ -86,6 +89,7 @@ class CartManager(
             draftOrderID = cartDraftOrder.draftOrder.id,
             draftOrderBody = DraftOrderBody(cartDraftOrder.draftOrder)
         )
+        getCartItems()
     }
 
     private suspend fun addToCartDraftOrder(productID: Long, variantID: Long, quantity: Long = 1) {
@@ -171,4 +175,9 @@ class CartManager(
         _cart.emit(listOf())
         cartDraftOrder.draftOrder.lineItems = mutableListOf()
     }
+
+
+    override fun getLineItems(): List<LineItem> =
+        cartDraftOrder.draftOrder.lineItems
+
 }

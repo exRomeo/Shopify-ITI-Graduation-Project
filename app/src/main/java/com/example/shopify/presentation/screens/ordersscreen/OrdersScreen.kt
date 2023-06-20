@@ -1,4 +1,4 @@
-package com.example.shopify.presentation.screens.wishlist
+package com.example.shopify.presentation.screens.ordersscreen
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -36,31 +36,29 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.shopify.R
 import com.example.shopify.core.helpers.UserScreenUISState
-import com.example.shopify.core.navigation.Screens
-import com.example.shopify.data.models.ProductSample
-import com.example.shopify.data.repositories.wishlist.WishlistRepository
+import com.example.shopify.data.models.order.OrderIn
+import com.example.shopify.data.repositories.orders.OrdersRepository
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.NoConnectionScreen
 import com.example.shopify.presentation.common.composables.NoData
+import com.example.shopify.presentation.common.composables.NotLoggedInScreen
+import com.example.shopify.presentation.common.composables.OrderItemCard
 import com.example.shopify.presentation.common.composables.WarningDialog
-import com.example.shopify.presentation.common.composables.WishlistItemCard
 import com.example.shopify.presentation.screens.settingsscreen.TAG
 import com.example.shopify.utilities.ShopifyApplication
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WishlistScreen(
-    navController: NavHostController
-) {
-    val viewModel: WishlistViewModel = viewModel(
-        factory =
-        WishlistViewModelFactory(
-            WishlistRepository(
-                wishlistManager = (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
+fun OrdersScreen(navController: NavHostController) {
+    val viewModel: OrdersViewModel = viewModel(
+        factory = OrdersViewModelFactory(
+            ordersRepository = OrdersRepository(
+                ordersManager =
+                (LocalContext.current.applicationContext as ShopifyApplication).ordersManager
             )
         )
     )
+
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -72,7 +70,7 @@ fun WishlistScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, "")
                     }
                 },
@@ -81,7 +79,7 @@ fun WishlistScreen(
                 ),
                 title = {
                     Text(
-                        text = stringResource(id = R.string.wishlist),
+                        text = stringResource(id = R.string.track_orders),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -89,24 +87,35 @@ fun WishlistScreen(
             )
         }
     ) {
+
         Column(Modifier.padding(it)) {
-            val state by viewModel.screenState.collectAsState()
+            val state by viewModel.state.collectAsState()
             when (state) {
                 is UserScreenUISState.Loading -> {
+                    Log.i(TAG, "OrdersScreen: LOADING")
                     LottieAnimation(animation = R.raw.loading_animation)
                 }
 
-                is UserScreenUISState.NotConnected -> {
-                    NoConnectionScreen()
-                }
-
                 is UserScreenUISState.Success<*> -> {
-                    WishlistScreenContent(viewModel = viewModel, navController = navController)
+                    val orders = (state as UserScreenUISState.Success<*>).data as List<OrderIn>
+                    Log.i(TAG, "OrdersScreen: SUCESS")
+                    OrdersScreenContent(viewModel = viewModel, orders = orders)
                 }
 
                 is UserScreenUISState.NoData -> {
-                    NoData(message = "Add Items To Wishlist")
+                    Log.i(TAG, "OrdersScreen: NO DADA")
+                    NoData(message = "Make Some Orders!")
                 }
+
+                is UserScreenUISState.NotConnected -> {
+                    Log.i(TAG, "OrdersScreen: NOD GONEECdED")
+                    NoConnectionScreen()
+                }
+
+                is UserScreenUISState.NotLoggedIn -> {
+                    NotLoggedInScreen(navController = navController)
+                }
+
                 else -> {}
             }
         }
@@ -114,38 +123,33 @@ fun WishlistScreen(
 }
 
 @Composable
-fun WishlistScreenContent(viewModel: WishlistViewModel, navController: NavHostController) {
-    var productToRemove by remember { mutableStateOf<ProductSample?>(null) }
+fun OrdersScreenContent(viewModel: OrdersViewModel, orders: List<OrderIn>) {
     var showDialog by remember { mutableStateOf(false) }
-    val wishlistItems by viewModel.wishlist.collectAsState()
+    var orderToCancel by remember { mutableStateOf<OrderIn?>(null) }
     LazyColumn(
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(wishlistItems) {
-            Log.i(TAG, "WishlistScreenContent: ${wishlistItems.indexOf(it)}")
-            WishlistItemCard(
-                product = it,
-                onRemoveItem = {
-                    productToRemove = it
+        items(orders) {
+            OrderItemCard(
+                order = it,
+                onCancelClick = {
+                    orderToCancel = it
                     showDialog = true
-                }) {
-                navController.navigate(Screens.Details.route + "/${it.id}",
-                    builder = {
-                        launchSingleTop = true
-                    }
-                )
+                }
+            ) {
+                Log.i(TAG, "OrdersScreenContent: ${it.orderURL}")
             }
         }
     }
 
     if (showDialog) {
         WarningDialog(
-            dialogTitle = stringResource(id = R.string.remove_product),
-            message = stringResource(id = R.string.wishlist_item_removal_warning),
-            dismissButtonText = stringResource(id = R.string.cancel),
-            confirmButtonText = stringResource(id = R.string.remove),
-            onConfirm = { productToRemove?.let { viewModel.removeWishlistItem(it.id) } }) {
+            dialogTitle = stringResource(id = R.string.cancel_order),
+            message = stringResource(id = R.string.order_cancellation_warning),
+            dismissButtonText = stringResource(id = R.string.no),
+            confirmButtonText = stringResource(id = R.string.yes),
+            onConfirm = { orderToCancel?.let { viewModel.cancelOrder(it.id) } }) {
             showDialog = false
         }
     }

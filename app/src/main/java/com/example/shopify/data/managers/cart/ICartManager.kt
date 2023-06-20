@@ -1,6 +1,7 @@
 package com.example.shopify.data.managers.cart
 
 import com.example.shopify.data.models.ProductSample
+import com.example.shopify.data.models.draftorder.LineItem
 import kotlinx.coroutines.flow.SharedFlow
 
 interface ICartManager {
@@ -18,4 +19,5 @@ interface ICartManager {
     suspend fun addCartItem(productID: Long, variantID: Long, quantity: Long = 1)
 
     suspend fun removeCart(productID: Long)
+    fun getLineItems(): List<LineItem>
 }
