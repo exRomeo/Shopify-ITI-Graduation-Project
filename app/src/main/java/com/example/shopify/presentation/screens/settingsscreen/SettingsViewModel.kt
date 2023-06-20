@@ -7,8 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.shopify.R
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.UserScreenUISState
-import com.example.shopify.data.managers.CartManager
-import com.example.shopify.data.managers.WishlistManager
+import com.example.shopify.core.utils.ConnectionUtil
+import com.example.shopify.data.managers.cart.CartManager
+import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.repositories.user.IUserDataRepository
@@ -38,18 +39,25 @@ class SettingsViewModel(
     }
 
     init {
-        if (CurrentUserHelper.isLoggedIn()) {
-            getAddresses()
-            getWishlistItems()
-            getCartItems()
-            _settingsState.value = UserScreenUISState.LoggedIn
-        } else {
-            _settingsState.value = UserScreenUISState.NotLoggedIn
+        if(ConnectionUtil.isConnected()){
+            if (CurrentUserHelper.isLoggedIn()) {
+                getAddresses()
+                getWishlistItems()
+                getCartItems()
+                _settingsState.value = UserScreenUISState.LoggedIn
+            } else {
+                _settingsState.value = UserScreenUISState.NotLoggedIn
+            }
         }
+        _settingsState.value = UserScreenUISState.NotConnected
     }
 
-    var _snackbarMessage: MutableSharedFlow<Int> = MutableSharedFlow()
+    private var _snackbarMessage: MutableSharedFlow<Int> = MutableSharedFlow()
     val snackbarMessage = _snackbarMessage.asSharedFlow()
+
+    private var _userName = MutableStateFlow("")
+    val userName = _userName.asStateFlow()
+
 
     /**
      * Address Functions
@@ -63,8 +71,11 @@ class SettingsViewModel(
     private fun getAddresses() {
         viewModelScope.launch {
             val response = userDataRepository.getAddresses(CurrentUserHelper.customerID)
-            if (response.isSuccessful && response.body() != null)
-                _addresses.value = response.body()!!.addresses
+            if (response.isSuccessful && response.body() != null) {
+                val data = response.body()!!.addresses
+                _addresses.value = data
+                _userName.value = "${data[0].firstName} ${data[0].lastName}"
+            }
         }
     }
 
@@ -155,46 +166,14 @@ class SettingsViewModel(
         }
     }
 
-    fun addWishlistItem(productID: Long, variantID: Long) {
-        viewModelScope.launch {
-            wishlistManager.addWishlistItem(productID = productID, variantID = variantID)
-        }
-    }
-
-    fun removeWishlistItem(productID: Long) {
-        viewModelScope.launch {
-            wishlistManager.removeWishlistItem(productID = productID)
-        }
-    }
-
 
     /**
      * Cart Functions
      */
 
+
     private var _cart: MutableStateFlow<List<ProductSample>> = MutableStateFlow(listOf())
     val cart = _cart.asStateFlow()
-
-
-    fun getCartItemCount(product: ProductSample): Long {
-        return cartManager.getCartItemCount(product)
-    }
-
-    fun increaseCartItemCount(product: ProductSample) {
-        viewModelScope.launch {
-            if (getCartItemCount(product) < product.variants[0].availableAmount!!)
-                cartManager.increaseCartItemCount(product)
-            else
-                _snackbarMessage.emit(R.string.exceeded_max_amount)
-        }
-    }
-
-    fun decreaseCartItemCount(product: ProductSample) {
-        viewModelScope.launch {
-            cartManager.decreaseCartItemCount(product)
-        }
-    }
-
     private fun getCartItems() {
         viewModelScope.launch {
             cartManager.getCartItems()
@@ -204,16 +183,10 @@ class SettingsViewModel(
         }
     }
 
-    fun addCartItem(productID: Long, variantID: Long) {
-        viewModelScope.launch {
-            cartManager.addCartItem(productID = productID, variantID = variantID)
-        }
 
-    }
-
-    fun removeCart(productID: Long) {
+    fun logout() {
         viewModelScope.launch {
-            cartManager.removeCart(productID = productID)
+            CurrentUserHelper.logout()
         }
     }
 }

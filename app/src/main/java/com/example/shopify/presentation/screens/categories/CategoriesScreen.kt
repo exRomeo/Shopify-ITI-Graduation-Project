@@ -28,6 +28,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,21 +47,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.shopify.R
-import com.example.shopify.Utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
+import com.example.shopify.data.managers.cart.CartManager
+import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.models.Image
 import com.example.shopify.data.models.Product
+import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
+import com.example.shopify.presentation.common.composables.CustomSearchbar
 import com.example.shopify.presentation.common.composables.LottieAnimation
+import com.example.shopify.presentation.screens.brands.BrandsViewModel
+import com.example.shopify.presentation.screens.brands.BrandsViewModelFactory
 import com.example.shopify.presentation.screens.brands.ProductsCards
 import com.example.shopify.ui.theme.ShopifyTheme
+import com.example.shopify.utilities.ShopifyApplication
 
 
 val mainCategories = listOf("Men", "Women", "Kid", "Sale")
@@ -139,22 +146,36 @@ val items = listOf(
 fun CategoriesScreen(navController: NavHostController) {
     val repository: IProductRepository =
         (LocalContext.current.applicationContext as ShopifyApplication).repository
+    val wishlistManager: WishlistManager =
+        (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
+    val cartManager: CartManager =
+        (LocalContext.current.applicationContext as ShopifyApplication).cartManager
     val viewModel: CategoriesViewModel = viewModel(
         factory = CategoriesViewModelFactory(
             repository
         )
     )
+    val viewModel2: BrandsViewModel = viewModel(
+        factory = BrandsViewModelFactory(
+            repository, wishlistManager, cartManager
+        )
+    )
 
-    val productsState: UiState by viewModel.productsList.collectAsStateWithLifecycle()
-    var productsList: List<Variant> = listOf()
-    var filteredList: List<Variant> = listOf()
+    val productsState: UiState by viewModel.productsList.collectAsState()
+    var productsList: List<ProductSample> = listOf()
+    var filteredList: List<ProductSample> = listOf()
     var state: String = "fail"
     // var FABIcon = R.drawable.ic_category
     var FABIcon by rememberSaveable {
         mutableStateOf(R.drawable.app)
 
     }
-
+    var searchText by remember { mutableStateOf("") }
+    val isSearching by remember {
+        derivedStateOf {
+            searchText.isNotEmpty()
+        }
+    }
 
     var p = 0f
     var productPrice by rememberSaveable {
@@ -164,7 +185,17 @@ fun CategoriesScreen(navController: NavHostController) {
         mutableStateOf(filteredList)
 
     }
-
+    val searchFilteredList by remember {
+        derivedStateOf {
+            if (searchText.isEmpty()) {
+                filteredState
+            } else {
+                filteredState.filter {
+                    it.title?.startsWith(searchText, ignoreCase = true) ?: false
+                }
+            }
+        }
+    }
     var floatingButtonState by rememberSaveable {
         mutableStateOf(FloatingButtonState.Collapsed)
     }
@@ -240,6 +271,14 @@ fun CategoriesScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            CustomSearchbar(
+                searchText = searchText,
+                onTextChange = { searchText = it },
+                hintText = R.string.search_categories,
+                isSearching = isSearching,
+                onCloseSearch = { searchText = "" }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
             MainFilters(items = mainCategories, onItemSelection = { index ->
 
                 when (index) {
@@ -289,11 +328,14 @@ fun CategoriesScreen(navController: NavHostController) {
                 // viewModel.type = ""
                 ProductsCards(
                     navController = navController,
+                    viewModel = viewModel2,
                     modifier = Modifier.height(600.dp),
-                    products = filteredState,
-                    isFavourite = true,
-                    onFavouriteClicked = {},
-                    onAddToCard = {})
+                    products = searchFilteredList,
+                    isFavourite = false,
+                    onFavouriteClicked = {}
+                ) { product ->
+                    viewModel2.addItemToCart(product.id, product.variants[0].id)
+                }
             } else {
 
                 if (state == "success" && filteredState.isEmpty()) {
@@ -387,7 +429,7 @@ fun MainFilters(
 
 
 @Composable
-fun SliderComponent(onPriceValueChanged: (Float) -> List<Variant>) {
+fun SliderComponent(onPriceValueChanged: (Float) -> List<ProductSample>) {
     var sliderValue by remember {
         mutableStateOf(0f)
     }

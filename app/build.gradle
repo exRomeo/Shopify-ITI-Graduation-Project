@@ -25,6 +25,7 @@ android {
         Properties properties = new Properties()
         properties.load(project.rootProject.file("local.properties").newDataInputStream())
         buildConfigField "String", "ACCESS_TOKEN", "\"${properties.getProperty("ACCESS_TOKEN")}\""
+        buildConfigField "String", "CURRENCY_APIKEY", "\"${properties.getProperty("CURRENCY_APIKEY")}\""
     }
 
     buildTypes {
@@ -135,7 +136,6 @@ dependencies {
     //for pager image
     implementation "com.google.accompanist:accompanist-pager: 0.13.0"
     implementation "com.google.accompanist:accompanist-pager-indicators:0.13.0"
-
 
 }
 

@@ -1,18 +1,22 @@
-package com.example.shopify.presentation.screens.settingsscreen.subscreens.cartscreen
+package com.example.shopify.presentation.screens.cartscreen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ShoppingCartCheckout
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -34,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -41,28 +46,40 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.shopify.R
+import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.navigation.Screens
-import com.example.shopify.data.managers.CartManager
-import com.example.shopify.data.managers.WishlistManager
 import com.example.shopify.data.models.ProductSample
-import com.example.shopify.data.repositories.user.UserDataRepository
-import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
-import com.example.shopify.data.repositories.user.remote.retrofitclient.RetrofitClient
+import com.example.shopify.data.models.currency.Currency
+import com.example.shopify.data.repositories.cart.CartRepository
+import com.example.shopify.data.repositories.cart.remote.CurrencyRemote
+import com.example.shopify.data.repositories.cart.remote.apilayerclient.APILayerClient
 import com.example.shopify.presentation.common.composables.CartItemCard
+import com.example.shopify.presentation.common.composables.LottieAnimation
+import com.example.shopify.presentation.common.composables.SingleSelectionDropdownMenu
 import com.example.shopify.presentation.common.composables.WarningDialog
-import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
-import com.example.shopify.ui.theme.ShopifyTheme
+import com.example.shopify.utilities.ShopifyApplication
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
-    viewModel: SettingsViewModel,
-    settingsNavController: NavHostController,
-    mainNavController: NavHostController
+    navController: NavHostController
 ) {
+    val viewModel: CartViewModel = viewModel(
+        factory =
+        CartViewModelFactory(
+            cartRepository = CartRepository(
+                cartManager =
+                (LocalContext.current.applicationContext as ShopifyApplication).cartManager,
+                currencyRemote = CurrencyRemote(currencyAPI = APILayerClient.currencyAPI)
+            )
+
+        )
+    )
+
     val cartItems by viewModel.cart.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -74,47 +91,39 @@ fun CartScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         floatingActionButton = {
-            if (cartItems.isNotEmpty())
-                ExtendedFloatingActionButton(
-                    modifier = Modifier.fillMaxWidth(0.92f), onClick = {
-                        //TODO payment and checkout
-                    }
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "CHECKOUT",
-                            style = TextStyle(
-                                fontSize = MaterialTheme.typography.titleMedium.fontSize,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                        Icon(
-                            modifier = Modifier.size(30.dp),
-                            imageVector = Icons.Default.ShoppingCartCheckout,
-                            contentDescription = ""
-                        )
-                    }
+            ExtendedFloatingActionButton(
+                modifier = Modifier.fillMaxWidth(0.92f), onClick = {
+                    //TODO payment and checkout
                 }
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = if (cartItems.isNotEmpty())
+                            stringResource(id = R.string.checkout)
+                        else
+                            stringResource(id = R.string.add_items_to_cart),
+                        style = TextStyle(
+                            fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                    Icon(
+                        modifier = Modifier.size(30.dp),
+                        imageVector = Icons.Default.ShoppingCart,
+                        contentDescription = ""
+                    )
+                }
+            }
         },
         topBar = {
             CenterAlignedTopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = { settingsNavController.popBackStack() }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, "")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = {
-                        viewModel.addCartItem(
-                            productID = 8398826111282,
-                            variantID = 45344376652082
-                        )
-                    }) {
-                        Icon(Icons.Default.Add, "")
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -129,22 +138,80 @@ fun CartScreen(
                 }
             )
         },
+        bottomBar = {
+            if (cartItems.isNotEmpty())
+                BottomAppBar(
+                    containerColor = MaterialTheme.colorScheme.onPrimary
+                ) {
+                    val itemsCount by viewModel.totalItems.collectAsState()
+                    val totalPrice by viewModel.totalPrice.collectAsState()
+                    LaunchedEffect(key1 = cartItems) {
+                        viewModel.calculatePrice()
+                    }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp))
+                            .background(MaterialTheme.colorScheme.primaryContainer)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp),
+                            verticalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            Text(text = itemsCount)
+                            Text(text = totalPrice)
+                        }
+                    }
+                }
+        },
     ) {
         Column(Modifier.padding(it)) {
-            CartScreenContent(
-                viewModel = viewModel, cartItems = cartItems, mainNavController = mainNavController
-            )
+            val state by viewModel.screenState.collectAsState()
+            when (state) {
+                is UserScreenUISState.Loading -> {
+                    LottieAnimation(animation = R.raw.loading_animation)
+                }
+
+                is UserScreenUISState.Success<*> -> {
+
+                    CartScreenContent(
+                        viewModel = viewModel, cartItems = cartItems, navController = navController
+                    )
+                }
+
+                else -> {}
+            }
+
         }
     }
 
 }
 
-
 @Composable
 fun CartScreenContent(
-    viewModel: SettingsViewModel,
+    viewModel: CartViewModel,
     cartItems: List<ProductSample>,
-    mainNavController: NavHostController
+    navController: NavHostController
+) {
+    if (cartItems.isNotEmpty())
+        SingleSelectionDropdownMenu(
+            title = "Choose Currency",
+            items = Currency.list
+        ) { currency ->
+            viewModel.getExchangeRate(currency)
+        }
+    CartItems(
+        viewModel = viewModel, cartItems = cartItems, navController = navController
+    )
+}
+
+@Composable
+fun CartItems(
+    viewModel: CartViewModel,
+    cartItems: List<ProductSample>,
+    navController: NavHostController
 ) {
     var showDialog by remember { mutableStateOf(false) }
     var itemToRemove by remember { mutableStateOf<ProductSample?>(null) }
@@ -170,7 +237,7 @@ fun CartScreenContent(
                         showDialog = true
                     }
                 }) {
-                mainNavController.navigate(Screens.Details.route + "/${it.id}", builder = {
+                navController.navigate(Screens.Details.route + "/${it.id}", builder = {
                     launchSingleTop = true
                 })
             }
@@ -191,22 +258,9 @@ fun CartScreenContent(
 @Preview
 @Composable
 fun CartPreview() {
-    ShopifyTheme() {
-        CartScreen(
-            viewModel = SettingsViewModel(
-                UserDataRepository(
-                    UserDataRemoteSource(
-                        customerAddressAPI = RetrofitClient.customerAddressAPI
-                    )
-                ),
-                cartManager = CartManager(RetrofitClient.draftOrderAPI),
-                wishlistManager = WishlistManager(RetrofitClient.draftOrderAPI)
-            ),
-            settingsNavController = rememberNavController(),
-            mainNavController = rememberNavController()
-
-        )
-    }
+    CartScreen(
+        navController = rememberNavController()
+    )
 }
 
 

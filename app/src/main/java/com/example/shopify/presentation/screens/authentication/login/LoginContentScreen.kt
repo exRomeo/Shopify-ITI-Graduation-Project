@@ -51,6 +51,7 @@ fun LoginContentScreen(
     errorResponse: String,
     loginNavController: NavController
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()

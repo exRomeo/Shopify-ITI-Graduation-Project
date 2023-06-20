@@ -1,4 +1,4 @@
-package com.example.shopify.data.managers
+package com.example.shopify.data.managers.cart
 
 import com.example.shopify.BuildConfig
 import com.example.shopify.core.helpers.CurrentUserHelper
@@ -14,12 +14,12 @@ import kotlinx.coroutines.flow.asSharedFlow
 
 class CartManager(
     private val draftOrderAPI: DraftOrderAPI
-) {
+) : ICartManager {
     private var _cart: MutableSharedFlow<List<ProductSample>> = MutableSharedFlow(1)
-    val cart: SharedFlow<List<ProductSample>> = _cart.asSharedFlow()
+    override val cart: SharedFlow<List<ProductSample>> = _cart.asSharedFlow()
     private lateinit var cartDraftOrder: DraftOrderBody
 
-    fun getCartItemCount(product: ProductSample): Long {
+    override fun getCartItemCount(product: ProductSample): Long {
         var index = cart.replayCache.first().indexOf(product)
         while (index > cartDraftOrder.draftOrder.lineItems.size) {
             index--
@@ -27,19 +27,20 @@ class CartManager(
         return cartDraftOrder.draftOrder.lineItems[index].quantity
     }
 
-    suspend fun increaseCartItemCount(product: ProductSample) {
+    override suspend fun increaseCartItemCount(product: ProductSample) {
         if (getCartItemCount(product) < product.variants[0].availableAmount!!) {
-            cartDraftOrder.draftOrder.lineItems[cart.replayCache.first().indexOf(product)].quantity++
+            cartDraftOrder.draftOrder.lineItems[cart.replayCache.first()
+                .indexOf(product)].quantity++
             updateCart()
         }
     }
 
-    suspend fun decreaseCartItemCount(product: ProductSample) {
+    override suspend fun decreaseCartItemCount(product: ProductSample) {
         cartDraftOrder.draftOrder.lineItems[cart.replayCache.first().indexOf(product)].quantity--
         updateCart()
     }
 
-    suspend fun getCartItems() {
+    override suspend fun getCartItems() {
         if (CurrentUserHelper.hasCart()) {
             val response =
                 draftOrderAPI.getDraftOrder(
@@ -68,13 +69,13 @@ class CartManager(
         }
     }
 
-    suspend fun addCartItem(productID: Long, variantID: Long) {
+    override suspend fun addCartItem(productID: Long, variantID: Long, quantity: Long) {
         if (!::cartDraftOrder.isInitialized)
             getCartItems()
         if (CurrentUserHelper.hasCart())
-            addToCartDraftOrder(productID = productID, variantID = variantID)
+            addToCartDraftOrder(productID = productID, variantID = variantID, quantity = quantity)
         else
-            createCart(productID = productID, variantID = variantID)
+            createCart(productID = productID, variantID = variantID, quantity = quantity)
         updateCart()
         getCartItems()
     }
@@ -87,7 +88,7 @@ class CartManager(
         )
     }
 
-    private suspend fun addToCartDraftOrder(productID: Long, variantID: Long) {
+    private suspend fun addToCartDraftOrder(productID: Long, variantID: Long, quantity: Long = 1) {
         if (!::cartDraftOrder.isInitialized)
             getCartItems()
         cartDraftOrder.draftOrder.lineItems.add(
@@ -95,7 +96,7 @@ class CartManager(
                 variantID = variantID,
                 productID = productID,
                 title = "product.title",
-                quantity = 1,
+                quantity = quantity,
                 name = "product.title",
                 price = ""
             )
@@ -103,7 +104,7 @@ class CartManager(
     }
 
 
-    private suspend fun createCart(productID: Long, variantID: Long) {
+    private suspend fun createCart(productID: Long, variantID: Long, quantity: Long = 1) {
         cartDraftOrder = DraftOrderBody(
             DraftOrder(
                 id = 0L,
@@ -113,7 +114,7 @@ class CartManager(
                         variantID = variantID,
                         productID = productID,
                         title = "product.title",
-                        quantity = 1,
+                        quantity = quantity,
                         name = "product.title",
                         price = ""
                     )
@@ -134,7 +135,7 @@ class CartManager(
     }
 
 
-    suspend fun removeCart(productID: Long) {
+    override suspend fun removeCart(productID: Long) {
         if (cartDraftOrder.draftOrder.lineItems.size > 1) {
             val index: Int = cartDraftOrder.draftOrder.lineItems.indexOfFirst {
                 it.productID == productID

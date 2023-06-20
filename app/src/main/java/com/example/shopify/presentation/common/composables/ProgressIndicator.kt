@@ -39,11 +39,36 @@ fun ProgressIndicatorPreview() {
 @Composable
 fun LottieAnimation(
     modifier: Modifier = Modifier.size(150.dp),
+//    progress : progress,
     @RawRes animation: Int
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(modifier = modifier) {
+            val composition by rememberLottieComposition(
+                spec = LottieCompositionSpec.RawRes(
+                    animation
+                )
+            )
+            LottieAnimation(
+                composition = composition,
+                iterations = LottieConstants.IterateForever,
+                modifier = modifier
+                )
+        }
+    }
+}
+
+@Composable
+fun SmallLottieAnimation(
+    modifier: Modifier = Modifier.size(150.dp),
+    @RawRes animation: Int
+) {
+    Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

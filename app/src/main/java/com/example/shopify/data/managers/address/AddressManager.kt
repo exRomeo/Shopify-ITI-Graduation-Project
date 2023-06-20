@@ -1,4 +1,4 @@
-package com.example.shopify.data.managers
+package com.example.shopify.data.managers.address
 
 import com.example.shopify.BuildConfig
 import com.example.shopify.core.helpers.CurrentUserHelper
@@ -8,12 +8,12 @@ import com.example.shopify.data.repositories.user.remote.retrofitclient.Customer
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
-class AddressManager(private val customerAddressAPI: CustomerAddressAPI) {
+class AddressManager(private val customerAddressAPI: CustomerAddressAPI) : IAddressManager {
 
     private var _addresses: MutableSharedFlow<List<Address>> = MutableSharedFlow(1)
-    val addresses = _addresses.asSharedFlow()
+    override val addresses = _addresses.asSharedFlow()
 
-    private suspend fun getAddresses() {
+    override suspend fun getAddresses() {
         val response = customerAddressAPI.getAddresses(
             accessToken = BuildConfig.ACCESS_TOKEN,
             userID = CurrentUserHelper.customerID
@@ -22,7 +22,7 @@ class AddressManager(private val customerAddressAPI: CustomerAddressAPI) {
             _addresses.emit(response.body()!!.addresses)
     }
 
-    suspend fun updateAddress(address: Address) {
+    override suspend fun updateAddress(address: Address) {
         val response = customerAddressAPI.updateAddress(
             accessToken = BuildConfig.ACCESS_TOKEN,
             userID = CurrentUserHelper.customerID,
@@ -32,7 +32,7 @@ class AddressManager(private val customerAddressAPI: CustomerAddressAPI) {
         getAddresses()
     }
 
-    suspend fun addAddress(address: Address) {
+    override suspend fun addAddress(address: Address) {
         val response = customerAddressAPI.addAddress(
             BuildConfig.ACCESS_TOKEN,
             CurrentUserHelper.customerID,
@@ -41,7 +41,7 @@ class AddressManager(private val customerAddressAPI: CustomerAddressAPI) {
         getAddresses()
     }
 
-    suspend fun removeAddress(address: Address) {
+    override suspend fun removeAddress(address: Address) {
         val response = customerAddressAPI.removeAddress(
             BuildConfig.ACCESS_TOKEN,
             CurrentUserHelper.customerID,

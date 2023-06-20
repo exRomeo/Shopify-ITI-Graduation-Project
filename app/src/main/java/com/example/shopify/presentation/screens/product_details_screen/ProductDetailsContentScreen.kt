@@ -1,20 +1,18 @@
 package com.example.shopify.presentation.screens.product_details_screen
 
 
-import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -34,25 +32,21 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
@@ -66,322 +60,348 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
-import com.example.shopify.data.models.Image
-import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.SingleProduct
 import com.example.shopify.presentation.common.composables.WarningDialog
-import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
-import com.example.shopify.ui.theme.backgroundColor
-import com.example.shopify.ui.theme.hintColor
 import com.example.shopify.ui.theme.ibarraBold
 import com.example.shopify.ui.theme.ibarraRegular
 import com.example.shopify.ui.theme.mainColor
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.random.Random
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProductDetailsContentScreen(
     modifier: Modifier = Modifier,
-    isFavorite: Boolean,
     productNavController: NavHostController,
-    onFavoriteChanged: () -> Unit,
-    onAcceptFavChanged: () -> Unit,
-    itemCount: Int,
-    increase: () -> Unit,
-    decrease: () -> Unit,
-    showDialog: Boolean,
+//    hasNetworkConnection: Boolean,
+    isFavorite: Boolean,
+//    showNetworkDialog: Boolean,
     showFavWarningDialog: Boolean,
     showReviewsDialog: Boolean,
     showToast: Boolean,
+    showCartDialog: Boolean,
+    rating: Double,
+    @StringRes dialogMessage: Int,
     @StringRes toastMessage: Int,
-    onShowDialogAction: () -> Unit,
-    onShowFavDialogAction: () -> Unit,
+    itemCount: Int,
+    product: SingleProduct?,
+
+    onFavoriteChanged: () -> Unit,
+    onAcceptFavChanged: () -> Unit,
+    onDismissFavChanged: () -> Unit,
+
+    increaseItemCount: () -> Unit,
+    decreaseItemCount: () -> Unit,
+
     addToCartAction: () -> Unit,
+    onAcceptRemoveCart: () -> Unit,
+    onDismissRemoveCart: () -> Unit,
+
     showReviews: () -> Unit,
     onDismissShowReview: () -> Unit,
-    product: SingleProduct
+
+
 ) {
-    var rating: Double = 2.3
-    LaunchedEffect(Unit) { rating = Random.nextDouble(2.0, 5.0) }
+        Scaffold(containerColor = Color.Transparent, bottomBar =
+        {
+            NavigationBar(
+                containerColor = Color.Transparent,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            {
+                AddToCartBottom(
+                    addToCartAction,
+                    increaseItemCount,
+                    decreaseItemCount,
+                    itemCount
+                )
+            }
+        })
+        { values ->
+            LazyColumn(
+                contentPadding = values,
+                modifier = Modifier.padding(paddingValues = PaddingValues(20.dp))
+            ) {
+                items(1) {
+                    val pagerState = rememberPagerState()
+                    val colorMatrix = remember { ColorMatrix() }
 
-    Log.i("TAG", "ProductDetailsContentScreen: $product")
-    Scaffold { values ->
-        LazyColumn(contentPadding = values) {
-            items(1) {
-                val pagerState = rememberPagerState()
-                val colorMatrix = remember { ColorMatrix() }
-
-                Card(
-                    modifier = modifier
-                        .padding(bottom = 50.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
-                    ),
-                    shape = MaterialTheme.shapes.large,
+                    Card(
+//                    modifier = modifier
+//                        .padding(bottom = 30.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+                        ),
+                        shape = MaterialTheme.shapes.large,
 
 //                    elevation = CardDefaults.cardElevation(
 //                        defaultElevation = 10.dp
 //                    ),
-                )
-                {
-                    HorizontalPager(
-                        pageCount = product.images?.size ?: 0,
-                        state = pagerState
-                    ) { index ->
-                        val pageOffset =
-                            (pagerState.currentPage - index) + pagerState.currentPageOffsetFraction
-                        val imageSize by animateFloatAsState(
-                            targetValue = if (pageOffset != 0.0f) 0.75f else 1f,
-                            animationSpec = tween(durationMillis = 300)
-                        )
-                        LaunchedEffect(key1 = imageSize) {
-                            if (pageOffset != 0.0f) {
-                                colorMatrix.setToSaturation(0f)
-                            } else {
-                                colorMatrix.setToSaturation(1f)
-                            }
-                        }
-                        Box {
-                            AsyncImage(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .fillMaxWidth()
-                                    .fillMaxHeight(0.7f)
-                                    .aspectRatio(3f / 2f)
-                                    .graphicsLayer {
-                                        scaleX = imageSize
-                                        scaleY = imageSize
-                                    },
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(product.images?.get(index)?.src)
-                                    .placeholder(R.drawable.product_image_placeholder)
-                                    .error(R.drawable.product_image_placeholder)
-                                    .build(),
-                                contentDescription = stringResource(id = R.string.product_image),
-                                contentScale = ContentScale.FillBounds,
-                                colorFilter = ColorFilter.colorMatrix(colorMatrix)
+                    )
+                    {
+                        HorizontalPager(
+                            pageCount = product?.images?.size ?: 0,
+                            state = pagerState
+                        ) { index ->
+                            val pageOffset =
+                                (pagerState.currentPage - index) + pagerState.currentPageOffsetFraction
+                            val imageSize by animateFloatAsState(
+                                targetValue = if (pageOffset != 0.0f) 0.75f else 1f,
+                                animationSpec = tween(durationMillis = 300)
                             )
-                            Surface(
-                                shape = CircleShape,
-                                modifier = Modifier
-                                    .align(Alignment.TopStart)
-                                    .padding(8.dp)
-                                    .size(32.dp)
-                            ) {
-                                IconButton(onClick = {
-                                    Log.i("TAG", "back to previous screen")
-//                                    productNavController.popBackStack()
-                                }) {
-                                    Icon(
-                                        Icons.Default.ArrowBack,
-                                        contentDescription = stringResource(
-                                            id = R.string.back
-                                        )
-                                    )
+                            LaunchedEffect(key1 = imageSize) {
+                                if (pageOffset != 0.0f) {
+                                    colorMatrix.setToSaturation(0f)
+                                } else {
+                                    colorMatrix.setToSaturation(1f)
                                 }
                             }
-                            Surface(
-                                shape = CircleShape,
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .padding(8.dp)
-                                    .size(32.dp)
-                            ) {
-                                IconButton(onClick = onFavoriteChanged) {
-                                    if (isFavorite) Icon(
-                                        Icons.Default.Favorite, contentDescription = stringResource(
-                                            id = R.string.is_fav
+                            Box {
+                                AsyncImage(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(16.dp))
+                                        .fillMaxWidth()
+                                        .fillMaxHeight(0.7f)
+                                        .aspectRatio(3f / 2f)
+                                        .graphicsLayer {
+                                            scaleX = imageSize
+                                            scaleY = imageSize
+                                        },
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(product?.images?.get(index)?.src)
+                                        .placeholder(R.drawable.product_image_placeholder)
+                                        .error(R.drawable.product_image_placeholder)
+                                        .build(),
+                                    contentDescription = stringResource(id = R.string.product_image),
+                                    contentScale = ContentScale.FillBounds,
+                                    colorFilter = ColorFilter.colorMatrix(colorMatrix)
+                                )
+                                Surface(
+                                    shape = CircleShape,
+                                    modifier = Modifier
+                                        .align(Alignment.TopStart)
+                                        .padding(8.dp)
+                                        .size(32.dp)
+                                ) {
+                                    IconButton(onClick = {
+                                        Log.i("TAG", "back to previous screen")
+                                        productNavController.popBackStack()
+                                    }) {
+                                        Icon(
+                                            Icons.Default.ArrowBack,
+                                            contentDescription = stringResource(
+                                                id = R.string.back
+                                            )
                                         )
-                                    ) else Icon(
-                                        painter = painterResource(id = R.drawable.is_not_fav),
-                                        contentDescription = stringResource(
-                                            id = R.string.is_not_fav
-                                        )
-                                    )
+                                    }
                                 }
-                            }
-                        }
+                                Surface(
+                                    shape = CircleShape,
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .padding(8.dp)
+                                        .size(32.dp)
+                                ) {
+                                    IconButton(onClick = onFavoriteChanged) {
+                                        if (isFavorite) Icon(
+                                            Icons.Default.Favorite,
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            contentDescription = stringResource(
+                                                id = R.string.is_fav
+                                            )
+                                        ) else Icon(
+                                            painter = painterResource(id = R.drawable.is_not_fav),
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            contentDescription = stringResource(
+                                                id = R.string.is_not_fav
+                                            )
+                                        )
+                                    }
+                                }
 
-                    }
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(1f)
-                                .align(Alignment.CenterHorizontally)
+                            }
+
+                        }
+                        Column(
+                            modifier = Modifier.padding(16.dp)
                         ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(1f)
+                                    .align(Alignment.CenterHorizontally)
+                            ) {
+                                Text(
+                                    modifier = Modifier.weight(1.5f),
+                                    text = product?.title ?: "",
+                                    style = ibarraBold,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Black,
+                                    minLines = 2,
+                                    fontSize = 20.sp
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    modifier = Modifier
+                                        .weight(0.5f)
+                                        .align(Alignment.CenterVertically),
+                                    text = "${product?.variants?.get(0)?.price} $",
+                                    style = ibarraBold,
+                                    fontWeight = FontWeight.Bold,
+                                    color = mainColor,
+                                    fontSize = 20.sp
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                RatingBar(
+                                    modifier = Modifier,
+                                    rating = rating,
+                                    stars = 5,
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Surface(
+                                    onClick = showReviews,
+                                    color = Color.Transparent,
+                                ) {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = stringResource(id = R.string.show_reviews),
+                                        style = ibarraBold,
+                                        fontWeight = FontWeight.Normal,
+                                        color = MaterialTheme.colorScheme.outline,
+                                        fontSize = 16.sp,
+                                    )
+                                }
+
+                            }
+
+
+                            Spacer(modifier = Modifier.height(12.dp))
                             Text(
-                                modifier = Modifier.weight(1.5f),
-                                text = product.title ?: "",
+                                text = stringResource(id = R.string.size),
                                 style = ibarraBold,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Black,
-                                minLines = 2,
                                 fontSize = 20.sp
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
+                            SizeOptions(product?.options ?: listOf())
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Divider(
+                                color = MaterialTheme.colorScheme.surfaceTint,
+                                thickness = 1.dp,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                modifier = Modifier
-                                    .weight(0.5f)
-                                    .align(Alignment.CenterVertically),
-                                text = "${product.variants?.get(0)?.price} $",
+                                text = stringResource(id = R.string.color),
                                 style = ibarraBold,
                                 fontWeight = FontWeight.Bold,
-                                color = mainColor,
+                                color = Color.Black,
                                 fontSize = 20.sp
                             )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            RatingBar(
-                                modifier = Modifier,
-                                rating = rating,
-                                stars = 5,
+                            Spacer(modifier = Modifier.height(8.dp))
+                            ColorOptions(product?.options ?: listOf())
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Divider(
+                                color = MaterialTheme.colorScheme.surfaceTint,
+                                thickness = 1.dp,
+                                modifier = Modifier.fillMaxWidth()
                             )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Surface(
-                                onClick = showReviews,
-                                color = Color.Transparent,
-                            ) {
-                                Text(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    text = stringResource(id = R.string.show_reviews),
-                                    style = ibarraBold,
-                                    fontWeight = FontWeight.Normal,
-                                    color = MaterialTheme.colorScheme.outline,
-                                    fontSize = 16.sp,
-                                )
-                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = stringResource(id = R.string.description),
+                                style = ibarraBold,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black,
+                                fontSize = 20.sp
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = product?.description ?: "",
+                                style = ibarraRegular,
+                                color = Color.Black,
+                                fontSize = 18.sp
+                            )
 
                         }
-
-
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text(
-                            text = stringResource(id = R.string.size),
-                            style = ibarraBold,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black,
-                            fontSize = 20.sp
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        SizeOptions(product.options ?: listOf())
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Divider(
-                            color = MaterialTheme.colorScheme.surfaceTint,
-                            thickness = 1.dp,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = stringResource(id = R.string.color),
-                            style = ibarraBold,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black,
-                            fontSize = 20.sp
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        ColorOptions(product.options ?: listOf())
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Divider(
-                            color = MaterialTheme.colorScheme.surfaceTint,
-                            thickness = 1.dp,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = stringResource(id = R.string.description),
-                            style = ibarraBold,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black,
-                            fontSize = 20.sp
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = product.description ?: "",
-                            style = ibarraRegular,
-                            color = Color.Black,
-                            fontSize = 18.sp
-                        )
-
                     }
                 }
             }
-        }
-        if (showDialog) {
-            WarningDialog(
-                dialogTitle = stringResource(id = R.string.remove_product),
-                message = stringResource(id = R.string.cart_item_removal_warning),
-                dismissButtonText = stringResource(id = R.string.cancel),
-                confirmButtonText = stringResource(id = R.string.remove),
-                onConfirm = onShowDialogAction,
-                onDismiss = decrease
+            if (showCartDialog) {
+                WarningDialog(
+                    dialogTitle = stringResource(id = R.string.remove_product),
+                    message = stringResource(id = R.string.cart_item_removal_warning),
+                    dismissButtonText = stringResource(id = R.string.cancel),
+                    confirmButtonText = stringResource(id = R.string.remove),
+                    onConfirm = onAcceptRemoveCart,
+                    onDismiss = onDismissRemoveCart
 
-            )
-        }
-        if (showFavWarningDialog) {
-            val title: String?
-            val message: String
-            val confirmButtonText: String
-            if (isFavorite) {
-                title = stringResource(id = R.string.remove_product_from_fav)
-                message = stringResource(id = R.string.fav_item_removal_warning)
-                confirmButtonText = stringResource(id = R.string.remove)
-            } else {
-                title = stringResource(id = R.string.add_product_to_fav)
-                message = stringResource(id = R.string.add_item_to_fav_message)
-                confirmButtonText = stringResource(id = R.string.add)
+                )
             }
-            WarningDialog(
-                dialogTitle = title,
-                message = message,
-                dismissButtonText = stringResource(id = R.string.cancel),
-                confirmButtonText = confirmButtonText,
-                onConfirm = onAcceptFavChanged,
-                onDismiss = onShowFavDialogAction
-            )
+            if (showFavWarningDialog) {
+                WarningDialog(
+                    dialogTitle = if (isFavorite) stringResource(id = R.string.remove_product_from_fav) else stringResource(
+                        id = R.string.add_product_to_fav
+                    ),
+                    message = stringResource(id = dialogMessage),
+                    dismissButtonText = stringResource(id = R.string.cancel),
+                    confirmButtonText = if (isFavorite) stringResource(id = R.string.remove) else if (!isFavorite) stringResource(
+                        id = R.string.add
+                    ) else "",
+                    onConfirm = onAcceptFavChanged,
+                    onDismiss = onDismissFavChanged
+                )
 
-        }
-        if (showReviewsDialog)
-            ShowReviews(showReviewsDialog, onDismissShowReview)
+            }
+            if (showReviewsDialog)
+                ShowReviews(showReviewsDialog, onDismissShowReview)
 
-        if (showToast) {
-            Toast.makeText(
-                LocalContext.current,
-                stringResource(id = toastMessage),
-                Toast.LENGTH_LONG
-            ).show()
-        }
+            if (showToast) {
+                Toast.makeText(
+                    LocalContext.current,
+                    stringResource(id = toastMessage),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
     }
-    Box() {
+}
+
+@Composable
+fun AddToCartBottom(
+    addToCartAction: () -> Unit,
+    increase: () -> Unit,
+    decrease: () -> Unit,
+    itemCount: Int
+) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .padding(start = 30.dp, end = 30.dp)
+    ) {
         Row(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth()
+                .padding(bottom = 10.dp)
+                .background(Color.Transparent)
+//                .align(Alignment.BottomCenter),
+//            verticalAlignment = Alignment.BottomCenter
         ) {
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp))
-                    .background(Color.LightGray)
+                    .background(Color.Gray)
                     .width(200.dp)
-                    .combinedClickable {}
                     .clickable {
                         addToCartAction()
                         Log.i("TAG", "view model to cart: ")
@@ -411,7 +431,7 @@ fun ProductDetailsContentScreen(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))
-                    .background(MaterialTheme.colorScheme.onPrimary)
+                    .background(Color.White)
                     .width(125.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -447,5 +467,4 @@ fun ProductDetailsContentScreen(
             }
         }
     }
-
 }

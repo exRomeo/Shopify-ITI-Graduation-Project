@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.List
-import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -24,15 +24,18 @@ import com.example.shopify.core.navigation.settingsnavigation.SettingsNavigation
 import com.example.shopify.presentation.screens.authentication.login.LoginScreen
 import com.example.shopify.presentation.screens.authentication.registeration.SignupScreen
 import com.example.shopify.presentation.screens.brands.BrandsScreen
+import com.example.shopify.presentation.screens.cartscreen.CartScreen
 import com.example.shopify.presentation.screens.categories.CategoriesScreen
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
+import com.example.shopify.presentation.screens.onBoarding.OnBoardingScreen
 import com.example.shopify.presentation.screens.product_details_screen.ProductDetailsScreen
+import com.example.shopify.presentation.screens.wishlist.WishlistScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Screens.Login.route
+        startDestination = Screens.OnBoarding.route
     ) {
 
         composable(route = Screens.Login.route) {
@@ -53,6 +56,15 @@ fun NavGraph(navController: NavHostController) {
             CategoriesScreen(navController)
         }
 
+        composable(route = Screens.Cart.route) {
+            CartScreen(navController)
+        }
+
+        composable(route = Screens.Wishlist.route) {
+            WishlistScreen(navController)
+        }
+
+
         composable(route = Screens.Settings.route) {
             SettingsNavigation(bottomNavController = navController)
         }
@@ -63,7 +75,7 @@ fun NavGraph(navController: NavHostController) {
                 type = NavType.LongType
             })
         ) {
-            BrandsScreen(navController, it.arguments?.getLong("collectionId"))
+            it.arguments?.getLong("collectionId")?.let { it1 -> BrandsScreen(navController, it1) }
         }
 
         composable(
@@ -73,8 +85,13 @@ fun NavGraph(navController: NavHostController) {
             })
         ) {
             it.arguments?.getLong("productId")
-                ?.let { it1 -> ProductDetailsScreen(navController, it1) }
+                ?.let { productID -> ProductDetailsScreen(navController, productID) }
         }
+
+        composable(route = Screens.OnBoarding.route) {
+            OnBoardingScreen(navController)
+        }
+
     }
 }
 
@@ -92,13 +109,13 @@ val bottomNavItems = listOf(
     ),
     BottomNavItem(
         name = "Categories",
-        route = "categories",
+        route = Screens.Categories.route,
         icon = Icons.Rounded.List,
     ),
     BottomNavItem(
-        name = "Settings",
+        name = "Profile",
         route = Screens.Settings.route,
-        icon = Icons.Rounded.Settings,
+        icon = Icons.Rounded.Person,
     ),
 )
 

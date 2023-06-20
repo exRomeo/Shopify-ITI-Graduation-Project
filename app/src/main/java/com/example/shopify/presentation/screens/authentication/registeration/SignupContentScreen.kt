@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.shopify.R
+import com.example.shopify.core.navigation.Screens
 import com.example.shopify.core.utils.CredentialsValidator
 import com.example.shopify.data.models.Address
 import com.example.shopify.data.models.Customer
@@ -81,6 +82,11 @@ fun SignupContentScreen(
         OutlinedButton(
             onClick = {
                 signupNavController.popBackStack()
+                signupNavController.navigate(route = Screens.Login.route , builder = {
+                    popUpTo(route = Screens.Login.route){
+                        inclusive = true
+                    }
+                })
             },
             shape = CircleShape,
             border = BorderStroke(1.dp, Color.White),
