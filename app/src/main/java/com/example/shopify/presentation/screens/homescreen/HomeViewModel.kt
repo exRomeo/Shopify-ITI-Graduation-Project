@@ -31,12 +31,12 @@ class HomeViewModel(
     private var _favProduct: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val favProduct: StateFlow<Boolean> = _favProduct
 
-//    init {
-//        getBrands()
-//        getRandomProducts()
-//
-//
-//    }
+    init {
+        getBrands()
+        getRandomProducts()
+
+
+    }
 
      fun getBrands() {
         Log.i("nada","home")

@@ -125,11 +125,11 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
         }
     }
     //GET USER DATA
-     LaunchedEffect(brandsState) {
-        viewModel.getBrands()
-        viewModel.getRandomProducts()
-
-     }
+//     LaunchedEffect(brandsState) {
+//        viewModel.getBrands()
+//        viewModel.getRandomProducts()
+//
+//     }
 //    var isFavourite by remember {
 //        mutableStateOf(false)
 //    }
