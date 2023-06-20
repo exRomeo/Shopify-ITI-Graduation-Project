@@ -357,7 +357,7 @@ fun OrderItemCard(
                         Text(
                             text = "${it.title} x ${it.quantity} = ${it.getTotalPrice()}",
                             style = TextStyle(fontSize = MaterialTheme.typography.bodyLarge.fontSize),
-                            maxLines = 1,
+                            maxLines = 3,
                             overflow = TextOverflow.Ellipsis
                         )
 

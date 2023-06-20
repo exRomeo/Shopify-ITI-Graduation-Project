@@ -1,5 +1,6 @@
 package com.example.shopify.presentation.screens.checkout
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -115,6 +116,13 @@ class CheckoutViewModel(private val checkoutRepository: ICheckoutRepository) : V
 
     fun chooseAddress(address: Address) {
         chosenAddress = address
+    }
+
+
+    fun showMessage(@StringRes message: Int) {
+        viewModelScope.launch {
+            _snackbarMessage.emit(message)
+        }
     }
 }
 

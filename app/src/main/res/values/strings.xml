@@ -124,5 +124,11 @@
     <string name="network_connection">Network Connection !!</string>
     <string name="tryAgain">Try Again !!</string>
     <string name="confirm">Confirm</string>
-
+    <string name="no_cod">Cash on Delivery not available for payments over EGP 1000</string>
+    <string name="cod">COD</string>
+    <string name="credit">Credit</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="discount_code">Discount Code</string>
+    <string name="choose_address">Choose Address (current default)</string>
+    <string name="choose_currency">Choose Currency</string>
 </resources>

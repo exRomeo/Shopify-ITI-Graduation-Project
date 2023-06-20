@@ -35,6 +35,7 @@ class SettingsViewModel(
                 getAddresses()
                 getWishlistItems()
                 getCartItems()
+                getOrders()
                 _settingsState.value = UserScreenUISState.LoggedIn
             } else {
                 _settingsState.value = UserScreenUISState.NotLoggedIn
@@ -97,6 +98,7 @@ class SettingsViewModel(
                     _orders.value = it.size
                 else
                     _orders = MutableStateFlow(0)
+
             }
         }
     }

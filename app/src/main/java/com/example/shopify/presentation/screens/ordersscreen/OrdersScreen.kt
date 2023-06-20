@@ -1,6 +1,7 @@
 package com.example.shopify.presentation.screens.ordersscreen
 
-import android.util.Log
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -44,7 +45,6 @@ import com.example.shopify.presentation.common.composables.NoData
 import com.example.shopify.presentation.common.composables.NotLoggedInScreen
 import com.example.shopify.presentation.common.composables.OrderItemCard
 import com.example.shopify.presentation.common.composables.WarningDialog
-import com.example.shopify.presentation.screens.settingsscreen.TAG
 import com.example.shopify.utilities.ShopifyApplication
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -92,23 +92,22 @@ fun OrdersScreen(navController: NavHostController) {
             val state by viewModel.state.collectAsState()
             when (state) {
                 is UserScreenUISState.Loading -> {
-                    Log.i(TAG, "OrdersScreen: LOADING")
                     LottieAnimation(animation = R.raw.loading_animation)
                 }
 
                 is UserScreenUISState.Success<*> -> {
                     val orders = (state as UserScreenUISState.Success<*>).data as List<OrderIn>
-                    Log.i(TAG, "OrdersScreen: SUCESS")
-                    OrdersScreenContent(viewModel = viewModel, orders = orders)
+                    OrdersScreenContent(
+                        viewModel = viewModel,
+                        orders = orders
+                    )
                 }
 
                 is UserScreenUISState.NoData -> {
-                    Log.i(TAG, "OrdersScreen: NO DADA")
                     NoData(message = "Make Some Orders!")
                 }
 
                 is UserScreenUISState.NotConnected -> {
-                    Log.i(TAG, "OrdersScreen: NOD GONEECdED")
                     NoConnectionScreen()
                 }
 
@@ -123,13 +122,18 @@ fun OrdersScreen(navController: NavHostController) {
 }
 
 @Composable
-fun OrdersScreenContent(viewModel: OrdersViewModel, orders: List<OrderIn>) {
+fun OrdersScreenContent(
+    viewModel: OrdersViewModel,
+    orders: List<OrderIn>
+) {
+    val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
     var orderToCancel by remember { mutableStateOf<OrderIn?>(null) }
     LazyColumn(
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+
         items(orders) {
             OrderItemCard(
                 order = it,
@@ -138,7 +142,8 @@ fun OrdersScreenContent(viewModel: OrdersViewModel, orders: List<OrderIn>) {
                     showDialog = true
                 }
             ) {
-                Log.i(TAG, "OrdersScreenContent: ${it.orderURL}")
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it.orderURL))
+                context.startActivity(intent)
             }
         }
     }
