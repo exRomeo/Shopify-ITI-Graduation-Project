@@ -1,5 +1,6 @@
-package com.example.shopify.presentation.screens.settingsscreen.subscreens.ordersscreen
+package com.example.shopify.presentation.screens.ordersscreen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,23 +32,39 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.shopify.R
+import com.example.shopify.core.helpers.UserScreenUISState
+import com.example.shopify.data.models.order.OrderIn
+import com.example.shopify.data.repositories.orders.OrdersRepository
+import com.example.shopify.presentation.common.composables.LottieAnimation
+import com.example.shopify.presentation.common.composables.NoConnectionScreen
+import com.example.shopify.presentation.common.composables.NoData
+import com.example.shopify.presentation.common.composables.NotLoggedInScreen
 import com.example.shopify.presentation.common.composables.OrderItemCard
 import com.example.shopify.presentation.common.composables.WarningDialog
-import com.example.shopify.presentation.screens.settingsscreen.SettingsViewModel
+import com.example.shopify.presentation.screens.settingsscreen.TAG
+import com.example.shopify.utilities.ShopifyApplication
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrdersScreen(navController: NavHostController) {
-
+    val viewModel: OrdersViewModel = viewModel(
+        factory = OrdersViewModelFactory(
+            ordersRepository = OrdersRepository(
+                ordersManager =
+                (LocalContext.current.applicationContext as ShopifyApplication).ordersManager
+            )
+        )
+    )
 
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     LaunchedEffect(Unit) {
-//        viewModel.snackbarMessage.collect {
-//            snackbarHostState.showSnackbar(context.getString(it))
-//        }
+        viewModel.snackbarMessage.collect {
+            snackbarHostState.showSnackbar(context.getString(it))
+        }
     }
     Scaffold(snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
@@ -72,25 +89,52 @@ fun OrdersScreen(navController: NavHostController) {
     ) {
 
         Column(Modifier.padding(it)) {
-//            OrdersScreenContent(viewModel = )
+            val state by viewModel.state.collectAsState()
+            when (state) {
+                is UserScreenUISState.Loading -> {
+                    LottieAnimation(animation = R.raw.loading_animation)
+                }
+
+                is UserScreenUISState.Success<*> -> {
+                    val orders = (state as UserScreenUISState.Success<*>).data as List<OrderIn>
+                    OrdersScreenContent(viewModel = viewModel, orders = orders)
+                }
+
+                is UserScreenUISState.NoData -> {
+                    NoData(message = "Make Some Orders!")
+                }
+
+                is UserScreenUISState.NotConnected -> {
+                    NoConnectionScreen()
+                }
+
+                is UserScreenUISState.NotLoggedIn -> {
+                    NotLoggedInScreen(navController = navController)
+                }
+
+                else -> {}
+            }
         }
     }
 }
 
 @Composable
-fun OrdersScreenContent(viewModel: SettingsViewModel) {
+fun OrdersScreenContent(viewModel: OrdersViewModel, orders: List<OrderIn>) {
     var showDialog by remember { mutableStateOf(false) }
-    val orders by viewModel.orders.collectAsState()
+    var orderToCancel by remember { mutableStateOf<OrderIn?>(null) }
     LazyColumn(
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(orders) {
             OrderItemCard(
-                product = it,
-                onCancelClick = { showDialog = true }
+                order = it,
+                onCancelClick = {
+                    orderToCancel = it
+                    showDialog = true
+                }
             ) {
-                /*TODO: Navigation to item detail Page*/
+                Log.i(TAG, "OrdersScreenContent: ${it.orderURL}")
             }
         }
     }
@@ -101,7 +145,7 @@ fun OrdersScreenContent(viewModel: SettingsViewModel) {
             message = stringResource(id = R.string.order_cancellation_warning),
             dismissButtonText = stringResource(id = R.string.no),
             confirmButtonText = stringResource(id = R.string.yes),
-            onConfirm = { /*TODO: Remove order logic here*/ }) {
+            onConfirm = { orderToCancel?.let { viewModel.cancelOrder(it.id) } }) {
             showDialog = false
         }
     }

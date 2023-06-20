@@ -29,7 +29,7 @@ import com.example.shopify.presentation.screens.categories.CategoriesScreen
 import com.example.shopify.presentation.screens.homescreen.HomeScreen
 import com.example.shopify.presentation.screens.product_details_screen.ProductDetailsScreen
 import com.example.shopify.presentation.screens.settingsscreen.SettingsScreen
-import com.example.shopify.presentation.screens.settingsscreen.subscreens.ordersscreen.OrdersScreen
+import com.example.shopify.presentation.screens.ordersscreen.OrdersScreen
 import com.example.shopify.presentation.screens.wishlist.WishlistScreen
 
 @Composable

@@ -148,7 +148,7 @@ fun SettingsScreenContent(
             val wishlist by viewModel.wishlist.collectAsState()
             SettingItemCard(
                 mainText = stringResource(id = R.string.wishlist),
-                subText = stringResource(id = R.string.you_have) + " ${wishlist.size} " + stringResource(
+                subText = stringResource(id = R.string.you_have) + " $wishlist " + stringResource(
                     id = R.string.wishlist_items
                 ),
                 iconButton = {
@@ -162,7 +162,7 @@ fun SettingsScreenContent(
             val orders by viewModel.orders.collectAsState()
             SettingItemCard(
                 mainText = stringResource(id = R.string.track_orders),
-                subText = stringResource(id = R.string.you_have) + " ${orders.size} " + stringResource(
+                subText = stringResource(id = R.string.you_have) + " $orders " + stringResource(
                     id = R.string.orders
                 ),
                 iconButton = {
@@ -176,7 +176,7 @@ fun SettingsScreenContent(
             val cart by viewModel.cart.collectAsState()
             SettingItemCard(
                 mainText = stringResource(id = R.string.cart),
-                subText = stringResource(id = R.string.you_have) + " ${cart.size} " + stringResource(
+                subText = stringResource(id = R.string.you_have) + " $cart " + stringResource(
                     id = R.string.cart_items
                 ),
                 iconButton = {

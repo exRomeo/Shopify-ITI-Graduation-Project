@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.shopify.R
 import com.example.shopify.core.helpers.UserScreenUISState
+import com.example.shopify.core.utils.ConnectionUtil
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.repositories.cart.ICartRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -55,15 +56,21 @@ class CartViewModel(private val cartRepository: ICartRepository) : ViewModel() {
     }
 
     private fun getCartItems() {
-        viewModelScope.launch {
-            cartRepository.getCartItems()
-            cartRepository.cart.collect {
-                _cart.value = it
-                _screenState.value = UserScreenUISState.Success(it)
-                if (it.isNotEmpty())
-                    calculatePrice()
+        if (ConnectionUtil.isConnected()) {
+            viewModelScope.launch {
+                cartRepository.getCartItems()
+                cartRepository.cart.collect {
+                    if (it.isNotEmpty()) {
+                        _cart.value = it
+                        _screenState.value = UserScreenUISState.Success(it)
+                        calculatePrice()
+                    } else {
+                        _screenState.value = UserScreenUISState.NoData
+                    }
+                }
             }
-        }
+        } else
+            _screenState.value = UserScreenUISState.NotConnected
     }
 
     fun addCartItem(productID: Long, variantID: Long) {

@@ -5,6 +5,7 @@ import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.RetrofitHelper
 import com.example.shopify.core.utils.ConnectionUtil
 import com.example.shopify.core.utils.SharedPreference
+import com.example.shopify.data.managers.orders.OrdersManager
 import com.example.shopify.data.managers.address.AddressManager
 import com.example.shopify.data.managers.cart.CartManager
 import com.example.shopify.data.managers.wishlist.WishlistManager
@@ -19,8 +20,6 @@ import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.data.repositories.product.ProductRepository
 import com.example.shopify.data.repositories.user.IUserDataRepository
 import com.example.shopify.data.repositories.user.UserDataRepository
-import com.example.shopify.data.repositories.user.remote.IUserDataRemoteSource
-import com.example.shopify.data.repositories.user.remote.UserDataRemoteSource
 import com.example.shopify.data.repositories.user.remote.retrofitclient.ShopifyAPIClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -67,9 +66,6 @@ class ShopifyApplication : Application() {
             GlobalScope.launch(Dispatchers.IO) {
                 currentCustomer = getCurrentCustomer(authRepository)
                 CurrentUserHelper.initialize(authRepository)
-                cartManager.getCartItems()
-                wishlistManager.getWishlistItems()
-                addressManager.getAddresses()
             }
         } else {  //IsNot LoggedIn
             currentCustomer = null
@@ -88,17 +84,16 @@ class ShopifyApplication : Application() {
         CartManager(ShopifyAPIClient.draftOrderAPI)
     }
 
-    private val userDataRemoteSource: IUserDataRemoteSource by lazy {
-        UserDataRemoteSource(
-            ShopifyAPIClient.customerAddressAPI
-        )
+    val ordersManager: OrdersManager by lazy {
+        OrdersManager(ShopifyAPIClient.ordersAPI)
     }
 
     val userDataRepository: IUserDataRepository by lazy {
         UserDataRepository(
             addressManager,
             wishlistManager,
-            cartManager
+            cartManager,
+            ordersManager
         )
     }
 }

@@ -60,6 +60,7 @@ import com.example.shopify.data.repositories.cart.remote.apilayerclient.APILayer
 import com.example.shopify.presentation.common.composables.CartItemCard
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.NoConnectionScreen
+import com.example.shopify.presentation.common.composables.NoData
 import com.example.shopify.presentation.common.composables.SingleSelectionDropdownMenu
 import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.utilities.ShopifyApplication
@@ -183,6 +184,10 @@ fun CartScreen(
 
                 is UserScreenUISState.NotConnected -> {
                     NoConnectionScreen()
+                }
+
+                is UserScreenUISState.NoData -> {
+                    NoData(message = "Add Some Products!")
                 }
 
                 else -> {}

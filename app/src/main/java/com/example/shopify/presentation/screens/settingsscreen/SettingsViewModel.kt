@@ -6,13 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.utils.ConnectionUtil
-import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.repositories.user.IUserDataRepository
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -46,8 +43,6 @@ class SettingsViewModel(
         _settingsState.value = UserScreenUISState.NotConnected
     }
 
-    private var _snackbarMessage: MutableSharedFlow<Int> = MutableSharedFlow()
-    val snackbarMessage = _snackbarMessage.asSharedFlow()
 
     private var _userName = MutableStateFlow("")
     val userName = _userName.asStateFlow()
@@ -89,38 +84,28 @@ class SettingsViewModel(
      * Orders Functions
      */
 
-    private var _orders: MutableStateFlow<List<ProductSample>> = MutableStateFlow(
-        listOf()
+    private var _orders: MutableStateFlow<Int> = MutableStateFlow(
+        0
     )
     val orders = _orders.asStateFlow()
 
-    fun updateOrderItem(product: ProductSample) {
-        val index = _orders.value.indexOfFirst { it.id == product.id }
-        if (index >= 0) {
-            val arr = _orders.value.toMutableList()
-            arr[index] = product
-            _orders.value = arr
+    private fun getOrders() {
+        viewModelScope.launch {
+            userDataRepository.getOrders()
+            userDataRepository.orders.collect {
+                if (_orders != null)
+                    _orders.value = it.size
+                else
+                    _orders = MutableStateFlow(0)
+            }
         }
-    }
-
-    fun addOrderItem(product: ProductSample) {
-        product.id = _orders.value.size.toLong()
-        val arr = _orders.value.toMutableList()
-        arr.add(product)
-        _orders.value = arr
-    }
-
-    fun removeOrderItem(product: ProductSample) {
-        val arr = _orders.value.toMutableList()
-        arr.remove(product)
-        _orders.value = arr
     }
 
     /**
      * Wishlist Functions
      */
 
-    private var _wishlist: MutableStateFlow<List<ProductSample>> = MutableStateFlow(listOf())
+    private var _wishlist: MutableStateFlow<Int> = MutableStateFlow(0)
     val wishlist = _wishlist.asStateFlow()
 
     private fun getWishlistItems() {
@@ -128,9 +113,9 @@ class SettingsViewModel(
             userDataRepository.getWishlistItems()
             userDataRepository.wishlist.collect {
                 if (_wishlist != null)
-                    _wishlist.value = it
+                    _wishlist.value = it.size
                 else
-                    _wishlist = MutableStateFlow(listOf())
+                    _wishlist = MutableStateFlow(0)
             }
         }
     }
@@ -141,16 +126,16 @@ class SettingsViewModel(
      */
 
 
-    private var _cart: MutableStateFlow<List<ProductSample>> = MutableStateFlow(listOf())
+    private var _cart: MutableStateFlow<Int> = MutableStateFlow(0)
     val cart = _cart.asStateFlow()
     private fun getCartItems() {
         viewModelScope.launch {
             userDataRepository.getCartItems()
             userDataRepository.cart.collect {
                 if (_cart != null)
-                    _cart.value = it
+                    _cart.value = it.size
                 else
-                    _cart = MutableStateFlow(listOf())
+                    _cart = MutableStateFlow(0)
             }
         }
     }

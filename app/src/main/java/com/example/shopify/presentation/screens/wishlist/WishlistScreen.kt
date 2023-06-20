@@ -40,6 +40,8 @@ import com.example.shopify.core.navigation.Screens
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.repositories.wishlist.WishlistRepository
 import com.example.shopify.presentation.common.composables.LottieAnimation
+import com.example.shopify.presentation.common.composables.NoConnectionScreen
+import com.example.shopify.presentation.common.composables.NoData
 import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.presentation.common.composables.WishlistItemCard
 import com.example.shopify.presentation.screens.settingsscreen.TAG
@@ -94,10 +96,17 @@ fun WishlistScreen(
                     LottieAnimation(animation = R.raw.loading_animation)
                 }
 
+                is UserScreenUISState.NotConnected -> {
+                    NoConnectionScreen()
+                }
+
                 is UserScreenUISState.Success<*> -> {
                     WishlistScreenContent(viewModel = viewModel, navController = navController)
                 }
 
+                is UserScreenUISState.NoData -> {
+                    NoData(message = "Add Items To Wishlist")
+                }
                 else -> {}
             }
         }
