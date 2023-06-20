@@ -20,4 +20,6 @@ interface ICartManager {
 
     suspend fun removeCart(productID: Long)
     fun getLineItems(): List<LineItem>
+
+    suspend fun clearCart()
 }

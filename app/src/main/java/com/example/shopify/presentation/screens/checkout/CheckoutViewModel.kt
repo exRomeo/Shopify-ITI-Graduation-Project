@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.shopify.R
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.utils.ConnectionUtil
 import com.example.shopify.data.models.address.Address
@@ -12,10 +13,12 @@ import com.example.shopify.data.models.order.Customer
 import com.example.shopify.data.models.order.OrderBody
 import com.example.shopify.data.models.order.OrderOut
 import com.example.shopify.data.repositories.checkout.ICheckoutRepository
+import com.stripe.android.paymentsheet.PaymentSheetResult
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -99,7 +102,9 @@ class CheckoutViewModel(private val checkoutRepository: ICheckoutRepository) : V
                         customer = Customer(id = chosenAddress.customerID)
                     )
                 )
+
             )
+            checkoutRepository.clearCart()
         }
     }
 
@@ -122,6 +127,42 @@ class CheckoutViewModel(private val checkoutRepository: ICheckoutRepository) : V
     fun showMessage(@StringRes message: Int) {
         viewModelScope.launch {
             _snackbarMessage.emit(message)
+        }
+    }
+
+    /**
+     * Payment
+     * */
+    private val _clientSecret = MutableStateFlow<String?>(null)
+    val clientSecret = _clientSecret.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            checkoutRepository.createCustomer()
+        }
+    }
+
+    fun makePayment() {
+        viewModelScope.launch {
+            val paymentIntent = checkoutRepository.createPaymentIntent(totalPrice.value)
+            _clientSecret.update { paymentIntent.clientSecret }
+        }
+    }
+
+    fun onPaymentLaunched() {
+        _clientSecret.update { null }
+    }
+
+    fun handlePaymentResult(result: PaymentSheetResult) {
+        when (result) {
+            is PaymentSheetResult.Canceled -> showMessage(R.string.payment_canceled)
+
+            is PaymentSheetResult.Completed -> {
+                showMessage(R.string.payment_succeeded)
+                confirmOrder()
+            }
+
+            is PaymentSheetResult.Failed -> showMessage(R.string.payment_failed)
         }
     }
 }

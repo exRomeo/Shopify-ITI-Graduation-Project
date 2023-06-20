@@ -131,4 +131,7 @@
     <string name="discount_code">Discount Code</string>
     <string name="choose_address">Choose Address (current default)</string>
     <string name="choose_currency">Choose Currency</string>
+    <string name="payment_canceled">Payment Canceled</string>
+    <string name="payment_succeeded">Your Order On Its Way!</string>
+    <string name="payment_failed">Credit Card Declined</string>
 </resources>

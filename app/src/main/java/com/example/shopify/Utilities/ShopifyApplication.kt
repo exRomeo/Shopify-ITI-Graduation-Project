@@ -1,13 +1,14 @@
 package com.example.shopify.utilities
 
 import android.app.Application
+import com.example.shopify.BuildConfig
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.RetrofitHelper
 import com.example.shopify.core.utils.ConnectionUtil
 import com.example.shopify.core.utils.SharedPreference
-import com.example.shopify.data.managers.orders.OrdersManager
 import com.example.shopify.data.managers.address.AddressManager
 import com.example.shopify.data.managers.cart.CartManager
+import com.example.shopify.data.managers.orders.OrdersManager
 import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.models.CollectCurrentCustomerData
 import com.example.shopify.data.models.GetCurrentCustomer.getCurrentCustomer
@@ -25,8 +26,12 @@ import com.example.shopify.data.repositories.product.ProductRepository
 import com.example.shopify.data.repositories.user.IUserDataRepository
 import com.example.shopify.data.repositories.user.UserDataRepository
 import com.example.shopify.data.repositories.user.remote.retrofitclient.ShopifyAPIClient
+import com.example.shopify.data.repositories.checkout.remote.PaymentClient
+import com.example.shopify.data.repositories.checkout.local.PaymentDao
+import com.example.shopify.data.repositories.checkout.remote.StripeAPIService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.stripe.android.PaymentConfiguration
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -44,8 +49,8 @@ class ShopifyApplication : Application() {
         )
     }
 
-     val sharedPreference by lazy{
-        SharedPreference.customPreference(applicationContext,CUSTOMER_PREF_NAME)
+    val sharedPreference by lazy {
+        SharedPreference.customPreference(applicationContext, CUSTOMER_PREF_NAME)
     }
     private val authenticationClient: IAuthenticationClient by lazy {
         AuthenticationClient(
@@ -66,6 +71,8 @@ class ShopifyApplication : Application() {
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
+        PaymentConfiguration.init(applicationContext, BuildConfig.STRIP_PUB_KEY)
+
         ConnectionUtil.initialize(applicationContext)
         if (authRepository.checkedLoggedIn()) { //Is loggedIn
 
@@ -82,9 +89,9 @@ class ShopifyApplication : Application() {
         AddressManager(ShopifyAPIClient.customerAddressAPI)
     }
 
-     val wishlistManager: WishlistManager by lazy {
+    val wishlistManager: WishlistManager by lazy {
         WishlistManager(ShopifyAPIClient.draftOrderAPI)
-     }
+    }
 
     val cartManager: CartManager by lazy {
         CartManager(ShopifyAPIClient.draftOrderAPI)
@@ -103,12 +110,18 @@ class ShopifyApplication : Application() {
         )
     }
 
+    private val stripeAPIService: StripeAPIService by lazy {
+        PaymentClient.stripeAPIService
+    }
+
     val checkoutRepository: ICheckoutRepository by lazy {
         CheckoutRepository(
             cartManager = cartManager,
             ordersManager = ordersManager,
             addressManager = addressManager,
-            currencyRemote = CurrencyRemote(currencyAPI = APILayerClient.currencyAPI)
+            currencyRemote = CurrencyRemote(currencyAPI = APILayerClient.currencyAPI),
+            stripeApiService = stripeAPIService,
+            paymentDao = PaymentDao()
         )
     }
 }

@@ -1,5 +1,6 @@
 package com.example.shopify.presentation.screens.checkout
 
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,6 +49,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.shopify.R
@@ -60,10 +62,12 @@ import com.example.shopify.presentation.common.composables.NoData
 import com.example.shopify.presentation.common.composables.SelectionDropdownMenu
 import com.example.shopify.presentation.common.composables.SingleSelectionDropdownMenu
 import com.example.shopify.utilities.ShopifyApplication
+import com.stripe.android.paymentsheet.PaymentSheetContract
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckoutScreen(navController: NavHostController) {
+
     val viewModel: CheckoutViewModel = viewModel(
         factory = CheckoutViewModelFactory(
             checkoutRepository =
@@ -84,7 +88,11 @@ fun CheckoutScreen(navController: NavHostController) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 ExtendedFloatingActionButton(
                     modifier = Modifier.fillMaxWidth(0.92f), onClick = {
-                        viewModel.confirmOrder()
+//PaymentConfiguration.init(context,BuildConfig.STRIP_PUB_KEY);
+//                        val paymentSheet = PaymentSheet(this@Row, )
+//                        viewModel.confirmOrder()
+//                        navController.navigate(Screens.Payment.route)
+                        viewModel.makePayment()
                     }
                 ) {
                     Row(
@@ -177,6 +185,19 @@ fun CheckoutScreenContent(viewModel: CheckoutViewModel, cartItems: List<LineItem
     Spacer(modifier = Modifier.padding(top = 8.dp))
     CheckoutItems(cartItems = cartItems, viewModel = viewModel)
 
+
+    val stripeLauncher = rememberLauncherForActivityResult(
+        contract = PaymentSheetContract(),
+        onResult = {
+            viewModel.handlePaymentResult(it)
+        }
+    )
+    val clientSecret by viewModel.clientSecret.collectAsStateWithLifecycle()
+    clientSecret?.let {
+        val args = PaymentSheetContract.Args.createPaymentIntentArgs(it)
+        stripeLauncher.launch(args)
+        viewModel.onPaymentLaunched()
+    }
 }
 
 @Composable
@@ -283,4 +304,3 @@ fun CheckoutItems(cartItems: List<LineItem>, viewModel: CheckoutViewModel) {
         }
     }
 }
-
