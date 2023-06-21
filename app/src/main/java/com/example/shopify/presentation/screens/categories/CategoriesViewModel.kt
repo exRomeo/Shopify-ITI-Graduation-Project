@@ -26,26 +26,18 @@ class CategoriesViewModel(val repository: IProductRepository): ViewModel() {
 
      fun getProductsBySubcategory() {
         viewModelScope.launch(Dispatchers.IO) {
-            val response = repository.getProductsBySubcategory(id, type)
-            withContext(Dispatchers.Main) {
-                response
-                    .catch {
-                        _productsList.value = UiState.Error(it)
-
-                    }
-                    .collect {
-                        Log.i("menna", "getproducts")
-                        _productsList.value = UiState.Success(it)
-
-
-                    }
-
+        val response = repository.getProductsBySubcategory(id, type)
+            if (response.isSuccessful && response.body() != null) {
+                _productsList.value = UiState.Success(response.body())
             }
+            else{
+                _productsList.value = UiState.Error(response.errorBody())
+            }
+
+        }
+
         }
     }
-}
-
-
 
 
 class CategoriesViewModelFactory(private val repository: IProductRepository) : ViewModelProvider.Factory {

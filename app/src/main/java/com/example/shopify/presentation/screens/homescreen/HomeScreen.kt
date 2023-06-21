@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -93,15 +94,11 @@ import com.example.shopify.utilities.ShopifyApplication
 fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
     val repository: IProductRepository =
         (LocalContext.current.applicationContext as ShopifyApplication).repository
-    val authRepository: IAuthRepository =
-        (LocalContext.current.applicationContext as ShopifyApplication).authRepository
     val wishlistManager: WishlistManager =
         (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
     val cartManager: CartManager =
         (LocalContext.current.applicationContext as ShopifyApplication).cartManager
 
-//    val sharedPreference: SharedPreference =
-//        (LocalContext.current.applicationContext as ShopifyApplication).
     val viewModel: HomeViewModel =
         viewModel(factory = HomeViewModelFactory(repository, wishlistManager, cartManager))
 
@@ -124,18 +121,8 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
             }
         }
     }
-    //GET USER DATA
-//     LaunchedEffect(brandsState) {
-//        viewModel.getBrands()
-//        viewModel.getRandomProducts()
-//
-//     }
-//    var isFavourite by remember {
-//        mutableStateOf(false)
-//    }
     when (brandsState) {
         is UiState.Loading -> {
-
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -152,8 +139,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
 
         is UiState.Success<*> -> {
             Log.i("menna", "success")
-            brandList =
-                (brandsState as UiState.Success<SmartCollections>).data.body()?.smart_collections!!
+            brandList = (brandsState as UiState.Success<SmartCollections>).data.smart_collections
         }
 
         else -> {
@@ -165,15 +151,13 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
         }
 
         is UiState.Success<*> -> {
-            randomList = (randomsState as UiState.Success<Products>).data.body()?.products!!
-
+            randomList = (randomsState as UiState.Success<Products>).data.products!!
         }
 
         else -> {
             Log.i("homepage", (randomsState as UiState.Error).error.toString())
         }
     }
-
 
     //  ScaffoldStructure("home",navController) {
     // Scaffold (bottomBar = {Bottombar(navController = rememberNavController())}) {
@@ -511,7 +495,6 @@ fun FavoriteButton(
     }
 }
 
-//"https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
 
 @Composable
 fun ImageFromNetwork(modifier: Modifier = Modifier, image: String) {
@@ -545,7 +528,7 @@ fun HomeSection(
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = modifier.padding(vertical = 20.dp)
+        modifier = modifier.padding(vertical = 10.dp)
     )
     {
         Text(
@@ -589,20 +572,31 @@ fun ItemCards(
     onFavouriteClicked: (item: ProductSample) -> Unit,
     onAddToCard: (item: ProductSample) -> Unit
 ) {
+
+val state = rememberLazyListState()
     LazyRow(
+        state= state,
         modifier = modifier.padding(start = 6.dp, end = 6.dp)
     ) {
         items(products) { item ->
-
+//            val favState by viewModel.favProduct.collectAsState()
             var isFavourite by remember {
                 mutableStateOf(false)
             }
+//            viewModel.isFavorite(item.id)
+            LaunchedEffect(Unit){
+                isFavourite = viewModel.isFavorite(item.id)
+            }
+
+//            Log.i("TAG", "ItemCards: ${favState}")
+            Log.i("TAG", "ItemCards: ${item.title} $isFavourite")
             CardDesign(onCardClicked = {}) {
                 ItemCardContent(
                     navController = navController,
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
                     isFavourite = isFavourite,
                     onFavouritesClicked = { product ->
+
                         isFavourite = !isFavourite
                         if (isFavourite) {
                             viewModel.addWishlistItem(product.id, product.variants[0].id)
