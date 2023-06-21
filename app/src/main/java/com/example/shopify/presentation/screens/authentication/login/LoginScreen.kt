@@ -21,10 +21,15 @@ import androidx.navigation.NavController
 import com.example.shopify.R
 import com.example.shopify.utilities.ShopifyApplication
 import com.example.shopify.core.helpers.AuthenticationResponseState
+import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.core.utils.SharedPreference
 import com.example.shopify.core.utils.SharedPreference.hasCompletedOnBoarding
+import com.example.shopify.data.managers.cart.CartManager
+import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.repositories.authentication.IAuthRepository
+import com.example.shopify.data.repositories.user.IUserDataRepository
+import com.example.shopify.data.repositories.user.UserDataRepository
 import com.example.shopify.presentation.common.composables.ShowCustomDialog
 import java.io.IOException
 
@@ -53,7 +58,7 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
         (LocalContext.current.applicationContext as ShopifyApplication).authRepository
     val sharedPreference: SharedPreferences =
         (LocalContext.current.applicationContext as ShopifyApplication).sharedPreference
-    val loginViewModelFactory = LoginViewModelFactory(authRepository)
+   val loginViewModelFactory = LoginViewModelFactory(authRepository)
     val loginViewModel: LoginViewModel = viewModel(factory = loginViewModelFactory)
     sharedPreference.hasCompletedOnBoarding = true
     val authState by loginViewModel.authResponse.collectAsState()
@@ -72,11 +77,9 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
 
             }
         }
-
         is AuthenticationResponseState.Loading -> {
             Log.i("TAG", " LOADING IN LOGIN SCREEN")
         }
-
         is AuthenticationResponseState.Error -> {
             when (authResponse.message) {
                 is IOException ->
@@ -96,42 +99,15 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
         when (googleState.success != null) {
             true -> loginNavController.navigate(Screens.Home.route)
 
-            false -> error = R.string.not_connection.toString()
+            false -> error = ""
 
         }
 
     }
 
     if (authRepository.checkedLoggedIn()) {
-        try {
-            showNetworkDialog = false
-            loginNavController.navigate(Screens.Home.route)
-        } catch (ex: Exception) {
-            var title = R.string.something_is_wrong
-            var description = R.string.something_is_wrong
-            var animatedId = R.raw.error_animation
-            showNetworkDialog = true
-            when(ex){
-                is IOException ->{
-                    title =  R.string.network_connection
-                    description = R.string.not_connection
-                    animatedId = R.raw.custom_network_error
-                }
-            }
-            Surface(color = Color.Gray) {
-                ShowCustomDialog(
-                    title = title,
-                    description = description,
-                    buttonText = R.string.tryAgain,
-                    animatedId = animatedId,
-                    onDismiss = { showNetworkDialog = false },
-                    onClose = {
-                        showNetworkDialog = false
-                        loginNavController.popBackStack()
-                    }
-                )
-
-            }
+            LaunchedEffect(Unit){
+                loginNavController.navigate(Screens.Home.route)
         }
     } else { //Not logged in
         LoginContentScreen(

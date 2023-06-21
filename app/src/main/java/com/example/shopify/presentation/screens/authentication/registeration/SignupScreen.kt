@@ -64,7 +64,6 @@ fun SignupScreen(signupNavController: NavController) {
     val signupViewModelFactory = SignupViewModelFactory(authRepository)
     val signupViewModel: SignupViewModel = viewModel(factory = signupViewModelFactory)
     val authState by signupViewModel.authResponse.collectAsState()
-    val googleState by signupViewModel.googleState.collectAsState()
 
     when (val authResponse = authState) {
         is AuthenticationResponseState.Success -> {
@@ -91,20 +90,6 @@ fun SignupScreen(signupNavController: NavController) {
         else -> {
             error = stringResource(id = R.string.something_is_wrong)
             Log.i("TAG", "THERE'S SOMETHING WRONG ")
-        }
-    }
-    LaunchedEffect(googleState) {
-        when (googleState.success != null) {
-                true -> {
-                Log.i("TAG", "SignupScreen: ${googleState.success?.user?.email} ${googleState.success?.user?.displayName} ${googleState.success?.user?.phoneNumber}")
-                signupNavController.navigate(Screens.Login.route)
-            }
-            false -> {
-                error = googleState.error
-            }
-        }
-        if (googleState.error != "") {
-            error = googleState.error
         }
     }
 

@@ -93,9 +93,7 @@ import com.example.shopify.utilities.ShopifyApplication
 fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
     val repository: IProductRepository =
         (LocalContext.current.applicationContext as ShopifyApplication).repository
-    val authRepository: IAuthRepository =
-        (LocalContext.current.applicationContext as ShopifyApplication).authRepository
-    val wishlistManager: WishlistManager =
+   val wishlistManager: WishlistManager =
         (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
     val cartManager: CartManager =
         (LocalContext.current.applicationContext as ShopifyApplication).cartManager
@@ -124,15 +122,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
             }
         }
     }
-    //GET USER DATA
-//     LaunchedEffect(brandsState) {
-//        viewModel.getBrands()
-//        viewModel.getRandomProducts()
-//
-//     }
-//    var isFavourite by remember {
-//        mutableStateOf(false)
-//    }
+
     when (brandsState) {
         is UiState.Loading -> {
 
@@ -593,9 +583,11 @@ fun ItemCards(
         modifier = modifier.padding(start = 6.dp, end = 6.dp)
     ) {
         items(products) { item ->
-
             var isFavourite by remember {
                 mutableStateOf(false)
+            }
+            LaunchedEffect(key1 = Unit ) {
+                isFavourite = viewModel.isFavorite(item.id)
             }
             CardDesign(onCardClicked = {}) {
                 ItemCardContent(

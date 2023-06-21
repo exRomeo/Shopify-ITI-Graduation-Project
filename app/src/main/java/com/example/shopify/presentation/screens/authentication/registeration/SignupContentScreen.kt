@@ -82,17 +82,6 @@ fun SignupContentScreen(
     errorResponse: String,
     signupNavController: NavController
 ) {
-    val context = LocalContext.current
-    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()){
-        val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
-        try {
-            val result = account.getResult(ApiException::class.java)
-            val credential = GoogleAuthProvider.getCredential(result.idToken,null)
-            signupViewModel.googleSignIn(credential)
-        }catch (it : ApiException){
-            Log.i("TAG", "SignupContentScreen: $it")
-        }
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -281,62 +270,6 @@ fun SignupContentScreen(
             }
 
         }
-        Spacer(modifier = Modifier.height(18.dp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .align(Alignment.CenterHorizontally)
-        ) {
-
-            Divider(
-                color = hintColor,
-                thickness = 0.7.dp,
-                modifier = Modifier.weight(1f)
-            )
-            Text(
-                text = stringResource(id = R.string.or_sign_up_with),
-                style = ibarraRegular,
-                color = hintColor,
-                fontSize = 12.sp
-            )
-            Divider(
-                color = hintColor,
-                thickness = 0.7.dp,
-                modifier = Modifier.weight(1f)
-            )
-        }
-        Spacer(modifier = Modifier.height(18.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            AuthenticationButton(
-                modifier = Modifier
-                    .width(150.dp)
-                    .height(36.dp),
-                color = Color.White,
-                imageId = R.drawable.google,
-                textId = R.string.google,
-                elevation = 12.dp,
-                textStyle = TextStyle(
-                    fontFamily = IbarraFont,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.Black,
-                    fontSize = 14.sp
-                )
-            ) {
-                val google = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestEmail()
-                    .requestIdToken(BuildConfig.SERVER_CLIENT)
-                    .requestProfile()
-                    .build()
-                val googleSignInClient = GoogleSignIn.getClient(context,google)
-                launcher.launch(googleSignInClient.signInIntent)
-                println("email is ${google.account} , password is ${google.account}")
-            }
-        }
-
     }
 
 }

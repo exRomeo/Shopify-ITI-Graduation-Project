@@ -24,11 +24,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-val sharedPreference = (applicationContext as ShopifyApplication).sharedPreference
+        val sharedPreference = (applicationContext as ShopifyApplication).sharedPreference
         setContent {
             val navController = rememberNavController()
             val backStackEntry by navController.currentBackStackEntryAsState()
-           // sharedPreference.hasCompletedOnBoarding =false
+            // sharedPreference.hasCompletedOnBoarding =false
 //            if (!sharedPreference.hasCompletedOnBoarding) {
 //                OnBoardingScreen(onComplete = {
 //                    sharedPreference.hasCompletedOnBoarding = true
@@ -36,30 +36,30 @@ val sharedPreference = (applicationContext as ShopifyApplication).sharedPreferen
 //            } else {
 
 
-                BackHandler {
-                    when (backStackEntry?.destination?.route) {
-                        Screens.Login.route, Screens.Signup.route -> {
-                            finish()
-                        }
-
-                        Screens.Home.route -> {
-                            moveTaskToBack(true)
-                        }
-
-                        else -> {
-                            navController.navigateUp()
-                        }
+            BackHandler {
+                when (backStackEntry?.destination?.route) {
+                    Screens.Login.route, Screens.Signup.route -> {
+                        finish()
                     }
-                }
-                ShopifyTheme {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background,
-                    ) {
-                        NavGraph(navController)
+
+                    Screens.Home.route -> {
+                        moveTaskToBack(true)
+                    }
+
+                    else -> {
+                        navController.navigateUp()
                     }
                 }
             }
+            ShopifyTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background,
+                ) {
+                    NavGraph(navController)
+                }
+            }
+        }
 
 
     }

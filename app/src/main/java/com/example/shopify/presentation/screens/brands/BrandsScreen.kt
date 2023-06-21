@@ -196,10 +196,14 @@ fun ProductsCards(
             var isFavourite by remember {
                 mutableStateOf(false)
             }
+            LaunchedEffect(key1 = Unit ) {
+                isFavourite = viewModel.isFavorite(item.id)
+            }
             CardDesign(onCardClicked = {
                 navController.navigate(route = "${Screens.Details.route}/${item.id}")
             }) {
                 ProductItem(isFavourite = isFavourite, onFavouritesClicked = { product ->
+
                     isFavourite = !isFavourite
                     if (isFavourite) {
                         viewModel.addWishlistItem(product.id, product.variants[0].id)

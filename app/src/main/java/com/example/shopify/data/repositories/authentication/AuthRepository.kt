@@ -39,9 +39,8 @@ class AuthRepository(
         authenticationClient.googleSignIn(credential)
 
     override fun checkedLoggedIn(): Boolean =
-        authenticationClient.checkedLoggedIn()
-
-
+           authenticationClient.checkedLoggedIn()
+    
     override suspend fun retrieveCustomerIDs(): CustomerFirebase =
         authenticationClient.retrieveCustomerIDs()
 
