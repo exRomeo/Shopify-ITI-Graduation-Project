@@ -3,6 +3,7 @@ package com.example.shopify.utilities
 import android.app.Application
 import com.example.shopify.BuildConfig
 import com.example.shopify.core.helpers.CurrentUserHelper
+import com.example.shopify.core.helpers.DiscountHelper
 import com.example.shopify.core.helpers.RetrofitHelper
 import com.example.shopify.core.utils.ConnectionUtil
 import com.example.shopify.core.utils.SharedPreference
@@ -79,6 +80,7 @@ class ShopifyApplication : Application() {
             GlobalScope.launch(Dispatchers.IO) {
                 currentCustomer = getCurrentCustomer(authRepository)
                 CurrentUserHelper.initialize(authRepository)
+                DiscountHelper.initialize(applicationContext)
             }
         } else {  //IsNot LoggedIn
             currentCustomer = null
