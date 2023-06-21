@@ -92,7 +92,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
         is UiState.Success<*> -> {
             LaunchedEffect(key1 = state /*, favoriteState*/) {
                 product =
-                    (productState as UiState.Success<SingleProductResponseBody>).data.body()?.product
+                    (productState as UiState.Success<SingleProductResponseBody>).data.product
             }
             if (product != null) {
                 ProductDetailsContentScreen(
@@ -210,7 +210,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
             when (state.error) {
                 is IOException -> {
                     showNetworkDialog = true
-                    val error = (productState as UiState.Error).error.message
+                    val error = (productState as UiState.Error).error
                     Log.i("TAG", "ProductDetailsScreen: $error")
                     if (showNetworkDialog)
                         Surface(color = Color.Gray) {
@@ -231,7 +231,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
 
                 else -> {
                     showNetworkDialog = true
-                    val error = (productState as UiState.Error).error.message
+                    val error = (productState as UiState.Error).error
                     Log.i("TAG", "ProductDetailsScreen: $error")
                     if (showNetworkDialog)
                         Surface(color = Color.Gray) {

@@ -11,35 +11,29 @@ import retrofit2.Response
 class ProductRepository(private val remoteResource: RemoteResource) : IProductRepository {
 
 
-    override suspend fun getBrands(): Flow<Response<SmartCollections>> {
-        return flow {
-            emit(remoteResource.getBrands())
+    override suspend fun getBrands(): Response<SmartCollections>{
+        return remoteResource.getBrands()
         }
-    }
 
-    override suspend fun getRandomProducts(): Flow<Response<Products>> {
-        return flow {
-            emit(remoteResource.getRandomProducts())
-        }
+
+    override suspend fun getRandomProducts(): Response<Products> {
+        return remoteResource.getRandomProducts()
     }
 
     override suspend fun getSingleProductDetails(productId: Long): UiState =
         remoteResource.getProductInfo(productId)
 
 
-    override suspend fun getSpecificBrandProducts(id:Long): Flow<Response<Products>> {
-        return flow{
-            emit(remoteResource.getSpecificBrandProducts(id))
-        }
+    override suspend fun getSpecificBrandProducts(id:Long): Response<Products> {
+       return remoteResource.getSpecificBrandProducts(id)
+
     }
 
     override suspend fun getProductsBySubcategory(
         id: Long,
         type: String
-    ): Flow<Response<Products>> {
-        return flow{
-            emit(remoteResource.getProductsBySubcategory(id,type))
+    ): Response<Products> {
+        return remoteResource.getProductsBySubcategory(id,type)
         }
     }
 
-}

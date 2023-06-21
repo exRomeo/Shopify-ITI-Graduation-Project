@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -78,7 +79,9 @@ fun OnBoardingScreen(navController:NavHostController ) {
     val sharedPreference = (LocalContext.current.applicationContext as ShopifyApplication).sharedPreference
             if (sharedPreference.hasCompletedOnBoarding) {
                 Log.i("menna","true")
-                navController.navigate(Screens.Home.route)
+                LaunchedEffect(Unit) {
+                    navController.navigate(Screens.Home.route)
+                }
             }
     else {
                 Log.i("menna","false")
@@ -193,31 +196,33 @@ fun BottomSection(currentPager: Int,onComplete: () -> Unit) {
                 )
             }
         } else {
-            Text("Skip", Modifier.padding(start = 20.dp).drawBehind {
-                val strokeWidthPx = 1.dp.toPx()
-                val verticalOffset = size.height - 2.sp.toPx()
-                drawLine(
-                    color = Color.Black,
-                    strokeWidth = strokeWidthPx,
-                    start = Offset(0f, verticalOffset),
-                    end = Offset(size.width, verticalOffset)
-                )
-            })
+            Text("Skip",
+                Modifier
+                    .padding(start = 20.dp)
+                    .drawBehind {
+                        val strokeWidthPx = 1.dp.toPx()
+                        val verticalOffset = size.height - 2.sp.toPx()
+                        drawLine(
+                            color = Color.Black,
+                            strokeWidth = strokeWidthPx,
+                            start = Offset(0f, verticalOffset),
+                            end = Offset(size.width, verticalOffset)
+                        )
+                    })
 
 
             Text("Next", Modifier
                 .padding(end = 20.dp)
-                    .
-                drawBehind {
-                val strokeWidthPx = 1.dp.toPx()
-                val verticalOffset = size.height - 2.sp.toPx()
-                drawLine(
-                    color = Color.Black,
-                    strokeWidth = strokeWidthPx,
-                    start = Offset(0f, verticalOffset),
-                    end = Offset(size.width, verticalOffset)
-                )
-            })
+                .drawBehind {
+                    val strokeWidthPx = 1.dp.toPx()
+                    val verticalOffset = size.height - 2.sp.toPx()
+                    drawLine(
+                        color = Color.Black,
+                        strokeWidth = strokeWidthPx,
+                        start = Offset(0f, verticalOffset),
+                        end = Offset(size.width, verticalOffset)
+                    )
+                })
 
 
         }

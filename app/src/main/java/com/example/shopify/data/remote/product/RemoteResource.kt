@@ -31,13 +31,16 @@ class RemoteResource private constructor() : IRemoteResource /*ProductSource*/ {
         return apiService.getRandomProducts()
     }
 
-    override suspend fun getProductInfo(productID: Long): UiState =
-        try{
-            val response = apiService.getProductInfo(productID)
-            UiState.Success(response)
-        }catch (ex:Exception){
-            UiState.Error(ex)
-        }
+    override suspend fun getProductInfo(productID: Long): UiState {
+
+    //  try{
+    val response = apiService.getProductInfo(productID)
+   return  UiState.Success(response)
+}
+//        }
+//        catch (ex:Exception){
+//           // UiState.Error(ex)
+//        }
 
     override suspend fun getSpecificBrandProducts(id:Long): Response<Products> {
         return apiService.getSpecificBrandProducts(id)

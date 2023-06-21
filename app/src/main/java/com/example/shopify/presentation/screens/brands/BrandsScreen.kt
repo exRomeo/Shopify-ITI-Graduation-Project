@@ -120,7 +120,7 @@ fun BrandsScreen(navController: NavHostController, id: Long) {
 
         is UiState.Success<*> -> {
             productsList =
-                (productsState as UiState.Success<Products>).data.body()?.products!!
+                (productsState as UiState.Success<Products>).data.products!!
 
         }
 

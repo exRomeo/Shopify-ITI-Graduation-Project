@@ -208,7 +208,7 @@ fun CategoriesScreen(navController: NavHostController) {
         is UiState.Success<*> -> {
             state = "success"
             productsList =
-                (productsState as UiState.Success<Products>).data.body()?.products!!
+                (productsState as UiState.Success<Products>).data.products!!
             filteredState = productsList.filter { item ->
                 //  item.variants?.get(0)?.price?.let { it1 -> Log.i("hla", it1) }
                 item.variants?.get(0)?.price?.toFloat()!! >= productPrice
