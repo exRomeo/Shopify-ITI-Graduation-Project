@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.shopify.R
+import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.data.managers.cart.CartManager
@@ -52,6 +53,7 @@ import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.common.composables.CustomSearchbar
 import com.example.shopify.presentation.common.composables.LottieAnimation
+import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.presentation.screens.homescreen.CardDesign
 import com.example.shopify.presentation.screens.homescreen.FavoriteButton
 import com.example.shopify.presentation.screens.homescreen.ImageFromNetwork
@@ -76,6 +78,10 @@ fun BrandsScreen(navController: NavHostController, id: Long) {
     val productsState: UiState by viewModel.brandList.collectAsState()
     var productsList:List<ProductSample> by remember {
         mutableStateOf(listOf())
+    }
+
+    var openDialogue by remember {
+        mutableStateOf(false)
     }
 
 
@@ -160,11 +166,31 @@ fun BrandsScreen(navController: NavHostController, id: Long) {
 
                 },
                 onAddToCard = { product ->
+                    if(CurrentUserHelper.isLoggedIn()) {
+                        viewModel.addItemToCart(product.id, product.variants[0].id)
+                    }
+                    else{
+                        openDialogue = true
+
+                    }
                     viewModel.addItemToCart(product.id, product.variants[0].id)
                 },
                 products = filteredList,
             )
         }
+            if(openDialogue) {
+                WarningDialog(
+                    dialogTitle = "oops!!",
+                    message = "You are not signed in ,please sign in to add to your cart",
+                    dismissButtonText = "",
+                    confirmButtonText = "ok",
+                    onConfirm = {
+                        openDialogue = false
+                    },
+                    onDismiss = {},
+                    addDismissButton = false
+                )
+            }
 
 
     }
