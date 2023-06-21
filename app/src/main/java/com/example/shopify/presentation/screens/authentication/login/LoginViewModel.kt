@@ -22,9 +22,6 @@ class LoginViewModel(private val authRepository: IAuthRepository) : ViewModel() 
         MutableStateFlow(GoogleSignInState())
     val googleState get() = _googleState.asStateFlow()
 
-    private val _logoutState: MutableStateFlow<AuthenticationResponseState> =
-        MutableStateFlow(AuthenticationResponseState.Loading)
-    val logoutState get() = _logoutState.asStateFlow()
     fun loginUser(email: String, password: String) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             viewModelScope.launch(Dispatchers.IO) {
@@ -41,8 +38,7 @@ class LoginViewModel(private val authRepository: IAuthRepository) : ViewModel() 
 
     fun googleSignIn(credential: AuthCredential) {
         viewModelScope.launch(Dispatchers.IO) {
-            val response = authRepository.googleSignIn(credential)
-            when (response) {
+            when (val response = authRepository.googleSignIn(credential)) {
                 is AuthenticationResponseState.GoogleSuccess -> {
                     _googleState.value = GoogleSignInState(response.auth)
                 }

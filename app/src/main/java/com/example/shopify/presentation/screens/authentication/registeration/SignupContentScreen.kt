@@ -1,6 +1,9 @@
 package com.example.shopify.presentation.screens.authentication.registeration
 
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,14 +30,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.shopify.BuildConfig
 import com.example.shopify.R
 import com.example.shopify.core.navigation.Screens
+import com.example.shopify.core.utils.Constant
 import com.example.shopify.core.utils.CredentialsValidator
 import com.example.shopify.data.models.Address
 import com.example.shopify.data.models.Customer
@@ -50,6 +56,10 @@ import com.example.shopify.ui.theme.ibarraBold
 import com.example.shopify.ui.theme.ibarraRegular
 import com.example.shopify.ui.theme.mainColor
 import com.example.shopify.ui.theme.textColor
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
 
 @Composable
 fun SignupContentScreen(
@@ -72,6 +82,17 @@ fun SignupContentScreen(
     errorResponse: String,
     signupNavController: NavController
 ) {
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()){
+        val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+        try {
+            val result = account.getResult(ApiException::class.java)
+            val credential = GoogleAuthProvider.getCredential(result.idToken,null)
+            signupViewModel.googleSignIn(credential)
+        }catch (it : ApiException){
+            Log.i("TAG", "SignupContentScreen: $it")
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -305,24 +326,14 @@ fun SignupContentScreen(
                     fontSize = 14.sp
                 )
             ) {
-                println("email is $email , password is $password")
-            }
-            AuthenticationButton(
-                modifier = Modifier
-                    .width(150.dp)
-                    .height(36.dp),
-                color = facebookBackground,
-                imageId = R.drawable.facebook,
-                textId = R.string.facebook,
-                elevation = 8.dp,
-                textStyle = TextStyle(
-                    fontFamily = IbarraFont,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White,
-                    fontSize = 14.sp
-                )
-            ) {
-                println("email is $email , password is $password")
+                val google = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .requestIdToken(BuildConfig.SERVER_CLIENT)
+                    .requestProfile()
+                    .build()
+                val googleSignInClient = GoogleSignIn.getClient(context,google)
+                launcher.launch(googleSignInClient.signInIntent)
+                println("email is ${google.account} , password is ${google.account}")
             }
         }
 

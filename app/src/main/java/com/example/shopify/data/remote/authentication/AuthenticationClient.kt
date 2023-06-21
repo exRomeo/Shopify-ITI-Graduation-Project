@@ -93,7 +93,11 @@ class AuthenticationClient(
         }
 
     override fun checkedLoggedIn(): Boolean =
-        authenticationFirebase.currentUser != null
+        try {
+            authenticationFirebase.currentUser != null
+        } catch (ex: Exception) {
+            throw ex
+        }
 
 
     override fun addCustomerIDs(customerID: Long) {

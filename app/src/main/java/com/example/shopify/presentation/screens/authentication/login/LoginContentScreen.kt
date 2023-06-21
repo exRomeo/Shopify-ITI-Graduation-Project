@@ -1,5 +1,8 @@
 package com.example.shopify.presentation.screens.authentication.login
 
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,12 +23,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.shopify.BuildConfig
 import com.example.shopify.R
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.presentation.screens.authentication.common_auth_components.AuthenticationButton
@@ -38,6 +43,10 @@ import com.example.shopify.ui.theme.ibarraBold
 import com.example.shopify.ui.theme.ibarraRegular
 import com.example.shopify.ui.theme.mainColor
 import com.example.shopify.ui.theme.textColor
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
 
 
 @Composable
@@ -51,7 +60,17 @@ fun LoginContentScreen(
     errorResponse: String,
     loginNavController: NavController
 ) {
-
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()){
+        val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+        try {
+            val result = account.getResult(ApiException::class.java)
+            val credential = GoogleAuthProvider.getCredential(result.idToken,null)
+            loginViewModel.googleSignIn(credential)
+        }catch (it : ApiException){
+            Log.i("TAG", "SignupContentScreen: $it")
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -212,22 +231,21 @@ fun LoginContentScreen(
                     fontSize = 14.sp
                 )
             ) {
-//                val google = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                    .requestEmail()
-//                    .requestIdToken(Constant.webClient)
-////                    .requestProfile()
-//                    .build()
-//                val googleSignInClient = GoogleSignIn.getClient(google)
-//                loginViewModel.
-//                println("email is $email , password is $password")
+                val google = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .requestIdToken(BuildConfig.SERVER_CLIENT)
+                    .requestProfile()
+                    .build()
+                val googleSignInClient = GoogleSignIn.getClient(context,google)
+                launcher.launch(googleSignInClient.signInIntent)
             }
             AuthenticationButton(
                 modifier = Modifier
                     .width(150.dp)
                     .height(36.dp),
-                color = facebookBackground,
-                imageId = R.drawable.facebook,
-                textId = R.string.facebook,
+                color = MaterialTheme.colorScheme.onBackground,
+                imageId = R.drawable.mail,
+                textId = R.string.login_as_guest,
                 elevation = 8.dp,
                 textStyle = TextStyle(
                     fontFamily = IbarraFont,

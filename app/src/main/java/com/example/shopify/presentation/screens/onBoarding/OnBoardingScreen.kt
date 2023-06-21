@@ -41,7 +41,7 @@ import com.google.accompanist.pager.rememberPagerState
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun OnBoardingScreen(navController:NavHostController ) {
+fun OnBoardingScreen(navController: NavHostController) {
     val items = ArrayList<OnBoardingData>()
 
     items.add(
@@ -75,74 +75,73 @@ fun OnBoardingScreen(navController:NavHostController ) {
         infiniteLoop = false,
         initialPage = 0,
     )
-    val sharedPreference = (LocalContext.current.applicationContext as ShopifyApplication).sharedPreference
-            if (sharedPreference.hasCompletedOnBoarding) {
-                Log.i("menna","true")
-                navController.navigate(Screens.Home.route)
-            }
-    else {
-                Log.i("menna","false")
-                OnBoardingPager(items, pagerState, onComplete = {
-                    sharedPreference.hasCompletedOnBoarding = true
-                    navController.navigate(Screens.Home.route)
-                })
-            }
+    val sharedPreference =
+        (LocalContext.current.applicationContext as ShopifyApplication).sharedPreference
+    if (sharedPreference.hasCompletedOnBoarding) {
+        Log.i("menna", "true")
+        navController.navigate(Screens.Home.route)
+    } else {
+        Log.i("menna", "false")
+        OnBoardingPager(items, pagerState, onComplete = {
+            navController.navigate(Screens.Login.route)
+        })
+    }
 }
 
-    @ExperimentalPagerApi
-    @Composable
-    fun OnBoardingPager(
-        item: List<OnBoardingData>,
-        pagerState: PagerState,
-        modifier: Modifier = Modifier,
-        onComplete: () -> Unit
-    ) {
-        Box(modifier = modifier) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                HorizontalPager(state = pagerState) { page ->
-                    Column(
+@ExperimentalPagerApi
+@Composable
+fun OnBoardingPager(
+    item: List<OnBoardingData>,
+    pagerState: PagerState,
+    modifier: Modifier = Modifier,
+    onComplete: () -> Unit
+) {
+    Box(modifier = modifier) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            HorizontalPager(state = pagerState) { page ->
+                Column(
+                    modifier = Modifier
+                        .padding(top = 60.dp)
+                        .fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    Image(
+                        painter = painterResource(id = item[page].image),
+                        contentDescription = item[page].title,
                         modifier = Modifier
-                            .padding(top = 60.dp)
-                            .fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                            .height(250.dp)
+                            .fillMaxWidth()
+                    )
 
-                        Image(
-                            painter = painterResource(id = item[page].image),
-                            contentDescription = item[page].title,
-                            modifier = Modifier
-                                .height(250.dp)
-                                .fillMaxWidth()
-                        )
+                    Text(
+                        text = item[page].title,
+                        modifier = Modifier.padding(top = 50.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.headlineLarge
+                    )
 
-                        Text(
-                            text = item[page].title,
-                            modifier = Modifier.padding(top = 50.dp),
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.headlineLarge
-                        )
+                    Text(
+                        text = item[page].desc,
+                        modifier = Modifier.padding(top = 30.dp, start = 20.dp, end = 20.dp),
+                        color = MaterialTheme.colorScheme.secondary,
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center
+                    )
 
-                        Text(
-                            text = item[page].desc,
-                            modifier = Modifier.padding(top = 30.dp, start = 20.dp, end = 20.dp),
-                            color = MaterialTheme.colorScheme.secondary,
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontSize = 18.sp,
-                            textAlign = TextAlign.Center
-                        )
-
-                    }
-                }
-                Spacer(modifier.padding(40.dp))
-                //Row() {
-                    PagerIndicator(item.size, pagerState.currentPage)
-
-                Spacer(modifier.padding(10.dp))
-    //                Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-                    BottomSection(pagerState.currentPage, onComplete)
-      //              }
                 }
             }
+            Spacer(modifier.padding(40.dp))
+            //Row() {
+            PagerIndicator(item.size, pagerState.currentPage)
+
+            Spacer(modifier.padding(10.dp))
+            //                Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+            BottomSection(pagerState.currentPage, onComplete)
+            //              }
         }
+    }
+}
 
 @Composable
 fun PagerIndicator(size: Int, currentPage: Int) {
@@ -172,8 +171,9 @@ fun Indicator(isSelected: Boolean) {
             )
     )
 }
+
 @Composable
-fun BottomSection(currentPager: Int,onComplete: () -> Unit) {
+fun BottomSection(currentPager: Int, onComplete: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(bottom = 20.dp)
@@ -183,7 +183,7 @@ fun BottomSection(currentPager: Int,onComplete: () -> Unit) {
 
         if (currentPager == 2) {
             OutlinedButton(
-                onClick =  onComplete,
+                onClick = onComplete,
                 shape = RoundedCornerShape(50)
             ) {
                 Text(
@@ -193,31 +193,33 @@ fun BottomSection(currentPager: Int,onComplete: () -> Unit) {
                 )
             }
         } else {
-            Text("Skip", Modifier.padding(start = 20.dp).drawBehind {
-                val strokeWidthPx = 1.dp.toPx()
-                val verticalOffset = size.height - 2.sp.toPx()
-                drawLine(
-                    color = Color.Black,
-                    strokeWidth = strokeWidthPx,
-                    start = Offset(0f, verticalOffset),
-                    end = Offset(size.width, verticalOffset)
-                )
-            })
+            Text("Skip",
+                Modifier
+                    .padding(start = 20.dp)
+                    .drawBehind {
+                        val strokeWidthPx = 1.dp.toPx()
+                        val verticalOffset = size.height - 2.sp.toPx()
+                        drawLine(
+                            color = Color.Black,
+                            strokeWidth = strokeWidthPx,
+                            start = Offset(0f, verticalOffset),
+                            end = Offset(size.width, verticalOffset)
+                        )
+                    })
 
 
             Text("Next", Modifier
                 .padding(end = 20.dp)
-                    .
-                drawBehind {
-                val strokeWidthPx = 1.dp.toPx()
-                val verticalOffset = size.height - 2.sp.toPx()
-                drawLine(
-                    color = Color.Black,
-                    strokeWidth = strokeWidthPx,
-                    start = Offset(0f, verticalOffset),
-                    end = Offset(size.width, verticalOffset)
-                )
-            })
+                .drawBehind {
+                    val strokeWidthPx = 1.dp.toPx()
+                    val verticalOffset = size.height - 2.sp.toPx()
+                    drawLine(
+                        color = Color.Black,
+                        strokeWidth = strokeWidthPx,
+                        start = Offset(0f, verticalOffset),
+                        end = Offset(size.width, verticalOffset)
+                    )
+                })
 
 
         }
