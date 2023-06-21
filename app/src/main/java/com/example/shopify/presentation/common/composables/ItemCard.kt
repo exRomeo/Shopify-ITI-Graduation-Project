@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -347,8 +348,6 @@ fun OrderItemCard(
         }
         Divider(Modifier.padding(horizontal = 8.dp))
         Row {
-
-
             Column(
                 modifier
                     .padding(start = 8.dp, top = 4.dp, bottom = 4.dp, end = 4.dp)
@@ -380,11 +379,10 @@ fun OrderItemCard(
 @Composable
 @Preview
 fun LineItemCard(lineItem: LineItem = LineItem(1, 0, "Product TITLE", 10, "item", "5200.00")) {
-    Box(
+    ElevatedCard(
         modifier = Modifier
             .padding(4.dp)
             .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
             .background(Color.White)
     ) {
         Row(
@@ -397,13 +395,17 @@ fun LineItemCard(lineItem: LineItem = LineItem(1, 0, "Product TITLE", 10, "item"
             Text(
                 modifier = Modifier.weight(1f),
                 text = "${lineItem.title} x ${lineItem.quantity}",
-                style = TextStyle(fontSize = MaterialTheme.typography.bodyLarge.fontSize),
+                style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize),
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = lineItem.getTotalPrice(),
-                style = TextStyle(fontSize = MaterialTheme.typography.bodyLarge.fontSize, fontWeight = FontWeight.Bold),
+                modifier = Modifier.padding(start = 4.dp),
+                text = "EGP ${lineItem.getTotalPrice()}",
+                style = TextStyle(
+                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                    fontWeight = FontWeight.Bold
+                ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

@@ -2,6 +2,7 @@ package com.example.shopify.core.helpers
 
 import android.util.Log
 import com.example.shopify.data.repositories.authentication.IAuthRepository
+
 object CurrentUserHelper {
 
     private lateinit var authRepo: IAuthRepository
@@ -60,12 +61,12 @@ object CurrentUserHelper {
         return cartDraftID != -1L
     }
 
-    suspend fun logout() {
-        authRepo.signOutFirebase()
+    suspend fun logout(): Boolean {
         customerID = -1
         cartDraftID = -1
         orderID = -1
         wishlistDraftID = -1
         customerName = ""
+        return authRepo.signOutFirebase()
     }
 }

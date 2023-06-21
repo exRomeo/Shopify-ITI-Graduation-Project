@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -120,7 +121,6 @@ fun CheckoutScreen(navController: NavHostController) {
                         )
                     }
                 }
-
             }
         },
         topBar = {
@@ -209,44 +209,37 @@ fun CheckoutScreenContent(viewModel: CheckoutViewModel, cartItems: List<LineItem
 @Composable
 fun CheckoutItems(cartItems: List<LineItem>, viewModel: CheckoutViewModel) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .clip(RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer)
-        ) {
-            LazyColumn(contentPadding = PaddingValues(8.dp)) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Color.White)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                            verticalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            Text(
-                                text = "Order Details",
-                                style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Divider(thickness = 1.dp, modifier = Modifier.padding(top = 8.dp))
-                        }
-                    }
-                }
-                items(cartItems) {
+
+        LazyColumn(modifier = Modifier.weight(1f), contentPadding = PaddingValues(8.dp)) {
+            item {
+                ElevatedCard(
+                    modifier = Modifier
+                        .background(Color.White)
+                ) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
                         verticalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        LineItemCard(it)
+                        Text(
+                            text = "Order Details",
+                            style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Divider(thickness = 1.dp, modifier = Modifier.padding(top = 8.dp))
                     }
+                }
+            }
+            items(cartItems) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    LineItemCard(it)
                 }
             }
         }
@@ -263,7 +256,6 @@ fun OrderSummary(viewModel: CheckoutViewModel) {
         modifier = Modifier
             .fillMaxWidth(0.92f)
             .clip(RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
     ) {
         Column(
             modifier = Modifier

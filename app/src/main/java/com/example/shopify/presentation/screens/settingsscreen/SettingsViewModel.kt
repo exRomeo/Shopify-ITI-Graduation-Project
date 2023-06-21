@@ -1,5 +1,6 @@
 package com.example.shopify.presentation.screens.settingsscreen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -145,7 +146,11 @@ class SettingsViewModel(
 
     fun logout() {
         viewModelScope.launch {
-            CurrentUserHelper.logout()
+           val isLogged = CurrentUserHelper.logout()
+            if(isLogged)
+                Log.i(TAG, "logout: Done")
+            else
+                Log.i(TAG, "logout: Not Loggedout")
         }
     }
 }
