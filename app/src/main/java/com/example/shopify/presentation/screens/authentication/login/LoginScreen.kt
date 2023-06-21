@@ -27,6 +27,7 @@ import com.example.shopify.core.utils.SharedPreference
 import com.example.shopify.core.utils.SharedPreference.hasCompletedOnBoarding
 import com.example.shopify.data.managers.cart.CartManager
 import com.example.shopify.data.managers.wishlist.WishlistManager
+import com.example.shopify.data.models.GetCurrentCustomer
 import com.example.shopify.data.repositories.authentication.IAuthRepository
 import com.example.shopify.data.repositories.user.IUserDataRepository
 import com.example.shopify.data.repositories.user.UserDataRepository
@@ -56,11 +57,14 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
     }
     val authRepository: IAuthRepository =
         (LocalContext.current.applicationContext as ShopifyApplication).authRepository
-    val sharedPreference: SharedPreferences =
-        (LocalContext.current.applicationContext as ShopifyApplication).sharedPreference
-   val loginViewModelFactory = LoginViewModelFactory(authRepository)
+    val cartManager: CartManager =
+        (LocalContext.current.applicationContext as ShopifyApplication).cartManager
+    val wishlistManager: WishlistManager =
+        (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
+    val userDataRepository: IUserDataRepository =
+        (LocalContext.current.applicationContext as ShopifyApplication).userDataRepository
+    val loginViewModelFactory = LoginViewModelFactory(authRepository)
     val loginViewModel: LoginViewModel = viewModel(factory = loginViewModelFactory)
-    sharedPreference.hasCompletedOnBoarding = true
     val authState by loginViewModel.authResponse.collectAsState()
     val googleState by loginViewModel.googleState.collectAsState()
     when (val authResponse = authState) {
@@ -77,9 +81,11 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
 
             }
         }
+
         is AuthenticationResponseState.Loading -> {
             Log.i("TAG", " LOADING IN LOGIN SCREEN")
         }
+
         is AuthenticationResponseState.Error -> {
             when (authResponse.message) {
                 is IOException ->
@@ -95,19 +101,22 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
             Log.i("TAG", "THERE'S SOMETHING WRONG ")
         }
     }
-    LaunchedEffect(googleState) {
-        when (googleState.success != null) {
-            true -> loginNavController.navigate(Screens.Home.route)
 
-            false -> error = ""
-
+    when (googleState.success != null) {
+        true -> {
+            LaunchedEffect(googleState) {
+                loginNavController.navigate(Screens.Home.route)
+            }
         }
+
+        false -> error = ""
 
     }
 
     if (authRepository.checkedLoggedIn()) {
-            LaunchedEffect(Unit){
-                loginNavController.navigate(Screens.Home.route)
+        Log.i("TAG", "Check logged in: ${authRepository.checkedLoggedIn()}")
+        LaunchedEffect(key1 = Unit) {
+            loginNavController.navigate(Screens.Home.route)
         }
     } else { //Not logged in
         LoginContentScreen(

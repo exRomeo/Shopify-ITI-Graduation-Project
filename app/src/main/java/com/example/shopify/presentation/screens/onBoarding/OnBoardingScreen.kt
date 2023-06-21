@@ -79,7 +79,8 @@ fun OnBoardingScreen(navController: NavHostController) {
         (LocalContext.current.applicationContext as ShopifyApplication).sharedPreference
     if (sharedPreference.hasCompletedOnBoarding) {
         Log.i("menna", "true")
-        navController.navigate(Screens.Home.route)
+        sharedPreference.hasCompletedOnBoarding = true
+        navController.navigate(Screens.Login.route)
     } else {
         Log.i("menna", "false")
         OnBoardingPager(items, pagerState, onComplete = {

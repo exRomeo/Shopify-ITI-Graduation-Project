@@ -97,10 +97,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
         (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
     val cartManager: CartManager =
         (LocalContext.current.applicationContext as ShopifyApplication).cartManager
-
-//    val sharedPreference: SharedPreference =
-//        (LocalContext.current.applicationContext as ShopifyApplication).
-    val viewModel: HomeViewModel =
+   val viewModel: HomeViewModel =
         viewModel(factory = HomeViewModelFactory(repository, wishlistManager, cartManager))
 
     val brandsState: UiState by viewModel.brandList.collectAsState()
