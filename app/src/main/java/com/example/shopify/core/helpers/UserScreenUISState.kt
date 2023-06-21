@@ -11,5 +11,8 @@ sealed class UserScreenUISState {
 
     class Success<UserData>(val data: UserData) : UserScreenUISState()
 
+    object NoData : UserScreenUISState()
+
     class Failure(val message: String) : UserScreenUISState()
+
 }

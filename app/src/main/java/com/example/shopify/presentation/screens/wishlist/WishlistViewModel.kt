@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.shopify.core.helpers.UserScreenUISState
+import com.example.shopify.core.utils.ConnectionUtil
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.repositories.wishlist.IWishlistRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,13 +30,19 @@ class WishlistViewModel(private val wishlistRepository: IWishlistRepository) : V
     }
 
     private fun getWishlistItems() {
-        viewModelScope.launch {
-            wishlistRepository.getWishlistItems()
-            wishlistRepository.wishlist.collect {
-                _wishlist.value = it
-                _screenState.value = UserScreenUISState.Success(it)
+        if (ConnectionUtil.isConnected()) {
+            viewModelScope.launch {
+                wishlistRepository.getWishlistItems()
+                wishlistRepository.wishlist.collect {
+                    if (it.isNotEmpty()) {
+                        _wishlist.value = it
+                        _screenState.value = UserScreenUISState.Success(it)
+                    } else {
+                        _screenState.value = UserScreenUISState.NoData
+                    }
+                }
             }
-        }
+        } else _screenState.value = UserScreenUISState.NotConnected
     }
 
     fun addWishlistItem(productID: Long, variantID: Long) {

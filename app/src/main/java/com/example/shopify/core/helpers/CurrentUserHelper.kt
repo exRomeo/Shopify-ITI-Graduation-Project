@@ -2,20 +2,13 @@ package com.example.shopify.core.helpers
 
 import android.util.Log
 import com.example.shopify.data.repositories.authentication.IAuthRepository
-
-/*
-    should be used for testing :D
-const val USER_ID = 7121192321330
-const val WISHLIST_DRAFT_ORDER_ID = 1121329742130
-const val CART_DRAFT_ORDER = 1121338360114
-*/
-
 object CurrentUserHelper {
 
     private lateinit var authRepo: IAuthRepository
     var wishlistDraftID: Long = -1
     var cartDraftID: Long = -1
     var customerID: Long = -1L
+    var orderID: Long = -1L
     var customerName: String = ""
     suspend fun initialize(authRepository: IAuthRepository) {
         authRepo = authRepository
@@ -25,10 +18,10 @@ object CurrentUserHelper {
     private suspend fun getUserIDs() {
         if (::authRepo.isInitialized) {
             val ids = authRepo.retrieveCustomerIDs()
-            customerID = ids.customer_id!!
-            cartDraftID = ids.card_id!!
-            wishlistDraftID = ids.wishlist_id!!
-
+            customerID = ids.customer_id ?: -1
+            cartDraftID = ids.card_id ?: -1
+            wishlistDraftID = ids.wishlist_id ?: -1
+            orderID = ids.order_id ?: -1
             Log.i(
                 "CurrentUser",
                 "Current User Data: Customer id -> $customerID,Cart Draft ID -> $cartDraftID, Wishlist Draft ID -> $wishlistDraftID"
@@ -42,8 +35,8 @@ object CurrentUserHelper {
             when (listType) {
                 KeyFirebase.wishlist_id -> wishlistDraftID = newID
                 KeyFirebase.card_id -> cartDraftID = newID
+                KeyFirebase.order_id -> orderID = newID
                 KeyFirebase.customer_id -> customerID = newID
-                else -> {}
             }
         }
     }
@@ -58,6 +51,11 @@ object CurrentUserHelper {
         return wishlistDraftID != -1L
     }
 
+
+    fun hasOrder(): Boolean {
+        return orderID != -1L
+    }
+
     fun hasCart(): Boolean {
         return cartDraftID != -1L
     }
@@ -66,6 +64,7 @@ object CurrentUserHelper {
         authRepo.signOutFirebase()
         customerID = -1
         cartDraftID = -1
+        orderID = -1
         wishlistDraftID = -1
         customerName = ""
     }
