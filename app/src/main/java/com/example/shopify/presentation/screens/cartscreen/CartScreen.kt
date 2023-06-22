@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -82,34 +81,33 @@ fun CartScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                modifier = Modifier.fillMaxWidth(0.92f), onClick = {
-                    if (cartHasItems)
-                        navController.navigate(Screens.Checkout.route)
-                }
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
+            if (cartHasItems)
+                ExtendedFloatingActionButton(
+                    modifier = Modifier, onClick = {
+                        if (cartHasItems)
+                            navController.navigate(Screens.Checkout.route)
+                    }
                 ) {
-                    Text(
-                        text = if (cartHasItems)
-                            stringResource(id = R.string.checkout)
-                        else
-                            stringResource(id = R.string.add_items_to_cart),
-                        style = TextStyle(
-                            fontSize = MaterialTheme.typography.titleMedium.fontSize,
-                            fontWeight = FontWeight.Bold
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.checkout),
+                            style = TextStyle(
+                                fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                fontWeight = FontWeight.Bold
+                            )
                         )
-                    )
-                    Icon(
-                        modifier = Modifier.size(30.dp),
-                        imageVector = Icons.Default.ShoppingCart,
-                        contentDescription = ""
-                    )
+                        Icon(
+                            modifier = Modifier
+                                .size(30.dp)
+                                .padding(start = 4.dp),
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = ""
+                        )
+                    }
                 }
-            }
         },
         topBar = {
             CenterAlignedTopAppBar(

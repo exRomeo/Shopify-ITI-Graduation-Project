@@ -6,10 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,20 +46,14 @@ fun <T> SingleSelectionDropdownMenu(
             expanded = expandedState,
             onExpandedChange = { expandedState = !expandedState },
         ) {
-            TextField(
+            TextButton(
                 modifier = Modifier
                     .menuAnchor()
-                    .fillMaxWidth(),
-                value = selection,
-                onValueChange = {},
-                readOnly = true,
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(
-                        expanded = expandedState
-                    )
-                },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer)
-            )
+                    .fillMaxWidth(0.5f),
+                onClick = {}
+            ) {
+                Text(text = selection, textAlign = TextAlign.Center)
+            }
             ExposedDropdownMenu(
                 expanded = expandedState,
                 onDismissRequest = { expandedState = false }) {
@@ -102,20 +94,14 @@ fun <T> SelectionDropdownMenu(
             expanded = expandedState,
             onExpandedChange = { expandedState = !expandedState },
         ) {
-            TextField(
+            TextButton(
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
-                value = selection,
-                onValueChange = {},
-                readOnly = true,
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(
-                        expanded = expandedState
-                    )
-                },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer)
-            )
+                onClick = {}
+            ) {
+                Text(text = selection, textAlign = TextAlign.Center)
+            }
             ExposedDropdownMenu(
                 expanded = expandedState,
                 onDismissRequest = { expandedState = false }) {
