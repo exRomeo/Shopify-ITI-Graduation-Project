@@ -137,7 +137,7 @@ fun WishlistItemCard(
                         .build(),
                     contentDescription = stringResource(id = R.string.product_image),
                     placeholder = painterResource(id = R.drawable.product_image_placeholder),
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.Fit,
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .size(125.dp)
