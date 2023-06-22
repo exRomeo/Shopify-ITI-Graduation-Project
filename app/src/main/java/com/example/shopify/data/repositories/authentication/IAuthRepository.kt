@@ -16,8 +16,6 @@ interface IAuthRepository {
 
     suspend fun getSingleCustomerFromShopify(customerID: Long): AuthenticationResponseState
     suspend fun loginUserFirebase(email: String, password: String): AuthenticationResponseState
-
-    //suspend fun loginUserWithGoogle(email: String, password: String): AuthenticationResponseState
     suspend fun signOutFirebase(): Boolean
     suspend fun googleSignIn(credential: AuthCredential): AuthenticationResponseState
     fun checkedLoggedIn(): Boolean

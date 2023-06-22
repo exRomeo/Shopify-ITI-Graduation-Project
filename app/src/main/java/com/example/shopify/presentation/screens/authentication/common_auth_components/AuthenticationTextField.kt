@@ -27,6 +27,7 @@ fun AuthenticationTextField(
     validationErrorMsg :String? = "",
     @StringRes hintId : Int,
     isValid : Boolean = true,
+    textFieldError : Boolean = false,
     onValueChange : (String)-> Unit,
     textFieldType: TextFieldType
 
@@ -54,20 +55,23 @@ fun AuthenticationTextField(
             color = backgroundColor,
             cornerRadius = 20.dp,
             textFieldType = textFieldType,
+            textError = textFieldError,
             isError = text == ""
         )
-        if (text == "") {
+        if (text == "" && !textFieldError) {
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = stringResource(id = errorMsg),
-                style = TextStyle(color = MaterialTheme.colorScheme.error)
+                style = TextStyle(color = MaterialTheme.colorScheme.error),
+                fontSize = 12.sp
             )
         }
         if (!isValid) {
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = validationErrorMsg ?: "",
-                style = TextStyle(color = MaterialTheme.colorScheme.error)
+                style = TextStyle(color = MaterialTheme.colorScheme.error),
+                fontSize = 12.sp
             )
         }
     }

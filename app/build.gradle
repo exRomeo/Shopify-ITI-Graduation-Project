@@ -28,6 +28,7 @@ android {
         buildConfigField "String", "CURRENCY_APIKEY", "\"${properties.getProperty("CURRENCY_APIKEY")}\""
         buildConfigField "String", "STRIPE_SECRET", "\"${properties.getProperty("STRIPE_SECRET")}\""
         buildConfigField "String", "STRIP_PUB_KEY", "\"${properties.getProperty("STRIP_PUB_KEY")}\""
+        buildConfigField "String", "SERVER_CLIENT", "\"${properties.getProperty("SERVER_CLIENT")}\""
     }
 
     buildTypes {

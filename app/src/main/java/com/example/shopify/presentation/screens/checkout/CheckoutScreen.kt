@@ -1,9 +1,7 @@
 package com.example.shopify.presentation.screens.checkout
 
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,10 +12,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,6 +32,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
@@ -39,11 +41,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -63,6 +64,7 @@ import com.example.shopify.presentation.common.composables.NoConnectionScreen
 import com.example.shopify.presentation.common.composables.NoData
 import com.example.shopify.presentation.common.composables.SelectionDropdownMenu
 import com.example.shopify.presentation.common.composables.SingleSelectionDropdownMenu
+import com.example.shopify.ui.theme.co_background
 import com.example.shopify.utilities.ShopifyApplication
 import com.stripe.android.paymentsheet.PaymentSheetContract
 
@@ -91,36 +93,46 @@ fun CheckoutScreen(navController: NavHostController) {
             })
         }
     }
+
+    var showSummary by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    if (showSummary) {
+        OrderSummaryAlert(viewModel = viewModel, onDismiss = { showSummary = false }) {
+            viewModel.confirmPayment()
+        }
+    }
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
 
-        bottomBar = {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                ExtendedFloatingActionButton(
-                    modifier = Modifier.fillMaxWidth(0.92f), onClick = {
-                        viewModel.confirmPayment()
-                    }
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            stringResource(id = R.string.confirm),
-                            style = TextStyle(
-                                fontSize = MaterialTheme.typography.titleMedium.fontSize,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                        Icon(
-                            modifier = Modifier.size(30.dp),
-                            imageVector = Icons.Default.Done,
-                            contentDescription = ""
-                        )
-                    }
-                }
+        floatingActionButton = {
 
+            ExtendedFloatingActionButton(
+                onClick = {
+                    showSummary = true
+
+                }
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        stringResource(id = R.string.confirm),
+                        style = TextStyle(
+                            fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                    Icon(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .padding(start = 8.dp),
+                        imageVector = Icons.Default.Done,
+                        contentDescription = ""
+                    )
+                }
             }
         },
         topBar = {
@@ -170,23 +182,26 @@ fun CheckoutScreen(navController: NavHostController) {
                 else -> {}
             }
         }
+
     }
 }
 
 @Composable
 fun CheckoutScreenContent(viewModel: CheckoutViewModel, cartItems: List<LineItem>) {
-    SingleSelectionDropdownMenu(
-        title = stringResource(id = R.string.choose_currency),
-        items = Currency.list
-    ) { currency ->
-        viewModel.getExchangeRate(currency)
-    }
-    val addresses by viewModel.addresses.collectAsState()
-    SelectionDropdownMenu(
-        title = stringResource(id = R.string.choose_address),
-        items = addresses
-    ) { address ->
-        viewModel.chooseAddress(address)
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        SingleSelectionDropdownMenu(
+            title = stringResource(id = R.string.choose_currency),
+            items = Currency.list
+        ) { currency ->
+            viewModel.getExchangeRate(currency)
+        }
+        val addresses by viewModel.addresses.collectAsState()
+        SelectionDropdownMenu(
+            title = stringResource(id = R.string.choose_address),
+            items = addresses
+        ) { address ->
+            viewModel.chooseAddress(address)
+        }
     }
     Spacer(modifier = Modifier.padding(top = 8.dp))
     CheckoutItems(cartItems = cartItems, viewModel = viewModel)
@@ -209,34 +224,29 @@ fun CheckoutScreenContent(viewModel: CheckoutViewModel, cartItems: List<LineItem
 @Composable
 fun CheckoutItems(cartItems: List<LineItem>, viewModel: CheckoutViewModel) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
+        Card(
             modifier = Modifier
-                .weight(1f)
-                .clip(RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .weight(1f),
+            colors = CardDefaults.elevatedCardColors(containerColor = co_background),
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 5.dp)
         ) {
             LazyColumn(contentPadding = PaddingValues(8.dp)) {
                 item {
-                    Box(
+                    Column(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Color.White)
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        verticalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                            verticalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            Text(
-                                text = "Order Details",
-                                style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Divider(thickness = 1.dp, modifier = Modifier.padding(top = 8.dp))
-                        }
+                        Text(
+                            text = "Order Details",
+                            style = TextStyle(fontSize = MaterialTheme.typography.titleLarge.fontSize),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Divider(thickness = 1.dp, modifier = Modifier.padding(top = 8.dp))
                     }
+
                 }
                 items(cartItems) {
                     Column(
@@ -248,10 +258,24 @@ fun CheckoutItems(cartItems: List<LineItem>, viewModel: CheckoutViewModel) {
                         LineItemCard(it)
                     }
                 }
+
+                item {
+                    val totalPrice by viewModel.totalPrice.collectAsState()
+                    Divider(Modifier.padding(bottom = 4.dp, end = 4.dp))
+                    Text(
+                        text = "Total = ${viewModel.currencySymbol} $totalPrice",
+                        style = TextStyle(
+                            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                            fontWeight = FontWeight.SemiBold
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.padding(top = 8.dp))
-        OrderSummary(viewModel = viewModel)
+
     }
 }
 
@@ -259,63 +283,89 @@ fun CheckoutItems(cartItems: List<LineItem>, viewModel: CheckoutViewModel) {
 fun OrderSummary(viewModel: CheckoutViewModel) {
     val itemsCount by viewModel.totalItems.collectAsState()
     val totalPrice by viewModel.totalPrice.collectAsState()
-    Box(
+    Column(
         modifier = Modifier
-            .fillMaxWidth(0.92f)
-            .clip(RoundedCornerShape(10.dp, 10.dp, 10.dp, 10.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalAlignment = Alignment.CenterHorizontally
+        Text(text = itemsCount)
+        Text(text = "Total Price = ${viewModel.currencySymbol} $totalPrice")
+        var code by remember { mutableStateOf("") }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = itemsCount)
-            Text(text = "Total Price = ${viewModel.currencySymbol} $totalPrice")
-            var code by remember { mutableStateOf("") }
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedTextField(modifier = Modifier.fillMaxWidth(0.7f),
-                    value = code,
-                    onValueChange = { code = it },
-                    label = {
-                        Text(
-                            text = stringResource(id = R.string.discount_code)
-                        )
-                    }
-                )
-            }
-            Text(text = stringResource(id = R.string.payment_method))
-            var selectedOption by remember { mutableStateOf(PaymentMethod.Credit) }
+            OutlinedTextField(modifier = Modifier.fillMaxWidth(0.7f),
+                value = code,
+                onValueChange = { code = it },
+                label = {
+                    Text(
+                        text = stringResource(id = R.string.discount_code)
+                    )
+                }
+            )
+        }
+        Text(text = stringResource(id = R.string.payment_method))
+        var selectedOption by remember { mutableStateOf(PaymentMethod.Credit) }
 
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = stringResource(id = R.string.cod))
-                RadioButton(
-                    selected = selectedOption == PaymentMethod.Cod,
-                    onClick = {
-                        if (totalPrice.toInt() < 1000) {
-                            selectedOption = PaymentMethod.Cod
-                            viewModel.paymentMethod(PaymentMethod.Cod)
-                        } else
-                            viewModel.showMessage(R.string.no_cod)
-                    },
-                )
-                Text(text = stringResource(id = R.string.credit))
-                RadioButton(
-                    selected = selectedOption == PaymentMethod.Credit,
-                    onClick = {
-                        selectedOption = PaymentMethod.Credit
-                        viewModel.paymentMethod(PaymentMethod.Credit)
-                    }
-                )
-            }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = stringResource(id = R.string.cod))
+            RadioButton(
+                selected = selectedOption == PaymentMethod.Cod,
+                onClick = {
+                    if (totalPrice.toInt() < 1000) {
+                        selectedOption = PaymentMethod.Cod
+                        viewModel.paymentMethod(PaymentMethod.Cod)
+                    } else
+                        viewModel.showMessage(R.string.no_cod)
+                },
+            )
+            Text(text = stringResource(id = R.string.credit))
+            RadioButton(
+                selected = selectedOption == PaymentMethod.Credit,
+                onClick = {
+                    selectedOption = PaymentMethod.Credit
+                    viewModel.paymentMethod(PaymentMethod.Credit)
+                }
+            )
         }
     }
+}
+
+
+@Composable
+fun OrderSummaryAlert(viewModel: CheckoutViewModel, onDismiss: () -> Unit, onConfirm: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(id = R.string.order_summary)
+            )
+        },
+        text = {
+            OrderSummary(viewModel = viewModel)
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismiss()
+
+                }
+            ) {
+                Text(text = stringResource(id = R.string.cancel))
+            }
+        },
+        confirmButton = {
+            Button(onClick = {
+                onConfirm()
+                onDismiss()
+            }) {
+                Text(text = stringResource(id = R.string.confirm))
+            }
+        }
+    )
 }

@@ -18,59 +18,64 @@ class BrandsViewModel(
     private val repository: IProductRepository,
     private val wishlistManager: WishlistManager,
     private val cartManager: CartManager
-    ):ViewModel() {
+) : ViewModel() {
     private var _products: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val brandList: StateFlow<UiState> = _products
-    var id:Long = 0
-    init{
-     //   getSpecificBrandProducts(id)
+    var id: Long = 0
+
+    init {
+        //   getSpecificBrandProducts(id)
     }
 
-     fun getSpecificBrandProducts(id:Long) {
+    fun getSpecificBrandProducts(id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            val response = repository.getSpecificBrandProducts(id)
-            withContext(Dispatchers.Main) {
-                response
-                    .catch {
-                        _products.value = UiState.Error(it)
-
-                    }
-                    .collect {
-
-                        _products.value = UiState.Success(it)
-
-
-                    }
-
+         val response = repository.getSpecificBrandProducts(id)
+            if (response.isSuccessful && response.body() != null) {
+                _products.value = UiState.Success(response.body())
             }
+            else{
+                _products.value = UiState.Error(response.errorBody())
+            }
+
         }
     }
 
-    fun addWishlistItem(productId: Long,variantId: Long) {
+    suspend fun isFavorite(productId: Long/*, variantId: Long*/): Boolean {
+        return wishlistManager.isFavorite(productId)
+    }
+
+    fun addWishlistItem(productId: Long, variantId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            wishlistManager.addWishlistItem(productId,variantId)
+            wishlistManager.addWishlistItem(productId, variantId)
         }
     }
+
     fun removeWishlistItem(productId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             wishlistManager.removeWishlistItem(productId)
         }
     }
 
-    fun addItemToCart(productId: Long,variantId: Long) {
+    fun addItemToCart(productId: Long, variantId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            cartManager.addCartItem(productId,variantId)
+            cartManager.addCartItem(productId, variantId)
         }
 
     }
 
 }
 
-    class BrandsViewModelFactory( private val repository: IProductRepository,
-                                  private val wishlistManager: WishlistManager,
-                                  private val cartManager: CartManager) : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return if (modelClass.isAssignableFrom(BrandsViewModel::class.java))
-                BrandsViewModel(repository, wishlistManager,cartManager) as T else throw IllegalArgumentException("View Model Class Not Found !!!")
-        }
+class BrandsViewModelFactory(
+    private val repository: IProductRepository,
+    private val wishlistManager: WishlistManager,
+    private val cartManager: CartManager
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return if (modelClass.isAssignableFrom(BrandsViewModel::class.java))
+            BrandsViewModel(
+                repository,
+                wishlistManager,
+                cartManager
+            ) as T else throw IllegalArgumentException("View Model Class Not Found !!!")
     }
+}
