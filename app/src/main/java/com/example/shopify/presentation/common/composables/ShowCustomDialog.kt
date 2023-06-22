@@ -70,12 +70,12 @@ fun ShowCustomDialog(
                         modifier = Modifier.padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(36.dp))
                         Text(
                             text = stringResource(id = description),
                             textAlign = TextAlign.Center,
                             modifier = Modifier
-                                .padding(top = 10.dp, start = 25.dp, end = 25.dp)
+                                .padding(top = 30.dp, start = 25.dp, end = 25.dp)
                                 .fillMaxWidth(),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer

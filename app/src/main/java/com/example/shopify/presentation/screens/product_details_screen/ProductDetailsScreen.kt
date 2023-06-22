@@ -90,7 +90,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
         is UiState.Success<*> -> {
             LaunchedEffect(key1 = state) {
                 product =
-                    (productState as UiState.Success<SingleProductResponseBody>).data.body()?.product
+                    (productState as UiState.Success<SingleProductResponseBody>).data.product
             }
             if (product != null) {
                 ProductDetailsContentScreen(

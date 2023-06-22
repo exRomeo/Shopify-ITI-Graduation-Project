@@ -18,6 +18,7 @@ import com.example.shopify.R
 import com.example.shopify.utilities.ShopifyApplication
 import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.core.helpers.CurrentUserHelper
+import com.example.shopify.core.helpers.DiscountHelper
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.core.utils.ConnectionUtil
 import com.example.shopify.data.models.GoogleSignInState
@@ -54,7 +55,11 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
     val loginViewModel: LoginViewModel = viewModel(factory = loginViewModelFactory)
     val authState by loginViewModel.authResponse.collectAsState()
     val googleState by loginViewModel.googleState.collectAsState()
-
+    val context = LocalContext.current
+    /*LaunchedEffect(key1 = Unit){
+        CurrentUserHelper.initialize(authRepository)
+        DiscountHelper.initialize(context.applicationContext)
+    }*/
     when (val authResponse = authState) {
         is AuthenticationResponseState.Success -> {
             LaunchedEffect(key1 = authState) {
