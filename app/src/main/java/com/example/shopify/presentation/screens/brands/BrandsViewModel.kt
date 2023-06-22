@@ -29,21 +29,14 @@ class BrandsViewModel(
 
     fun getSpecificBrandProducts(id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            val response = repository.getSpecificBrandProducts(id)
-            withContext(Dispatchers.Main) {
-                response
-                    .catch {
-                        _products.value = UiState.Error(it)
-
-                    }
-                    .collect {
-
-                        _products.value = UiState.Success(it)
-
-
-                    }
-
+         val response = repository.getSpecificBrandProducts(id)
+            if (response.isSuccessful && response.body() != null) {
+                _products.value = UiState.Success(response.body())
             }
+            else{
+                _products.value = UiState.Error(response.errorBody())
+            }
+
         }
     }
 

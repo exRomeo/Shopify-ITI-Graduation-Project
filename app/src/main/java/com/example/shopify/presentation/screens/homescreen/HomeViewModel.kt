@@ -1,7 +1,5 @@
 package com.example.shopify.presentation.screens.homescreen
 
-import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -12,9 +10,7 @@ import com.example.shopify.data.repositories.product.IProductRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeViewModel(
     private val repository: IProductRepository,
@@ -32,46 +28,29 @@ class HomeViewModel(
         getBrands()
         getRandomProducts()
 
-
     }
 
      fun getBrands() {
-        Log.i("nada","home")
         viewModelScope.launch(Dispatchers.IO) {
-            val response = repository.getBrands()
-            withContext(Dispatchers.Main) {
-                response
-                    .catch {
-                        _brandsList.value = UiState.Error(it)
-
-                    }
-                    .collect {
-                        Log.i("menna", "getbrands")
-                        _brandsList.value = UiState.Success(it)
-                        Log.i("TAG", "getBrands: =======================>")
-
-                    }
-
+        val response = repository.getBrands()
+            if(response.isSuccessful && response.body()!= null){
+                _brandsList.value = UiState.Success(response.body())
             }
+         //   _brandsList.value = UiState.Error
         }
     }
 
      fun getRandomProducts() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = repository.getRandomProducts()
-            withContext(Dispatchers.Main) {
-                response
-                    .catch {
-                        _randomList.value = UiState.Error(it)
-                    }
-                    .collect {
-                        _randomList.value = UiState.Success(it)
-
-                    }
-
-            }
-        }
-    }
+         viewModelScope.launch(Dispatchers.IO) {
+             val response = repository.getRandomProducts()
+             if (response.isSuccessful && response.body() != null) {
+                 _randomList.value = UiState.Success(response.body())
+             }
+             else{
+                 _randomList.value = UiState.Error(response.errorBody())
+             }
+         }
+     }
 
 
     fun addWishlistItem(productId: Long, variantId: Long) {

@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -71,19 +72,17 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.example.shopify.R
+import com.example.shopify.core.helpers.CurrentUserHelper
+import com.example.shopify.core.helpers.DiscountHelper
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
 import com.example.shopify.core.navigation.Screens
-import com.example.shopify.core.utils.SharedPreference
-import com.example.shopify.core.utils.SharedPreference.discountPercentage
-import com.example.shopify.core.utils.applyDiscount
 import com.example.shopify.data.managers.cart.CartManager
 import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.SmartCollections
-import com.example.shopify.data.repositories.authentication.IAuthRepository
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.common.composables.CustomSearchbar
 import com.example.shopify.presentation.common.composables.WarningDialog
@@ -93,11 +92,12 @@ import com.example.shopify.utilities.ShopifyApplication
 fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
     val repository: IProductRepository =
         (LocalContext.current.applicationContext as ShopifyApplication).repository
-   val wishlistManager: WishlistManager =
+    val wishlistManager: WishlistManager =
         (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
     val cartManager: CartManager =
         (LocalContext.current.applicationContext as ShopifyApplication).cartManager
-   val viewModel: HomeViewModel =
+
+    val viewModel: HomeViewModel =
         viewModel(factory = HomeViewModelFactory(repository, wishlistManager, cartManager))
 
     val brandsState: UiState by viewModel.brandList.collectAsState()
@@ -120,9 +120,11 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
         }
     }
 
+    var openDialogue by remember {
+        mutableStateOf(false)
+    }
     when (brandsState) {
         is UiState.Loading -> {
-
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -139,8 +141,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
 
         is UiState.Success<*> -> {
             Log.i("menna", "success")
-            brandList =
-                (brandsState as UiState.Success<SmartCollections>).data.body()?.smart_collections!!
+            brandList = (brandsState as UiState.Success<SmartCollections>).data.smart_collections
         }
 
         else -> {
@@ -152,15 +153,13 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
         }
 
         is UiState.Success<*> -> {
-            randomList = (randomsState as UiState.Success<Products>).data.body()?.products!!
-
+            randomList = (randomsState as UiState.Success<Products>).data.products!!
         }
 
         else -> {
             Log.i("homepage", (randomsState as UiState.Error).error.toString())
         }
     }
-
 
     //  ScaffoldStructure("home",navController) {
     // Scaffold (bottomBar = {Bottombar(navController = rememberNavController())}) {
@@ -191,29 +190,40 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
                         AdsCarousel()
                     }
 
-                HomeSection(sectionTitle = R.string.brands) {
 
+                HomeSection(sectionTitle = R.string.brands) {
                     //  (brandsState as UiState.Success).data.body()?.let {
                     BrandCards(brands = filteredList, navController = navController)
                 }
 
+                Spacer(modifier = Modifier.padding(top = 20.dp))
                 HomeSection(sectionTitle = R.string.trending_products) {
+                    Spacer(modifier = Modifier.padding(bottom = 5.dp))
                     ItemCards(navController = navController, viewModel, products = randomList,
                         isFavourite = false, onFavouriteClicked = {
-//                        product ->
-//                    isFavourite = !isFavourite
-//                    if (isFavourite) {
-//                        viewModel.addWishlistItem(product)
-//
-//                    }
-//                    if (!isFavourite) {
-//                        viewModel.removeWishlistItem(product)
-//
-//                    }
                         }, onAddToCard = { product ->
-                            viewModel.addItemToCart(product.id, product.variants[0].id)
+                            if(CurrentUserHelper.isLoggedIn()) {
+                                viewModel.addItemToCart(product.id, product.variants[0].id)
+                            }
+                            else{
+                                openDialogue = true
+
+                            }
 
                         })
+                    if(openDialogue) {
+                        WarningDialog(
+                            dialogTitle = "oops!!",
+                            message = "You are not signed in ,please sign in to add to your cart",
+                            dismissButtonText = "",
+                            confirmButtonText = "ok",
+                            onConfirm = {
+                                openDialogue = false
+                            },
+                            onDismiss = {},
+                            addDismissButton = false
+                        )
+                    }
 
                 }
             }
@@ -257,7 +267,7 @@ fun ItemCardContent(
         .clickable {
             navController.navigate(route = "${Screens.Details.route}/${item.id}")
         }
-        .padding(horizontal = 20.dp, vertical = 10.dp)
+        .padding(horizontal = 10.dp, vertical = 10.dp)
         .height(330.dp)
         .width(200.dp)) {
         item.image?.src?.let {
@@ -369,7 +379,7 @@ fun AdsCarousel(
 
     val couponsList: List<String> =
         listOf("Cf56u%erdHJJ", "AAgf8876GFd", "GRTO#kl76C", "PTYR%&R#dw")
-    val offers: List<String> = listOf("5%", "20%", "50%", "70%")
+    val offers: List<Int> = listOf(5, 20, 50, 70)
         val sharedPreference: SharedPreferences =
       (LocalContext.current.applicationContext as ShopifyApplication).sharedPreference
     var openDialogue by remember {
@@ -435,20 +445,21 @@ fun AdsCarousel(
 
                                 //  }
                                 if (openDialogue) {
-                                    val clipboardManager =
-                                        LocalContext.current.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                    val clip =
-                                        ClipData.newPlainText("coupon", couponsList[itemIndex])
-                                    clipboardManager.setPrimaryClip(clip)
-                                   sharedPreference.discountPercentage = offers[itemIndex]
+
+                                    if(CurrentUserHelper.isLoggedIn()) {
+                                        val clipboardManager =
+                                            LocalContext.current.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                        val clip =
+                                            ClipData.newPlainText("coupon", couponsList[itemIndex])
+                                        clipboardManager.setPrimaryClip(clip)
+                                        DiscountHelper.addDiscountValue(offers[itemIndex])
+                                   //sharedPreference.discountPercentage = offers[itemIndex]
 
                                     WarningDialog(
                                         dialogTitle = "GREAT OFFERS !!",
-                                        message = "Your have got ${offers[itemIndex]} discount ,your coupon ${couponsList[itemIndex]} has been copied to" +
-
-                                                "clibboard",
+                                        message = "Your have got ${offers[itemIndex]} % discount ,your coupon is  ${couponsList[itemIndex]}",
                                         dismissButtonText = "",
-                                        confirmButtonText = "OK",
+                                        confirmButtonText = "Copy Coupon Code",
                                         onConfirm = {
                                             openDialogue = false
                                         },
@@ -456,6 +467,22 @@ fun AdsCarousel(
                                         addDismissButton = false
                                     )
                                 }
+                                    else{
+
+                                        WarningDialog(
+                                            dialogTitle = "oops!!",
+                                            message = "you are not signed in,please sign in to get your discount",
+                                            dismissButtonText = "",
+                                            confirmButtonText = "ok",
+                                            onConfirm = {
+                                                openDialogue = false
+                                            },
+                                            onDismiss = {},
+                                            addDismissButton = false
+                                        )
+                                    }
+
+                                    }
                             }
                         }
                     }
@@ -498,7 +525,6 @@ fun FavoriteButton(
     }
 }
 
-//"https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png"
 
 @Composable
 fun ImageFromNetwork(modifier: Modifier = Modifier, image: String) {
@@ -532,7 +558,7 @@ fun HomeSection(
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = modifier.padding(vertical = 20.dp)
+        //modifier = modifier.padding(vertical = 2.dp)
     )
     {
         Text(
@@ -541,7 +567,7 @@ fun HomeSection(
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(vertical = 10.dp)
+               // .padding(vertical = 2.dp)
         )
         sectionContent()
     }
@@ -589,9 +615,11 @@ fun ItemCards(
             CardDesign(onCardClicked = {}) {
                 ItemCardContent(
                     navController = navController,
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
                     isFavourite = isFavourite,
                     onFavouritesClicked = { product ->
+                       Log.i("menna", DiscountHelper.getDiscount().toString())
+
                         isFavourite = !isFavourite
                         if (isFavourite) {
                             viewModel.addWishlistItem(product.id, product.variants[0].id)

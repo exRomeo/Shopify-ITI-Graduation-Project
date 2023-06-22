@@ -81,3 +81,6 @@ val hintColor = Color(0xFFA5AAA9)
 val facebookBackground = Color(0xFF483d8b)
 val ratingColor = Color(0xFFED8A19)
 val networkErrorButton = Color(0XFF1A2E35)
+
+//more customs
+val co_background = Color(0xFFFEFEFE)

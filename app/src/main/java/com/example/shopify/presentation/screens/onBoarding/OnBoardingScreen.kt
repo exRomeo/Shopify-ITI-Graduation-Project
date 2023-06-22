@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,7 +42,7 @@ import com.google.accompanist.pager.rememberPagerState
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun OnBoardingScreen(navController: NavHostController) {
+fun OnBoardingScreen(navController:NavHostController ) {
     val items = ArrayList<OnBoardingData>()
 
     items.add(
@@ -75,85 +76,82 @@ fun OnBoardingScreen(navController: NavHostController) {
         infiniteLoop = false,
         initialPage = 0,
     )
-    val sharedPreference =
-        (LocalContext.current.applicationContext as ShopifyApplication).sharedPreference
-    if (sharedPreference.hasCompletedOnBoarding) {
-        Log.i("menna", "true")
-        sharedPreference.hasCompletedOnBoarding = true
-        navController.navigate(Screens.Login.route)
-    } else {
-        Log.i("menna", "false")
-        OnBoardingPager(items, pagerState, onComplete = {
-            sharedPreference.hasCompletedOnBoarding = true
-            navController.navigate(Screens.Login.route)
-        })
-    }
-}
-
-@ExperimentalPagerApi
-@Composable
-fun OnBoardingPager(
-    item: List<OnBoardingData>,
-    pagerState: PagerState,
-    modifier: Modifier = Modifier,
-    onComplete: () -> Unit
-) {
-    Box(modifier = modifier) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            HorizontalPager(state = pagerState) { page ->
-                Column(
-                    modifier = Modifier
-                        .padding(top = 60.dp)
-                        .fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-
-                    Image(
-                        painter = painterResource(id = item[page].image),
-                        contentDescription = item[page].title,
-                        modifier = Modifier
-                            .height(250.dp)
-                            .fillMaxWidth()
-                    )
-
-                    Text(
-                        text = item[page].title,
-                        modifier = Modifier.padding(top = 50.dp),
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.headlineLarge
-                    )
-
-                    Text(
-                        text = item[page].desc,
-                        modifier = Modifier.padding(top = 30.dp, start = 20.dp, end = 20.dp),
-                        color = MaterialTheme.colorScheme.secondary,
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontSize = 18.sp,
-                        textAlign = TextAlign.Center
-                    )
-
+    val sharedPreference = (LocalContext.current.applicationContext as ShopifyApplication).sharedPreference
+            if (sharedPreference.hasCompletedOnBoarding) {
+                Log.i("menna","true")
+                LaunchedEffect(Unit) {
+                    navController.navigate(Screens.Home.route)
                 }
             }
-            Spacer(modifier.padding(40.dp))
-            //Row() {
-            PagerIndicator(item.size, pagerState.currentPage)
-
-            Spacer(modifier.padding(10.dp))
-            //                Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-            BottomSection(pagerState.currentPage, onComplete)
-            //              }
-        }
-    }
+    else {
+                Log.i("menna","false")
+                OnBoardingPager(items, pagerState, onComplete = {
+                    sharedPreference.hasCompletedOnBoarding = true
+                    navController.navigate(Screens.Home.route)
+                })
+            }
 }
 
+    @ExperimentalPagerApi
+    @Composable
+    fun OnBoardingPager(
+        item: List<OnBoardingData>,
+        pagerState: PagerState,
+        modifier: Modifier = Modifier,
+        onComplete: () -> Unit
+    ) {
+        Box(modifier = modifier) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                HorizontalPager(state = pagerState) { page ->
+                    Column(
+                        modifier = Modifier
+                            .padding(top = 60.dp)
+                            .fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        Image(
+                            painter = painterResource(id = item[page].image),
+                            contentDescription = item[page].title,
+                            modifier = Modifier
+                                .height(250.dp)
+                                .fillMaxWidth()
+                        )
+
+                        Text(
+                            text = item[page].title,
+                            modifier = Modifier.padding(top = 50.dp),
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.headlineLarge
+                        )
+
+                        Text(
+                            text = item[page].desc,
+                            modifier = Modifier.padding(top = 30.dp, start = 20.dp, end = 20.dp),
+                            color = MaterialTheme.colorScheme.secondary,
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Center
+                        )
+
+                    }
+                }
+                Spacer(modifier.padding(40.dp))
+                //Row() {
+                    PagerIndicator(item.size, pagerState.currentPage)
+
+                Spacer(modifier.padding(10.dp))
+    //                Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+                    BottomSection(pagerState.currentPage, onComplete)
+      //              }
+                }
+            }
+        }
+
 @Composable
-fun PagerIndicator(
-    size: Int,
-    currentPage: Int,
-    modifier: Modifier = Modifier.padding(top = 60.dp)
-) {
+fun PagerIndicator(size: Int, currentPage: Int) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier
+        modifier = Modifier.padding(top = 60.dp)
     ) {
         repeat(size) {
             Indicator(isSelected = it == currentPage)
@@ -177,9 +175,8 @@ fun Indicator(isSelected: Boolean) {
             )
     )
 }
-
 @Composable
-fun BottomSection(currentPager: Int, onComplete: () -> Unit) {
+fun BottomSection(currentPager: Int,onComplete: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(bottom = 20.dp)
@@ -189,7 +186,7 @@ fun BottomSection(currentPager: Int, onComplete: () -> Unit) {
 
         if (currentPager == 2) {
             OutlinedButton(
-                onClick = onComplete,
+                onClick =  onComplete,
                 shape = RoundedCornerShape(50)
             ) {
                 Text(
