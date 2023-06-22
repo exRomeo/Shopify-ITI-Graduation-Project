@@ -155,7 +155,7 @@ fun SignupContentScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         AuthenticationTextField(
             modifier = Modifier
                 .height(72.dp)
@@ -169,7 +169,7 @@ fun SignupContentScreen(
             onValueChange = onEmailChanged,
             textFieldType = TextFieldType.Email
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         AuthenticationTextField(
             modifier = Modifier
                 .height(72.dp)
@@ -183,7 +183,7 @@ fun SignupContentScreen(
             onValueChange = onPhoneChanged,
             textFieldType = TextFieldType.Phone
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         AuthenticationTextField(
             modifier = Modifier
                 .height(72.dp)
@@ -195,7 +195,7 @@ fun SignupContentScreen(
             onValueChange = onAddressChanged,
             textFieldType = TextFieldType.Address
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         AuthenticationTextField(
             modifier = Modifier
                 .height(72.dp)
@@ -209,7 +209,7 @@ fun SignupContentScreen(
             onValueChange = onPasswordChanged,
             textFieldType = TextFieldType.Password
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         AuthenticationTextField(
             modifier = Modifier
                 .height(72.dp)
@@ -224,7 +224,7 @@ fun SignupContentScreen(
             textFieldType = TextFieldType.ConfirmPassword
         )
         if (errorResponse.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = errorResponse,
                 style = ibarraRegular,

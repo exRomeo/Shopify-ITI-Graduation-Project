@@ -32,6 +32,7 @@ import com.example.shopify.data.repositories.checkout.local.PaymentDao
 import com.example.shopify.data.repositories.checkout.remote.StripeAPIService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.stripe.android.PaymentConfiguration
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -78,6 +79,8 @@ class ShopifyApplication : Application() {
             GlobalScope.launch(Dispatchers.IO) {
                 currentCustomer = getCurrentCustomer(authRepository)
                 CurrentUserHelper.initialize(authRepository)
+//                cartManager.getCartItems()
+//                wishlistManager.getWishlistItems()
                 Log.i("TAG", "onCreate: $currentCustomer")
             }
         } else {  //IsNot LoggedIn

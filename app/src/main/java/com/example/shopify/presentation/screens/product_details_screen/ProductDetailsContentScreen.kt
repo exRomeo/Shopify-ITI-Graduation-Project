@@ -385,7 +385,7 @@ fun ProductDetailsContentScreen(
         if (!userIsLoggedIn) {
             Surface(color = Color.Gray) {
                 ShowCustomDialog(
-                    title = R.string.please_login,
+                    title = R.string.login,
                     description = R.string.please_login,
                     buttonText = R.string.login,
                     animatedId = R.raw.sign_for_error_or_explanation_alert,
