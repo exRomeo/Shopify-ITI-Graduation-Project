@@ -41,14 +41,14 @@ fun ShowCustomDialog(
     Dialog(onDismissRequest = onClickButton) {
         Box(
             modifier = Modifier
-                .height(500.dp)
+                .height(460.dp)
         ) {
 
             Column(modifier = Modifier) {
-                Spacer(modifier = Modifier.height(270.dp))
+                Spacer(modifier = Modifier.height(230.dp))
                 Box(
                     modifier = Modifier
-                        .height(560.dp)
+                        .height(520.dp)
                         .background(
                             color = MaterialTheme.colorScheme.onPrimary,
                             shape = RoundedCornerShape(25.dp, 10.dp, 25.dp, 10.dp)
@@ -70,17 +70,17 @@ fun ShowCustomDialog(
                         modifier = Modifier.padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Spacer(modifier = Modifier.height(18.dp))
+                        Spacer(modifier = Modifier.height(24.dp))
                         Text(
                             text = stringResource(id = description),
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .padding(top = 10.dp, start = 25.dp, end = 25.dp)
                                 .fillMaxWidth(),
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(36.dp))
                         Button(
                             onClick = onClickButton,
                             modifier = Modifier
@@ -111,7 +111,7 @@ fun ShowCustomDialog(
             }
             HeaderImage(
                 modifier = Modifier
-                    .size(200.dp)
+                    .size(150.dp)
                     .align(Alignment.TopCenter),
                 animationId = animatedId
             )

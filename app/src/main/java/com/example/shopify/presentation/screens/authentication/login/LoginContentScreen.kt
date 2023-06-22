@@ -137,6 +137,7 @@ fun LoginContentScreen(
             )
         }
         if (errorResponse.isNotEmpty()) {
+            Log.i("TAG", "Error response error: $errorResponse")
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = errorResponse,

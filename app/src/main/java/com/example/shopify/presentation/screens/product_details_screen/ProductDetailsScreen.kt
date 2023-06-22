@@ -244,8 +244,6 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
 
                 else -> {
                     showNetworkDialog = true
-                    val error = (productState as UiState.Error).error.message
-                    Log.i("TAG", "ProductDetailsScreen: $error")
                     if (showNetworkDialog)
                         Surface(color = Color.Gray) {
                             ShowCustomDialog(

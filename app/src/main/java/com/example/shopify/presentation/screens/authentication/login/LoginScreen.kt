@@ -20,6 +20,7 @@ import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.core.utils.ConnectionUtil
+import com.example.shopify.data.models.GoogleSignInState
 import com.example.shopify.data.repositories.authentication.IAuthRepository
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.ShowCustomDialog
@@ -56,19 +57,14 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
 
     when (val authResponse = authState) {
         is AuthenticationResponseState.Success -> {
-            if (CurrentUserHelper.isLoggedIn()) {
-                LaunchedEffect(key1 = authState) {
-                    error = "ERROR"
-                    Log.i("TAG", "NAVIGATE TO HOME SCREEN")
-                    loginNavController.popBackStack()
-                    loginNavController.navigate(route = Screens.Home.route, builder = {
-                        popUpTo(route = Screens.Home.route) {
-                            inclusive = true
-                        }
-                    })
-                }
-            } else {
-                LottieAnimation(animation = R.raw.shopping_cart_loading_animation)
+            LaunchedEffect(key1 = authState) {
+                Log.i("TAG", "NAVIGATE TO HOME SCREEN")
+                loginNavController.popBackStack()
+                loginNavController.navigate(route = Screens.Home.route, builder = {
+                    popUpTo(route = Screens.Home.route) {
+                        inclusive = true
+                    }
+                })
             }
         }
 
@@ -94,21 +90,20 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
                             }
                         )
                 }
+
                 else -> error = stringResource(id = R.string.please_check_email_password)
             }
-            Log.i("TAG", " ERROR ${authResponse.message}")
 
         }
 
         else -> {
-            Log.i("TAG", "THERE'S SOMETHING WRONG ")
             showNetworkDialog = true
             if (showNetworkDialog)
                 ShowCustomDialog(
-                    title = R.string.network_connection,
-                    description = R.string.not_connection,
+                    title = R.string.something_is_wrong,
+                    description = R.string.something_is_wrong,
                     buttonText = R.string.tryAgain,
-                    animatedId = R.raw.no_network_error_page_with_cat,
+                    animatedId = R.raw.sign_for_error_or_explanation_alert,
                     onClickButton = { showNetworkDialog = false },
                     onClose = {
                         showNetworkDialog = false
@@ -117,34 +112,25 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
         }
     }
 
-    when (googleState.success != null) {
-        true -> {
-            LaunchedEffect(googleState) {
-                loginNavController.navigate(Screens.Home.route)
+    when (googleState) {
+        is GoogleSignInState -> {
+            if (googleState.success != null) {
+                LaunchedEffect(googleState) {
+                    Log.i("TAG", "Google navigate: ")
+                    loginNavController.navigate(Screens.Home.route)
+                }
+            } else {
+                Log.i("TAG", "LoginScreen: Error in google")
             }
         }
-
-        false -> error = googleState.error
-
     }
 
     if (ConnectionUtil.isConnected()) {
-        if (authRepository.checkedLoggedIn()) {
+        if (loginViewModel.checkedLoggedIn()) {
             Log.i("TAG", "Check logged in: ${authRepository.checkedLoggedIn()}")
             LaunchedEffect(key1 = Unit) {
                 loginNavController.navigate(Screens.Home.route)
             }
-        } else { //Not logged in
-            LoginContentScreen(
-                loginViewModel = loginViewModel,
-                email = email,
-                onEmailChanged = { email = it },
-                password = password,
-                onPasswordChanged = { password = it },
-                isDataEntered = isDataEntered,
-                errorResponse = error,
-                loginNavController = loginNavController
-            )
         }
     } else {
         showNetworkDialog = true
@@ -160,5 +146,15 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
                 }
             )
     }
-
+    Log.i("TAG", "Error in gener: $error")
+    LoginContentScreen(
+        loginViewModel = loginViewModel,
+        email = email,
+        onEmailChanged = { email = it },
+        password = password,
+        onPasswordChanged = { password = it },
+        isDataEntered = isDataEntered,
+        errorResponse = error,
+        loginNavController = loginNavController
+    )
 }

@@ -107,6 +107,9 @@ class LoginViewModel(private val authRepository: IAuthRepository) : ViewModel() 
 
     }
 
+    fun checkedLoggedIn():Boolean{
+        return authRepository.checkedLoggedIn()
+    }
     private fun checkLoggedInState(responseState: AuthenticationResponseState) {
         when (responseState) {
             is AuthenticationResponseState.Success -> {

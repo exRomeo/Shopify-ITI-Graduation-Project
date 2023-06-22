@@ -136,6 +136,6 @@
     <string name="payment_succeeded">Your Order On Its Way!</string>
     <string name="payment_failed">Credit Card Declined</string>
     <string name="login_as_guest">As Guest\n</string>
-    <string name="please_login"> you have not created an account yet, you can easily sign up by clicking on the "Login" button.</string>
+    <string name="please_login"> you have not created an account yet, you can easily register by clicking on the "Login" button.</string>
     <string name="Egp">EGP</string>
 </resources>
