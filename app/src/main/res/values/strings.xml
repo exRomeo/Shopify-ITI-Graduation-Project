@@ -113,6 +113,7 @@
     <string name="product_remove_from_fav_success">Product remove from favorite</string>
     <string name="product_remove_from_cart_success">Product remove from cart</string>
     <string name="checkout">CHECKOUT</string>
+    <string name="check_out">Checkout</string>
     <string name="add_items_to_cart">Add Items to Cart</string>
     <string name="not_connection">Please Check Your Internet Connection.</string>
     <string name="unexpected_error">Unexpected error, something is wrong\n Please try again!</string>
@@ -135,4 +136,5 @@
     <string name="payment_succeeded">Your Order On Its Way!</string>
     <string name="payment_failed">Credit Card Declined</string>
     <string name="login_as_guest">As Guest\n</string>
+    <string name="please_login"> you have not created an account yet, you can easily sign up by clicking on the "Login" button.</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.shopify.utilities
 
 import android.app.Application
+import android.util.Log
 import com.example.shopify.BuildConfig
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.RetrofitHelper
@@ -31,7 +32,6 @@ import com.example.shopify.data.repositories.checkout.local.PaymentDao
 import com.example.shopify.data.repositories.checkout.remote.StripeAPIService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.stripe.android.PaymentConfiguration
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -75,10 +75,10 @@ class ShopifyApplication : Application() {
 
         ConnectionUtil.initialize(applicationContext)
         if (authRepository.checkedLoggedIn()) { //Is loggedIn
-
             GlobalScope.launch(Dispatchers.IO) {
                 currentCustomer = getCurrentCustomer(authRepository)
                 CurrentUserHelper.initialize(authRepository)
+                Log.i("TAG", "onCreate: $currentCustomer")
             }
         } else {  //IsNot LoggedIn
             currentCustomer = null

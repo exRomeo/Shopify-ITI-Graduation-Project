@@ -23,6 +23,7 @@ import com.example.shopify.utilities.ShopifyApplication
 import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.navigation.Screens
+import com.example.shopify.core.utils.ConnectionUtil
 import com.example.shopify.core.utils.SharedPreference
 import com.example.shopify.core.utils.SharedPreference.hasCompletedOnBoarding
 import com.example.shopify.data.managers.cart.CartManager
@@ -31,6 +32,7 @@ import com.example.shopify.data.models.GetCurrentCustomer
 import com.example.shopify.data.repositories.authentication.IAuthRepository
 import com.example.shopify.data.repositories.user.IUserDataRepository
 import com.example.shopify.data.repositories.user.UserDataRepository
+import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.ShowCustomDialog
 import java.io.IOException
 
@@ -55,41 +57,54 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
     var showNetworkDialog by rememberSaveable { //for configuration change
         mutableStateOf(false)
     }
+
     val authRepository: IAuthRepository =
         (LocalContext.current.applicationContext as ShopifyApplication).authRepository
-    val cartManager: CartManager =
-        (LocalContext.current.applicationContext as ShopifyApplication).cartManager
-    val wishlistManager: WishlistManager =
-        (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
-    val userDataRepository: IUserDataRepository =
-        (LocalContext.current.applicationContext as ShopifyApplication).userDataRepository
     val loginViewModelFactory = LoginViewModelFactory(authRepository)
     val loginViewModel: LoginViewModel = viewModel(factory = loginViewModelFactory)
     val authState by loginViewModel.authResponse.collectAsState()
     val googleState by loginViewModel.googleState.collectAsState()
+
     when (val authResponse = authState) {
         is AuthenticationResponseState.Success -> {
-            LaunchedEffect(key1 = authState) {
-                error = ""
-                Log.i("TAG", "NAVIGATE TO HOME SCREEN")
-                loginNavController.popBackStack()
-                loginNavController.navigate(route = Screens.Home.route, builder = {
-                    popUpTo(route = Screens.Home.route) {
-                        inclusive = true
-                    }
-                })
-
+            if (CurrentUserHelper.isLoggedIn()) {
+                LaunchedEffect(key1 = authState) {
+                    error = ""
+                    Log.i("TAG", "NAVIGATE TO HOME SCREEN")
+                    loginNavController.popBackStack()
+                    loginNavController.navigate(route = Screens.Home.route, builder = {
+                        popUpTo(route = Screens.Home.route) {
+                            inclusive = true
+                        }
+                    })
+                }
+            } else {
+                LottieAnimation(animation = R.raw.shopping_cart_loading_animation)
             }
         }
 
         is AuthenticationResponseState.Loading -> {
             Log.i("TAG", " LOADING IN LOGIN SCREEN")
+            LottieAnimation(animation = R.raw.shopping_cart_loading_animation)
         }
 
         is AuthenticationResponseState.Error -> {
             when (authResponse.message) {
-                is IOException ->
+                is IOException -> {
                     error = stringResource(id = R.string.please_check_network)
+                    showNetworkDialog = true
+                    if (showNetworkDialog)
+                        ShowCustomDialog(
+                            title = R.string.network_connection,
+                            description = R.string.not_connection,
+                            buttonText = R.string.tryAgain,
+                            animatedId = R.raw.no_network_error_page_with_cat,
+                            onDismiss = { showNetworkDialog = false },
+                            onClose = {
+                                showNetworkDialog = false
+                            }
+                        )
+                }
 
                 else -> error = stringResource(id = R.string.please_check_email_password)
             }
@@ -99,6 +114,18 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
 
         else -> {
             Log.i("TAG", "THERE'S SOMETHING WRONG ")
+            showNetworkDialog = true
+            if (showNetworkDialog)
+                ShowCustomDialog(
+                    title = R.string.network_connection,
+                    description = R.string.not_connection,
+                    buttonText = R.string.tryAgain,
+                    animatedId = R.raw.no_network_error_page_with_cat,
+                    onDismiss = { showNetworkDialog = false },
+                    onClose = {
+                        showNetworkDialog = false
+                    }
+                )
         }
     }
 
@@ -109,25 +136,41 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
             }
         }
 
-        false -> error = ""
+        false -> error = googleState.error
 
     }
 
-    if (authRepository.checkedLoggedIn()) {
-        Log.i("TAG", "Check logged in: ${authRepository.checkedLoggedIn()}")
-        LaunchedEffect(key1 = Unit) {
-            loginNavController.navigate(Screens.Home.route)
+    if (ConnectionUtil.isConnected()) {
+        if (authRepository.checkedLoggedIn()) {
+            Log.i("TAG", "Check logged in: ${authRepository.checkedLoggedIn()}")
+            LaunchedEffect(key1 = Unit) {
+                loginNavController.navigate(Screens.Home.route)
+            }
+        } else { //Not logged in
+            LoginContentScreen(
+                loginViewModel = loginViewModel,
+                email = email,
+                onEmailChanged = { email = it },
+                password = password,
+                onPasswordChanged = { password = it },
+                isDataEntered = isDataEntered,
+                errorResponse = error,
+                loginNavController = loginNavController
+            )
         }
-    } else { //Not logged in
-        LoginContentScreen(
-            loginViewModel = loginViewModel,
-            email = email,
-            onEmailChanged = { email = it },
-            password = password,
-            onPasswordChanged = { password = it },
-            isDataEntered = isDataEntered,
-            errorResponse = error,
-            loginNavController = loginNavController
-        )
+    } else {
+        showNetworkDialog = true
+        if (showNetworkDialog)
+            ShowCustomDialog(
+                title = R.string.network_connection,
+                description = R.string.not_connection,
+                buttonText = R.string.tryAgain,
+                animatedId = R.raw.no_network_error_page_with_cat,
+                onDismiss = { showNetworkDialog = false },
+                onClose = {
+                    showNetworkDialog = false
+                }
+            )
     }
+
 }

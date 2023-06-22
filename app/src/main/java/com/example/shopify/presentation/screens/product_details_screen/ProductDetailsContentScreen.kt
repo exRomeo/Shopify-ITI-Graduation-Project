@@ -34,7 +34,6 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -64,7 +63,9 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.shopify.R
+import com.example.shopify.core.navigation.Screens
 import com.example.shopify.data.models.SingleProduct
+import com.example.shopify.presentation.common.composables.ShowCustomDialog
 import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.presentation.screens.onBoarding.PagerIndicator
 import com.example.shopify.ui.theme.ibarraBold
@@ -76,14 +77,14 @@ import com.example.shopify.ui.theme.mainColor
 fun ProductDetailsContentScreen(
     modifier: Modifier = Modifier,
     productNavController: NavHostController,
-//    hasNetworkConnection: Boolean,
     isFavorite: Boolean,
-//    showNetworkDialog: Boolean,
     showFavWarningDialog: Boolean,
     showReviewsDialog: Boolean,
     showToast: Boolean,
     showCartDialog: Boolean,
+    userIsLoggedIn: Boolean,
     rating: Double,
+    @StringRes buttonTitle: Int,
     @StringRes dialogMessage: Int,
     @StringRes toastMessage: Int,
     itemCount: Int,
@@ -116,7 +117,8 @@ fun ProductDetailsContentScreen(
                 addToCartAction,
                 increaseItemCount,
                 decreaseItemCount,
-                itemCount
+                buttonTitle,
+                itemCount,
             )
         }
     })
@@ -175,7 +177,6 @@ fun ProductDetailsContentScreen(
                                 colorFilter = ColorFilter.colorMatrix(colorMatrix)
                             )
 
-
                             Surface(
                                 shape = CircleShape,
                                 modifier = Modifier
@@ -222,6 +223,16 @@ fun ProductDetailsContentScreen(
                         }
 
                     }
+                    Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                        product?.images?.size?.let { it1 ->
+                            PagerIndicator(
+                                it1,
+                                pagerState.currentPage,
+                                modifier = Modifier.padding(top = 5.dp)
+                            )
+                        }
+                    }
+
                     Column(
                         modifier = Modifier.padding(16.dp)
                     ) {
@@ -230,16 +241,6 @@ fun ProductDetailsContentScreen(
                                 .fillMaxWidth(1f)
                                 .align(Alignment.CenterHorizontally)
                         ) {
-                            Surface(
-                                modifier = Modifier.height(10.dp)
-                            ) {
-                                product?.images?.size?.let { it1 ->
-                                    PagerIndicator(
-                                        it1,
-                                        pagerState.currentPage
-                                    )
-                                }
-                            }
                             Text(
                                 modifier = Modifier.weight(1.5f),
                                 text = product?.title ?: "",
@@ -381,6 +382,18 @@ fun ProductDetailsContentScreen(
                 Toast.LENGTH_LONG
             ).show()
         }
+        if (!userIsLoggedIn) {
+            Surface(color = Color.Gray) {
+                ShowCustomDialog(
+                    title = R.string.please_login,
+                    description = R.string.please_login,
+                    buttonText = R.string.login,
+                    animatedId = R.raw.sign_for_error_or_explanation_alert,
+                    onDismiss = { productNavController.navigate(Screens.Login.route) },
+                    onClose = onDismissRemoveCart
+                )
+            }
+        }
 
     }
 }
@@ -390,6 +403,7 @@ fun AddToCartBottom(
     addToCartAction: () -> Unit,
     increase: () -> Unit,
     decrease: () -> Unit,
+    @StringRes buttonTitle: Int,
     itemCount: Int
 ) {
     Box(
@@ -402,13 +416,11 @@ fun AddToCartBottom(
                 .fillMaxWidth()
                 .padding(bottom = 10.dp)
                 .background(Color.Transparent)
-//                .align(Alignment.BottomCenter),
-//            verticalAlignment = Alignment.BottomCenter
         ) {
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp))
-                    .background(Color.Gray)
+                    .background(if (buttonTitle == R.string.check_out) mainColor else Color.Gray)
                     .width(200.dp)
                     .clickable {
                         addToCartAction()
@@ -426,7 +438,7 @@ fun AddToCartBottom(
                         )
                     }
                     Text(
-                        text = stringResource(id = R.string.add_to_cart),
+                        text = stringResource(id = buttonTitle),
                         style = TextStyle(
                             fontSize = MaterialTheme.typography.titleLarge.fontSize,
                             textAlign = TextAlign.Center,

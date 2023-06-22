@@ -84,6 +84,7 @@ fun OnBoardingScreen(navController: NavHostController) {
     } else {
         Log.i("menna", "false")
         OnBoardingPager(items, pagerState, onComplete = {
+            sharedPreference.hasCompletedOnBoarding = true
             navController.navigate(Screens.Login.route)
         })
     }
@@ -145,10 +146,14 @@ fun OnBoardingPager(
 }
 
 @Composable
-fun PagerIndicator(size: Int, currentPage: Int) {
+fun PagerIndicator(
+    size: Int,
+    currentPage: Int,
+    modifier: Modifier = Modifier.padding(top = 60.dp)
+) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.padding(top = 60.dp)
+        modifier = modifier
     ) {
         repeat(size) {
             Indicator(isSelected = it == currentPage)
