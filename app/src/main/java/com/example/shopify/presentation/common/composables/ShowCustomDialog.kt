@@ -7,20 +7,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,9 +36,9 @@ fun ShowCustomDialog(
     @StringRes buttonText: Int,
     @RawRes animatedId: Int,
     onClose: () -> Unit,
-    onDismiss: () -> Unit
+    onClickButton: () -> Unit
 ) {
-    Dialog(onDismissRequest = onDismiss) {
+    Dialog(onDismissRequest = onClickButton) {
         Box(
             modifier = Modifier
                 .height(460.dp)
@@ -64,7 +58,6 @@ fun ShowCustomDialog(
                     IconButton(
                         modifier = Modifier.align(Alignment.TopStart),
                         onClick = {
-                            onDismiss()
                             onClose()
                         }) {
                         Icon(
@@ -77,29 +70,19 @@ fun ShowCustomDialog(
                         modifier = Modifier.padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Text(
-                            text = stringResource(id = title),
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .padding(top = 10.dp)
-                                .fillMaxWidth(),
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(36.dp))
                         Text(
                             text = stringResource(id = description),
                             textAlign = TextAlign.Center,
                             modifier = Modifier
-                                .padding(top = 10.dp, start = 25.dp, end = 25.dp)
+                                .padding(top = 30.dp, start = 25.dp, end = 25.dp)
                                 .fillMaxWidth(),
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(36.dp))
                         Button(
-                            onClick = onDismiss,
+                            onClick = onClickButton,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(5.dp))
@@ -128,7 +111,7 @@ fun ShowCustomDialog(
             }
             HeaderImage(
                 modifier = Modifier
-                    .size(200.dp)
+                    .size(150.dp)
                     .align(Alignment.TopCenter),
                 animationId = animatedId
             )

@@ -70,7 +70,6 @@ class ProductDetailsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             cartManager.removeCart(product.id)
         }
-
     }
 
     private fun checkResponseState(responseState: UiState) {

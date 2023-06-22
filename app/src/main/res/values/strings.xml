@@ -65,7 +65,7 @@
     <string name="email_is_not_valid">Email is not valid</string>
     <string name="phone_is_not_valid">Phone is not valid</string>
     <string name="password_is_not_valid">Password is not valid</string>
-    <string name="password_pattern"> must be at least 8 characters long, contain at least 1 number and 1 uppercase and 1 lowercase letters.</string>
+    <string name="password_pattern"> must be at least 8 characters\n contain at least 1 number ,1 uppercase ,1 lowercase, 1 special.</string>
     <string name="confirm_password_is_not_match">Confirm password is not matched password</string>
     <string name="phone">Phone</string>
     <string name="address">Address</string>
@@ -113,6 +113,7 @@
     <string name="product_remove_from_fav_success">Product remove from favorite</string>
     <string name="product_remove_from_cart_success">Product remove from cart</string>
     <string name="checkout">CHECKOUT</string>
+    <string name="check_out">Checkout</string>
     <string name="add_items_to_cart">Add Items to Cart</string>
     <string name="not_connection">Please Check Your Internet Connection.</string>
     <string name="unexpected_error">Unexpected error, something is wrong\n Please try again!</string>
@@ -135,4 +136,7 @@
     <string name="payment_succeeded">Your Order On Its Way!</string>
     <string name="payment_failed">Credit Card Declined</string>
     <string name="order_summary">Order Summary</string>
+    <string name="login_as_guest">As Guest\n</string>
+    <string name="please_login"> you have not created an account yet, you can easily register by clicking on the "Login" button.</string>
+    <string name="Egp">EGP</string>
 </resources>

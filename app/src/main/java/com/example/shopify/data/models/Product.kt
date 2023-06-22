@@ -31,7 +31,7 @@ data class ProductSample(
     val variants: List<Product>,
     val images: List<Image>,
     val image: Image,
-    var isFavorite :Boolean = false
+    val isFavorite : Boolean = false
 )
 
 data class ProductResponse(

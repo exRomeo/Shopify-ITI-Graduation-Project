@@ -38,19 +38,19 @@ data class CustomerFirebase(
 
 data class Customer(
     @field:SerializedName("first_name")
-    val firstName: String,
+    val firstName: String?=null,
     @field:SerializedName("last_name")
-    val lastName: String,
+    val lastName: String?=null,
     val email: String,
-    val phone: String,
+    val phone: String? =null,
     @field:SerializedName("verified_email")
-    val verifiedEmail: Boolean,
+    val verifiedEmail: Boolean?,
     val addresses: List<Address>,
-    val password: String,
+    val password: String?,
     @field:SerializedName("password_confirmation")
-    val passwordConfirmation: String,
+    val passwordConfirmation: String?,
     @field:SerializedName("send_email_welcome")
-    val sendEmailWelcome: Boolean
+    val sendEmailWelcome: Boolean ? = null
 )
 
 data class Address(

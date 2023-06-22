@@ -1,6 +1,7 @@
 package com.example.shopify.utilities
 
 import android.app.Application
+import android.util.Log
 import com.example.shopify.BuildConfig
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.DiscountHelper
@@ -76,7 +77,6 @@ class ShopifyApplication : Application() {
 
         ConnectionUtil.initialize(applicationContext)
         if (authRepository.checkedLoggedIn()) { //Is loggedIn
-
             GlobalScope.launch(Dispatchers.IO) {
                 currentCustomer = getCurrentCustomer(authRepository)
                 CurrentUserHelper.initialize(authRepository)

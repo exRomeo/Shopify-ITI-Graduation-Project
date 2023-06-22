@@ -36,6 +36,7 @@ fun CustomTextField(
     color: Color,
     cornerRadius: Dp = 0.dp,
     textFieldType: TextFieldType,
+    textError : Boolean = false,
     isError: Boolean
 ) {
 
@@ -59,7 +60,7 @@ fun CustomTextField(
         value = text,
         textStyle = textStyle,
         onValueChange = onValueChange,
-       // isError = isError,
+        isError = if(textError) isError else false,
         label = {
             Text(
                 text = stringResource(id = hintId),

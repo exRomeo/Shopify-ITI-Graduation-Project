@@ -602,24 +602,16 @@ fun ItemCards(
     onFavouriteClicked: (item: ProductSample) -> Unit,
     onAddToCard: (item: ProductSample) -> Unit
 ) {
-
-val state = rememberLazyListState()
     LazyRow(
-        state= state,
         modifier = modifier.padding(start = 6.dp, end = 6.dp)
     ) {
         items(products) { item ->
-//            val favState by viewModel.favProduct.collectAsState()
             var isFavourite by remember {
                 mutableStateOf(false)
             }
-//            viewModel.isFavorite(item.id)
-            LaunchedEffect(Unit){
+            LaunchedEffect(key1 = Unit ) {
                 isFavourite = viewModel.isFavorite(item.id)
             }
-
-//            Log.i("TAG", "ItemCards: ${favState}")
-            Log.i("TAG", "ItemCards: ${item.title} $isFavourite")
             CardDesign(onCardClicked = {}) {
                 ItemCardContent(
                     navController = navController,
