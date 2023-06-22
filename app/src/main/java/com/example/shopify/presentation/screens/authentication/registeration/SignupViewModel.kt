@@ -36,7 +36,7 @@ class SignupViewModel(private val authRepository: IAuthRepository) : ViewModel()
         }
     }
 
-    private fun registerUserToFirebase(email: String, password: String, customerId: Long) {
+     fun registerUserToFirebase(email: String, password: String, customerId: Long) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             viewModelScope.launch(Dispatchers.IO) {
                 val response =

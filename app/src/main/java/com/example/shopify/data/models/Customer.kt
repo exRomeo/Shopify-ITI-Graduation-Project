@@ -9,7 +9,6 @@ data class CustomerRequestBody(
 
 data class CustomerResponseBody(
     val customer: SimpleResponse?,
-    val errors: Errors?
 )
 
 data class Errors(
