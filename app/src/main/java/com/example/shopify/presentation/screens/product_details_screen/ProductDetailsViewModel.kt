@@ -25,8 +25,16 @@ class ProductDetailsViewModel(
     val favProduct: StateFlow<Boolean> = _favProduct
     fun getProductInfo(productId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            val response = productRepository.getSingleProductDetails(productId)
-            checkResponseState(response)
+            try {
+                val response = productRepository.getSingleProductDetails(productId)
+                if (response.isSuccessful) {
+                    _productInfoState.value = UiState.Success(response.body())
+                } else {
+                    _productInfoState.value = UiState.Error(response.errorBody())
+                }
+            } catch (e: Exception) {
+                _productInfoState.value = UiState.Error(null)
+            }
         }
     }
 
@@ -41,12 +49,14 @@ class ProductDetailsViewModel(
             wishlistManager.removeWishlistItem(product.id)
         }
     }
+
     fun isFavorite(productId: Long/*, variantId: Long*/) {
         viewModelScope.launch(Dispatchers.IO) {
             _favProduct.value = wishlistManager.isFavorite(productId/*, variantId*/)
             Log.i("TAG", "isFavorite: ViewModel id ${_favProduct.value}")
         }
     }
+
     fun addItemToCart(product: ProductSample) {
         viewModelScope.launch(Dispatchers.IO) {
             cartManager.addCartItem(product.id, product.variants.get(0).id)
@@ -57,26 +67,6 @@ class ProductDetailsViewModel(
     fun removeItemFromCart(product: ProductSample) {
         viewModelScope.launch(Dispatchers.IO) {
             cartManager.removeCart(product.id)
-        }
-
-    }
-
-    private fun checkResponseState(responseState: UiState) {
-        when (responseState) {
-            is UiState.Success<*> -> {
-                _productInfoState.value = UiState.Success(responseState.data)
-                Log.i("TAG", "Success checkProductDetails: ${responseState.data}")
-            }
-
-            is UiState.Error -> {
-                _productInfoState.value = UiState.Error(responseState.error)
-                Log.i("TAG", "ERROR checkProductDetails: ${responseState.error}")
-            }
-
-            is UiState.Loading -> {
-                Log.i("TAG", "Loading checkProductDetails: LOADING")
-
-            }
         }
     }
 }

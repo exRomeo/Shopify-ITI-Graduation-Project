@@ -2,6 +2,7 @@ package com.example.shopify.data.repositories.product
 
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.data.models.Products
+import com.example.shopify.data.models.SingleProductResponseBody
 import com.example.shopify.data.models.SmartCollections
 import com.example.shopify.data.remote.product.RemoteResource
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +21,7 @@ class ProductRepository(private val remoteResource: RemoteResource) : IProductRe
         return remoteResource.getRandomProducts()
     }
 
-    override suspend fun getSingleProductDetails(productId: Long): UiState =
+    override suspend fun getSingleProductDetails(productId: Long): Response<SingleProductResponseBody> =
         remoteResource.getProductInfo(productId)
 
 

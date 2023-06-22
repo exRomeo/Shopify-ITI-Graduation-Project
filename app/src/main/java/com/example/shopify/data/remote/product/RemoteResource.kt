@@ -3,6 +3,7 @@ package com.example.shopify.data.remote.product
 import android.content.Context
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.data.models.Products
+import com.example.shopify.data.models.SingleProductResponseBody
 import com.example.shopify.data.models.SmartCollections
 import com.example.shopify.data.remote.RetrofitHelper
 import retrofit2.Response
@@ -31,23 +32,16 @@ class RemoteResource private constructor() : IRemoteResource /*ProductSource*/ {
         return apiService.getRandomProducts()
     }
 
-    override suspend fun getProductInfo(productID: Long): UiState {
+    override suspend fun getProductInfo(productID: Long): Response<SingleProductResponseBody> =
+        apiService.getProductInfo(productID)
 
-    //  try{
-    val response = apiService.getProductInfo(productID)
-   return  UiState.Success(response)
-}
-//        }
-//        catch (ex:Exception){
-//           // UiState.Error(ex)
-//        }
 
-    override suspend fun getSpecificBrandProducts(id:Long): Response<Products> {
+    override suspend fun getSpecificBrandProducts(id: Long): Response<Products> {
         return apiService.getSpecificBrandProducts(id)
     }
 
     override suspend fun getProductsBySubcategory(id: Long, type: String): Response<Products> {
-        return apiService.getProductsBySubcategory(id,type)
+        return apiService.getProductsBySubcategory(id, type)
     }
 
 }

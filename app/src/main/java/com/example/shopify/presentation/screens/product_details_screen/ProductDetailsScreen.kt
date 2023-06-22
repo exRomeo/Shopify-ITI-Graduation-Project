@@ -207,50 +207,40 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
         }
 
         is UiState.Error -> {
-            when (state.error) {
-                is IOException -> {
-                    showNetworkDialog = true
-                    val error = (productState as UiState.Error).error
-                    Log.i("TAG", "ProductDetailsScreen: $error")
-                    if (showNetworkDialog)
-                        Surface(color = Color.Gray) {
-                            ShowCustomDialog(
-                                title = R.string.network_connection,
-                                description = R.string.not_connection,
-                                buttonText = R.string.tryAgain,
-                                animatedId = R.raw.custom_network_error,
-                                onDismiss = { showNetworkDialog = false },
-                                onClose = {
-                                    showNetworkDialog = false
-                                    navController.popBackStack()
-                                }
-                            )
+            if (state.error != null) {
+                showNetworkDialog = true
+                if (showNetworkDialog)
+                    Surface(color = Color.Gray) {
+                        ShowCustomDialog(
+                            title = R.string.something_is_wrong,
+                            description = R.string.unexpected_error,
+                            buttonText = R.string.tryAgain,
+                            animatedId = R.raw.error_animation,
+                            onDismiss = { showNetworkDialog = false },
+                            onClose = {
+                                showNetworkDialog = false
+                                navController.popBackStack()
+                            }
+                        )
 
-                        }
-                }
-
-                else -> {
-                    showNetworkDialog = true
-                    val error = (productState as UiState.Error).error
-                    Log.i("TAG", "ProductDetailsScreen: $error")
-                    if (showNetworkDialog)
-                        Surface(color = Color.Gray) {
-                            ShowCustomDialog(
-                                title = R.string.something_is_wrong,
-                                description = R.string.unexpected_error,
-                                buttonText = R.string.tryAgain,
-                                animatedId = R.raw.error_animation,
-                                onDismiss = { showNetworkDialog = false },
-                                onClose = {
-                                    showNetworkDialog = false
-                                    navController.popBackStack()
-                                }
-                            )
-
-                        }
-                }
+                    }
+            } else {
+                showNetworkDialog = true
+                if (showNetworkDialog)
+                    Surface(color = Color.Gray) {
+                        ShowCustomDialog(
+                            title = R.string.network_connection,
+                            description = R.string.not_connection,
+                            buttonText = R.string.tryAgain,
+                            animatedId = R.raw.custom_network_error,
+                            onDismiss = { showNetworkDialog = false },
+                            onClose = {
+                                showNetworkDialog = false
+                                navController.popBackStack()
+                            }
+                        )
+                    }
             }
-
         }
 
         else -> {

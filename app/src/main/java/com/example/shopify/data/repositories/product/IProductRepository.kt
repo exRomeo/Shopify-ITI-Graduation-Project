@@ -12,7 +12,7 @@ interface IProductRepository {
     suspend fun getBrands(): Response<SmartCollections>
     suspend fun getSpecificBrandProducts(id:Long):Response<Products>
     suspend fun getProductsBySubcategory(id:Long,type:String):Response<Products>
-    suspend fun getSingleProductDetails(productId: Long): UiState
+    suspend fun getSingleProductDetails(productId: Long): Response<SingleProductResponseBody>
     suspend fun getRandomProducts(): Response<Products>
 
 }

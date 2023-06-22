@@ -246,7 +246,7 @@ fun ProductDetailsContentScreen(
                                     modifier = Modifier
                                         .weight(0.5f)
                                         .align(Alignment.CenterVertically),
-                                    text = "${product?.variants?.get(0)?.price} $",
+                                    text = "${product?.variants?.get(0)?.price} EGP",
                                     style = ibarraBold,
                                     fontWeight = FontWeight.Bold,
                                     color = mainColor,
