@@ -55,6 +55,7 @@ import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.draftorder.LineItem
 import com.example.shopify.data.models.order.OrderIn
+import com.example.shopify.ui.theme.co_background
 
 
 @Composable
@@ -119,7 +120,8 @@ fun WishlistItemCard(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+        colors = CardDefaults.elevatedCardColors(containerColor = co_background),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 5.dp)
     ) {
         Box {
             Row(
@@ -213,11 +215,12 @@ fun CartItemCard(
     decrease: () -> Unit,
     onClick: () -> Unit
 ) {
-    Card(
+    /*Box*/Card(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+        colors = CardDefaults.elevatedCardColors(containerColor = co_background),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 5.dp)
     ) {
         var count by remember { mutableStateOf(initialCount) }
         Row(
@@ -231,7 +234,7 @@ fun CartItemCard(
                     .build(),
                 contentDescription = stringResource(id = R.string.product_image),
                 placeholder = painterResource(id = R.drawable.product_image_placeholder),
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .clip(RoundedCornerShape(10.dp))
                     .width(125.dp)
@@ -331,12 +334,20 @@ fun OrderItemCard(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+        colors = CardDefaults.elevatedCardColors(containerColor = co_background),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 5.dp),
     ) {
+
         Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = "${stringResource(id = R.string.order_no)} ${order.id}")
-                Text(text = "${stringResource(id = R.string.placed_on)} ${order.getDateTime()[0]}")
+                Text(
+                    text = "${stringResource(id = R.string.order_no)} ${order.id}",
+                    style = TextStyle(fontWeight = FontWeight.SemiBold)
+                )
+                Text(
+                    text = "${stringResource(id = R.string.placed_on)} ${order.getDateTime()[0]}",
+                    style = TextStyle(fontWeight = FontWeight.SemiBold)
+                )
             }
             TextButton(onClick = { onCancelClick() }) {
                 Text(
@@ -359,17 +370,23 @@ fun OrderItemCard(
                         LineItemCard(it)
                     }
                     item {
-                        Divider(Modifier.padding(horizontal = 8.dp))
+                        Divider(Modifier.padding(bottom = 4.dp, end = 4.dp))
                         Text(
                             text = "Total = ${order.currency} ${order.total}",
-                            style = TextStyle(fontSize = MaterialTheme.typography.bodyLarge.fontSize),
+                            style = TextStyle(
+                                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                                fontWeight = FontWeight.SemiBold
+                            ),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
                 Spacer(modifier = Modifier.padding(vertical = 4.dp))
-                Text(text = stringResource(id = R.string.expected_to_arrive))
+                Text(
+                    modifier = Modifier.padding(bottom = 8.dp),
+                    text = stringResource(id = R.string.expected_to_arrive)
+                )
 
             }
 
@@ -380,34 +397,31 @@ fun OrderItemCard(
 @Composable
 @Preview
 fun LineItemCard(lineItem: LineItem = LineItem(1, 0, "Product TITLE", 10, "item", "5200.00")) {
-    Box(
+    Row(
         modifier = Modifier
-            .padding(4.dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .background(Color.White)
+            .padding(8.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
+        Text(
             modifier = Modifier
-                .padding(4.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                modifier = Modifier.weight(1f),
-                text = "${lineItem.title} x ${lineItem.quantity}",
-                style = TextStyle(fontSize = MaterialTheme.typography.bodyLarge.fontSize),
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = lineItem.getTotalPrice(),
-                style = TextStyle(fontSize = MaterialTheme.typography.bodyLarge.fontSize, fontWeight = FontWeight.Bold),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
+                .weight(1f)
+                .padding(end = 16.dp),
+            text = "${lineItem.title} x ${lineItem.quantity}",
+            style = TextStyle(fontSize = MaterialTheme.typography.bodyLarge.fontSize),
+            maxLines = 3,
+            overflow = TextOverflow.Ellipsis
+        )
+        Text(
+            text = lineItem.getTotalPrice(),
+            style = TextStyle(
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                fontWeight = FontWeight.Bold
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
