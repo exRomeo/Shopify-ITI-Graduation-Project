@@ -205,13 +205,10 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
             }
 
         }
-
         is UiState.Error -> {
             when (state.error) {
-                is IOException -> {
+                null -> {
                     showNetworkDialog = true
-                    val error = (productState as UiState.Error).error
-                    Log.i("TAG", "ProductDetailsScreen: $error")
                     if (showNetworkDialog)
                         Surface(color = Color.Gray) {
                             ShowCustomDialog(
@@ -228,7 +225,6 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
 
                         }
                 }
-
                 else -> {
                     showNetworkDialog = true
                     val error = (productState as UiState.Error).error

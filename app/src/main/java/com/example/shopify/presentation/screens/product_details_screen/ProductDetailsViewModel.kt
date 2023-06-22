@@ -3,6 +3,7 @@ package com.example.shopify.presentation.screens.product_details_screen
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.data.managers.cart.CartManager
 import com.example.shopify.data.managers.wishlist.WishlistManager
@@ -25,8 +26,17 @@ class ProductDetailsViewModel(
     val favProduct: StateFlow<Boolean> = _favProduct
     fun getProductInfo(productId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            val response = productRepository.getSingleProductDetails(productId)
-            checkResponseState(response)
+            try {
+                val response = productRepository.getSingleProductDetails(productId)
+                if (response.isSuccessful) {
+                    _productInfoState.value = UiState.Success(response.body())
+                } else {
+                    _productInfoState.value = UiState.Error(response.errorBody())
+                }
+            } catch (e: Exception) {
+                // handle no network connection error
+                _productInfoState.value = UiState.Error(null)
+            }
         }
     }
 
@@ -41,12 +51,14 @@ class ProductDetailsViewModel(
             wishlistManager.removeWishlistItem(product.id)
         }
     }
+
     fun isFavorite(productId: Long/*, variantId: Long*/) {
         viewModelScope.launch(Dispatchers.IO) {
             _favProduct.value = wishlistManager.isFavorite(productId/*, variantId*/)
             Log.i("TAG", "isFavorite: ViewModel id ${_favProduct.value}")
         }
     }
+
     fun addItemToCart(product: ProductSample) {
         viewModelScope.launch(Dispatchers.IO) {
             cartManager.addCartItem(product.id, product.variants.get(0).id)
