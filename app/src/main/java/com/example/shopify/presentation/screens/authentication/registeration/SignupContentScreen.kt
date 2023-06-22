@@ -92,8 +92,8 @@ fun SignupContentScreen(
         OutlinedButton(
             onClick = {
                 signupNavController.popBackStack()
-                signupNavController.navigate(route = Screens.Login.route , builder = {
-                    popUpTo(route = Screens.Login.route){
+                signupNavController.navigate(route = Screens.Login.route, builder = {
+                    popUpTo(route = Screens.Login.route) {
                         inclusive = true
                     }
                 })
@@ -137,6 +137,7 @@ fun SignupContentScreen(
                 text = firstName,
                 errorMsg = R.string.first_name_is_required,
                 hintId = R.string.first_name,
+                textFieldError = true,
                 onValueChange = onFirstNameChanged,
                 textFieldType = TextFieldType.FirstName
             )
@@ -150,6 +151,7 @@ fun SignupContentScreen(
                 text = secondName,
                 errorMsg = R.string.second_name_is_required,
                 hintId = R.string.second_name,
+                textFieldError = true,
                 onValueChange = onSecondNameChanged,
                 textFieldType = TextFieldType.SecondName
             )
@@ -165,6 +167,7 @@ fun SignupContentScreen(
             errorMsg = R.string.email_is_required,
             validationErrorMsg = stringResource(id = R.string.email_is_not_valid),
             isValid = CredentialsValidator.isValidEmail(email),
+            textFieldError = true,
             hintId = R.string.email,
             onValueChange = onEmailChanged,
             textFieldType = TextFieldType.Email
@@ -179,6 +182,7 @@ fun SignupContentScreen(
             errorMsg = R.string.phone_is_required,
             validationErrorMsg = stringResource(id = R.string.phone_is_not_valid),
             isValid = CredentialsValidator.isPhoneNumberValid(phone),
+            textFieldError = true,
             hintId = R.string.phone,
             onValueChange = onPhoneChanged,
             textFieldType = TextFieldType.Phone
@@ -192,6 +196,7 @@ fun SignupContentScreen(
             text = address,
             errorMsg = R.string.address_is_required,
             hintId = R.string.address,
+            textFieldError = true,
             onValueChange = onAddressChanged,
             textFieldType = TextFieldType.Address
         )
@@ -205,10 +210,21 @@ fun SignupContentScreen(
             errorMsg = R.string.password_is_required,
             validationErrorMsg = stringResource(id = R.string.password_is_not_valid),
             isValid = CredentialsValidator.isValidPassword(password),
+            textFieldError = true,
             hintId = R.string.password,
             onValueChange = onPasswordChanged,
             textFieldType = TextFieldType.Password
         )
+
+        if (!CredentialsValidator.isValidPassword(password)) {
+            Spacer(modifier = Modifier.height(1.dp))
+            Text(
+                text = stringResource(id = R.string.password_pattern),
+                color = MaterialTheme.colorScheme.error,
+                minLines = 2,
+                fontSize = 12.sp
+            )
+        }
         Spacer(modifier = Modifier.height(8.dp))
         AuthenticationTextField(
             modifier = Modifier
@@ -219,6 +235,7 @@ fun SignupContentScreen(
             errorMsg = R.string.confirmPassword,
             validationErrorMsg = stringResource(id = R.string.confirm_password_is_not_match),
             isValid = (confirmPassword == password),
+            textFieldError = true,
             hintId = R.string.confirmPassword,
             onValueChange = onConfirmPasswordChanged,
             textFieldType = TextFieldType.ConfirmPassword
@@ -232,7 +249,7 @@ fun SignupContentScreen(
                 fontSize = 14.sp
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(18.dp))
         AuthenticationButton(
             modifier = Modifier
                 .fillMaxWidth(0.9f)
@@ -276,7 +293,6 @@ fun SignupContentScreen(
 
 fun dataIsValid(email: String, phone: String, password: String, confirmPassword: String): Boolean {
     var isValid = false
-    // var msg: String = ""
     if (CredentialsValidator.isValidEmail(email)
         && CredentialsValidator.isPhoneNumberValid(phone)
         && CredentialsValidator.isValidPassword(password)
@@ -287,9 +303,3 @@ fun dataIsValid(email: String, phone: String, password: String, confirmPassword:
     }
     return isValid
 }
-/*
-@Composable
-@Preview
-fun SignupScreenPreview() {
-    SignupScreen(/*SignupViewModel()*/)
-}*/

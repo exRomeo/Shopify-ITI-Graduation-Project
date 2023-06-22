@@ -1,9 +1,6 @@
 package com.example.shopify.presentation.screens.authentication.login
 
-import android.content.SharedPreferences
 import android.util.Log
-import androidx.annotation.RawRes
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -13,7 +10,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -24,14 +20,7 @@ import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.core.utils.ConnectionUtil
-import com.example.shopify.core.utils.SharedPreference
-import com.example.shopify.core.utils.SharedPreference.hasCompletedOnBoarding
-import com.example.shopify.data.managers.cart.CartManager
-import com.example.shopify.data.managers.wishlist.WishlistManager
-import com.example.shopify.data.models.GetCurrentCustomer
 import com.example.shopify.data.repositories.authentication.IAuthRepository
-import com.example.shopify.data.repositories.user.IUserDataRepository
-import com.example.shopify.data.repositories.user.UserDataRepository
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.ShowCustomDialog
 import java.io.IOException
@@ -69,7 +58,7 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
         is AuthenticationResponseState.Success -> {
             if (CurrentUserHelper.isLoggedIn()) {
                 LaunchedEffect(key1 = authState) {
-                    error = ""
+                    error = "ERROR"
                     Log.i("TAG", "NAVIGATE TO HOME SCREEN")
                     loginNavController.popBackStack()
                     loginNavController.navigate(route = Screens.Home.route, builder = {
@@ -99,13 +88,12 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
                             description = R.string.not_connection,
                             buttonText = R.string.tryAgain,
                             animatedId = R.raw.no_network_error_page_with_cat,
-                            onDismiss = { showNetworkDialog = false },
+                            onClickButton = { showNetworkDialog = false },
                             onClose = {
                                 showNetworkDialog = false
                             }
                         )
                 }
-
                 else -> error = stringResource(id = R.string.please_check_email_password)
             }
             Log.i("TAG", " ERROR ${authResponse.message}")
@@ -121,7 +109,7 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
                     description = R.string.not_connection,
                     buttonText = R.string.tryAgain,
                     animatedId = R.raw.no_network_error_page_with_cat,
-                    onDismiss = { showNetworkDialog = false },
+                    onClickButton = { showNetworkDialog = false },
                     onClose = {
                         showNetworkDialog = false
                     }
@@ -166,7 +154,7 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
                 description = R.string.not_connection,
                 buttonText = R.string.tryAgain,
                 animatedId = R.raw.no_network_error_page_with_cat,
-                onDismiss = { showNetworkDialog = false },
+                onClickButton = { showNetworkDialog = false },
                 onClose = {
                     showNetworkDialog = false
                 }

@@ -255,11 +255,11 @@ fun ProductDetailsContentScreen(
                                 modifier = Modifier
                                     .weight(0.5f)
                                     .align(Alignment.CenterVertically),
-                                text = "${product?.variants?.get(0)?.price} $",
+                                text = "${product?.variants?.get(0)?.price} ${R.string.Egp}",
                                 style = ibarraBold,
                                 fontWeight = FontWeight.Bold,
                                 color = mainColor,
-                                fontSize = 20.sp
+                                fontSize = 18.sp
                             )
                         }
                         Spacer(modifier = Modifier.height(8.dp))
@@ -389,7 +389,7 @@ fun ProductDetailsContentScreen(
                     description = R.string.please_login,
                     buttonText = R.string.login,
                     animatedId = R.raw.sign_for_error_or_explanation_alert,
-                    onDismiss = { productNavController.navigate(Screens.Login.route) },
+                    onClickButton = { productNavController.navigate(Screens.Login.route) },
                     onClose = onDismissRemoveCart
                 )
             }

@@ -7,7 +7,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,7 +22,6 @@ import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Screens
-import com.example.shopify.core.utils.ConnectionUtil
 import com.example.shopify.data.managers.cart.CartManager
 import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.models.Image
@@ -33,8 +31,6 @@ import com.example.shopify.data.models.SingleProductResponseBody
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.ShowCustomDialog
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import java.io.IOException
 import kotlin.random.Random
 
@@ -171,7 +167,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                     },
                     onDismissRemoveCart = {
                         showCartDialog = false
-                        userIsLoggedIn = false
+                        userIsLoggedIn = true
                     },
 
                     addToCartAction = {
@@ -210,7 +206,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                             description = R.string.unexpected_error,
                             buttonText = R.string.tryAgain,
                             animatedId = R.raw.error_animation,
-                            onDismiss = { showNetworkDialog = false },
+                            onClickButton = { showNetworkDialog = false },
                             onClose = {
                                 showNetworkDialog = false
                                 navController.popBackStack()
@@ -236,7 +232,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                                 description = R.string.not_connection,
                                 buttonText = R.string.tryAgain,
                                 animatedId = R.raw.no_network_error_page_with_cat,
-                                onDismiss = { showNetworkDialog = false },
+                                onClickButton = { showNetworkDialog = false },
                                 onClose = {
                                     showNetworkDialog = false
                                     navController.popBackStack()
@@ -257,7 +253,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                                 description = R.string.unexpected_error,
                                 buttonText = R.string.tryAgain,
                                 animatedId = R.raw.error_animation,
-                                onDismiss = { showNetworkDialog = false },
+                                onClickButton = { showNetworkDialog = false },
                                 onClose = {
                                     showNetworkDialog = false
                                     navController.popBackStack()
