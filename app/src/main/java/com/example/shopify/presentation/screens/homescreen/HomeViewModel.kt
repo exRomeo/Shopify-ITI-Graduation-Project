@@ -35,11 +35,13 @@ class HomeViewModel(
 
      fun getBrands() {
         viewModelScope.launch(Dispatchers.IO) {
-        val response = repository.getBrands()
+            val response = repository.getBrands()
             if(response.isSuccessful && response.body()!= null){
                 _brandsList.value = UiState.Success(response.body())
             }
-         //   _brandsList.value = UiState.Error
+            else{
+                _brandsList.value = UiState.Error(response.errorBody())
+            }
         }
     }
 

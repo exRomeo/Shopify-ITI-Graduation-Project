@@ -141,7 +141,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
 
         is UiState.Success<*> -> {
             Log.i("menna", "success")
-            brandList = (brandsState as UiState.Success<SmartCollections>).data.smart_collections
+            brandList = (brandsState as UiState.Success<SmartCollections>).data.smart_collections!!
         }
 
         else -> {
@@ -151,7 +151,6 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
     when (randomsState) {
         is UiState.Loading -> {
         }
-
         is UiState.Success<*> -> {
             randomList = (randomsState as UiState.Success<Products>).data.products!!
         }
