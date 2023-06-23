@@ -22,6 +22,7 @@ import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.data.models.GoogleSignInState
 import com.example.shopify.data.repositories.authentication.IAuthRepository
+import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.ShowCustomDialog
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -38,6 +39,12 @@ fun SignupScreen(signupNavController: NavController) {
         mutableStateOf("")
     }
     var address by remember {
+        mutableStateOf("")
+    }
+    var city by remember {
+        mutableStateOf("")
+    }
+    var country by remember {
         mutableStateOf("")
     }
     var phone by remember {
@@ -77,6 +84,7 @@ fun SignupScreen(signupNavController: NavController) {
         is AuthenticationResponseState.Loading -> {
             error = ""
             Log.i("TAG", " LOADING")
+            LottieAnimation(animation = R.raw.shopping_cart_loading_animation)
         }
 
         is AuthenticationResponseState.Error -> {
@@ -105,6 +113,10 @@ fun SignupScreen(signupNavController: NavController) {
         onPhoneChanged = { phone = it },
         address = address,
         onAddressChanged = { address = it },
+        city = city,
+        onCityChanged = { city = it },
+        country = country,
+        onCountryChanged = { country = it },
         password = password,
         onPasswordChanged = { password = it },
         confirmPassword = confirmPassword,

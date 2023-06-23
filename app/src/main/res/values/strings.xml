@@ -141,4 +141,8 @@
     <string name="Egp">EGP</string>
     <string name="place_order">Place Order</string>
     <string name="apply">Apply</string>
+    <string name="city_is_required">City is required</string>
+    <string name="city">City</string>
+    <string name="country_is_required">Country is required</string>
+    <string name="country">Country</string>
 </resources>

@@ -32,7 +32,7 @@ import com.example.shopify.data.models.Options
 
 @Composable
 fun ColorOptions(option: List<Options>) {
-    var selectedIndex by remember { mutableStateOf(-1) }
+    var selectedIndex by remember { mutableStateOf(0) }
     val colorList = getColor()
     Row(
         modifier = Modifier
@@ -41,9 +41,7 @@ fun ColorOptions(option: List<Options>) {
         Log.i("TAG", "ColorOptions List: $colorList")
         option.forEachIndexed { index, _ ->
 
-//            Log.i("TAG", "ColorOptions option: ${option[index].values?.get(0)}")
             if (option[index].name == "Color") {
-//                    Text(option[index].values?.get(0) ?: "")
                 LazyRow {
                     items(1) {
                         option[index].values?.forEachIndexed { colorIndex, _ ->

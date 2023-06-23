@@ -31,7 +31,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -83,6 +82,7 @@ import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.SmartCollections
+import com.example.shopify.data.repositories.authentication.IAuthRepository
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.common.composables.CustomSearchbar
 import com.example.shopify.presentation.common.composables.WarningDialog
@@ -92,18 +92,23 @@ import com.example.shopify.utilities.ShopifyApplication
 fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
     val repository: IProductRepository =
         (LocalContext.current.applicationContext as ShopifyApplication).repository
+    val authRepository: IAuthRepository =
+        (LocalContext.current.applicationContext as ShopifyApplication).authRepository
     val wishlistManager: WishlistManager =
         (LocalContext.current.applicationContext as ShopifyApplication).wishlistManager
     val cartManager: CartManager =
         (LocalContext.current.applicationContext as ShopifyApplication).cartManager
-
     val viewModel: HomeViewModel =
         viewModel(factory = HomeViewModelFactory(repository, wishlistManager, cartManager))
-
+    val context = LocalContext.current
+    LaunchedEffect(key1 = Unit) {
+        CurrentUserHelper.initialize(authRepository)
+        DiscountHelper.initialize(context.applicationContext)
+    }
     val brandsState: UiState by viewModel.brandList.collectAsState()
     val randomsState: UiState by viewModel.randomList.collectAsState()
     var brandList: List<Brand> by remember { mutableStateOf(listOf()) }
-    var randomList: List<ProductSample>  by remember { mutableStateOf(listOf()) }
+    var randomList: List<ProductSample> by remember { mutableStateOf(listOf()) }
     var searchText by remember { mutableStateOf("") }
     val isSearching by remember {
         derivedStateOf {
@@ -202,16 +207,15 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
                     ItemCards(navController = navController, viewModel, products = randomList,
                         isFavourite = false, onFavouriteClicked = {
                         }, onAddToCard = { product ->
-                            if(CurrentUserHelper.isLoggedIn()) {
+                            if (CurrentUserHelper.isLoggedIn()) {
                                 viewModel.addItemToCart(product.id, product.variants[0].id)
-                            }
-                            else{
+                            } else {
                                 openDialogue = true
 
                             }
 
                         })
-                    if(openDialogue) {
+                    if (openDialogue) {
                         WarningDialog(
                             dialogTitle = "oops!!",
                             message = "You are not signed in ,please sign in to add to your cart",
@@ -375,13 +379,13 @@ fun AdsCarousel(
         "https://fitsmallbusiness.com/wp-content/uploads/2018/05/23-Best-Sales-Promotion-Ideas.png",
         "https://a.storyblok.com/f/140059/720x400/ab918c4aa1/sales-promotion-examples-to-help-boost-your-business-main.jpg"
     )
-   // val sharedPreference = SharedPreference.customPreference(LocalContext.current,"customer")
+    // val sharedPreference = SharedPreference.customPreference(LocalContext.current,"customer")
 
     val couponsList: List<String> =
         listOf("Cf56u%erdHJJ", "AAgf8876GFd", "GRTO#kl76C", "PTYR%&R#dw")
     val offers: List<Int> = listOf(5, 20, 50, 70)
-        val sharedPreference: SharedPreferences =
-      (LocalContext.current.applicationContext as ShopifyApplication).sharedPreference
+    val sharedPreference: SharedPreferences =
+        (LocalContext.current.applicationContext as ShopifyApplication).sharedPreference
     var openDialogue by remember {
         mutableStateOf(false)
     }
@@ -446,28 +450,27 @@ fun AdsCarousel(
                                 //  }
                                 if (openDialogue) {
 
-                                    if(CurrentUserHelper.isLoggedIn()) {
+                                    if (CurrentUserHelper.isLoggedIn()) {
                                         val clipboardManager =
                                             LocalContext.current.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                         val clip =
                                             ClipData.newPlainText("coupon", couponsList[itemIndex])
                                         clipboardManager.setPrimaryClip(clip)
                                         DiscountHelper.addDiscountValue(offers[itemIndex])
-                                   //sharedPreference.discountPercentage = offers[itemIndex]
+                                        //sharedPreference.discountPercentage = offers[itemIndex]
 
-                                    WarningDialog(
-                                        dialogTitle = "GREAT OFFERS !!",
-                                        message = "Your have got ${offers[itemIndex]} % discount ,your coupon is  ${couponsList[itemIndex]}",
-                                        dismissButtonText = "",
-                                        confirmButtonText = "Copy Coupon Code",
-                                        onConfirm = {
-                                            openDialogue = false
-                                        },
-                                        onDismiss = {},
-                                        addDismissButton = false
-                                    )
-                                }
-                                    else{
+                                        WarningDialog(
+                                            dialogTitle = "GREAT OFFERS !!",
+                                            message = "Your have got ${offers[itemIndex]} % discount ,your coupon is  ${couponsList[itemIndex]}",
+                                            dismissButtonText = "",
+                                            confirmButtonText = "Copy Coupon Code",
+                                            onConfirm = {
+                                                openDialogue = false
+                                            },
+                                            onDismiss = {},
+                                            addDismissButton = false
+                                        )
+                                    } else {
 
                                         WarningDialog(
                                             dialogTitle = "oops!!",
@@ -482,7 +485,7 @@ fun AdsCarousel(
                                         )
                                     }
 
-                                    }
+                                }
                             }
                         }
                     }
@@ -567,7 +570,7 @@ fun HomeSection(
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-               // .padding(vertical = 2.dp)
+            // .padding(vertical = 2.dp)
         )
         sectionContent()
     }
@@ -609,7 +612,7 @@ fun ItemCards(
             var isFavourite by remember {
                 mutableStateOf(false)
             }
-            LaunchedEffect(key1 = Unit ) {
+            LaunchedEffect(key1 = Unit) {
                 isFavourite = viewModel.isFavorite(item.id)
             }
             CardDesign(onCardClicked = {}) {
@@ -618,7 +621,7 @@ fun ItemCards(
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
                     isFavourite = isFavourite,
                     onFavouritesClicked = { product ->
-                       Log.i("menna", DiscountHelper.getDiscount().toString())
+                        Log.i("menna", DiscountHelper.getDiscount().toString())
 
                         isFavourite = !isFavourite
                         if (isFavourite) {
