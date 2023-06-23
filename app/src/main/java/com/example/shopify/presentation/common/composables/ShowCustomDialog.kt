@@ -54,6 +54,7 @@ fun ShowCustomDialog(
     @StringRes buttonText: Int,
     @StringRes cancelText: Int = R.string.cancel,
     @RawRes animatedId: Int,
+    buttonColor: Color = mainColor,
     onClose: () -> Unit,
     onClickButton: () -> Unit
 ) {
@@ -105,7 +106,7 @@ fun ShowCustomDialog(
                             ) {
                                 Text(
                                     text = stringResource(id = cancelText),
-                                    color = mainColor
+                                    color = if (buttonColor == mainColor) mainColor else MaterialTheme.colorScheme.error
                                 )
                             }
                             Spacer(modifier = Modifier.width(4.dp))
@@ -117,7 +118,8 @@ fun ShowCustomDialog(
                                     .fillMaxWidth()
                                     .clip(
                                         RoundedCornerShape(5.dp)
-                                    )
+                                    ),
+                                colors = ButtonDefaults.outlinedButtonColors(containerColor = buttonColor)
                             ) {
                                 Text(
                                     text = stringResource(id = buttonText),

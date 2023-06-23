@@ -1,6 +1,7 @@
 package com.example.shopify.presentation.screens.authentication.login
 
 import android.util.Log
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -55,11 +56,6 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
     val loginViewModel: LoginViewModel = viewModel(factory = loginViewModelFactory)
     val authState by loginViewModel.authResponse.collectAsState()
     val googleState by loginViewModel.googleState.collectAsState()
-//    val context = LocalContext.current
-//    /*LaunchedEffect(key1 = Unit){
-//        CurrentUserHelper.initialize(authRepository)
-//        DiscountHelper.initialize(context.applicationContext)
-//    }*/
     when (googleState) {
         is GoogleSignInState -> {
             if (googleState.success != null) {
@@ -122,6 +118,7 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
                     description = R.string.something_is_wrong,
                     buttonText = R.string.tryAgain,
                     animatedId = R.raw.sign_for_error_or_explanation_alert,
+                    buttonColor = MaterialTheme.colorScheme.error,
                     onClickButton = { showNetworkDialog = false },
                     onClose = {
                         showNetworkDialog = false

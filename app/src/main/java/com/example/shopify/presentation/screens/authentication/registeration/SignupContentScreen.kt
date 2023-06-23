@@ -74,6 +74,10 @@ fun SignupContentScreen(
     onPhoneChanged: (String) -> Unit,
     address: String,
     onAddressChanged: (String) -> Unit,
+    city: String,
+    onCityChanged: (String) -> Unit,
+    country: String,
+    onCountryChanged: (String) -> Unit,
     password: String,
     onPasswordChanged: (String) -> Unit,
     confirmPassword: String,
@@ -200,6 +204,38 @@ fun SignupContentScreen(
             onValueChange = onAddressChanged,
             textFieldType = TextFieldType.Address
         )
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            AuthenticationTextField(
+                modifier = Modifier
+                    .height(72.dp)
+                    .weight(1f)
+                    // .fillMaxWidth(0.5f)
+                    .background(Color.Transparent),
+                text = city,
+                errorMsg = R.string.city_is_required,
+                hintId = R.string.city,
+                textFieldError = true,
+                onValueChange = onCityChanged,
+                textFieldType = TextFieldType.City
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            AuthenticationTextField(
+                modifier = Modifier
+                    .height(72.dp)
+                    .weight(1f)
+                    // .fillMaxWidth(0.5f)
+                    .background(Color.Transparent),
+                text = country,
+                errorMsg = R.string.country_is_required,
+                hintId = R.string.country,
+                textFieldError = true,
+                onValueChange = onCountryChanged,
+                textFieldType = TextFieldType.Country
+            )
+        }
         Spacer(modifier = Modifier.height(8.dp))
         AuthenticationTextField(
             modifier = Modifier
@@ -216,7 +252,7 @@ fun SignupContentScreen(
             textFieldType = TextFieldType.Password
         )
 
-        if (!CredentialsValidator.isValidPassword(password)) {
+        if (!CredentialsValidator.isValidPassword(password) && password.isNotEmpty()) {
             Spacer(modifier = Modifier.height(1.dp))
             Text(
                 text = stringResource(id = R.string.password_pattern),
@@ -276,7 +312,7 @@ fun SignupContentScreen(
                             email = email,
                             phone = phone,
                             verifiedEmail = true,
-                            addresses = listOf(Address(address1 = address, phone = phone)),
+                            addresses = listOf(Address(address1 = "$address, $city $country", phone = phone)),
                             password = password,
                             passwordConfirmation = confirmPassword,
                             sendEmailWelcome = false

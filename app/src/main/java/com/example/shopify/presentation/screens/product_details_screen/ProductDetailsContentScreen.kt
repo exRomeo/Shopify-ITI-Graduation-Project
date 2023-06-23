@@ -352,6 +352,7 @@ fun ProductDetailsContentScreen(
                 description = R.string.cart_item_removal_warning,
                 buttonText = R.string.remove,
                 animatedId = R.raw.remove_from_cart,
+                buttonColor = MaterialTheme.colorScheme.error,
                 onClickButton = onAcceptRemoveCart,
                 onClose = onDismissRemoveCart
             )
@@ -361,7 +362,8 @@ fun ProductDetailsContentScreen(
                 title = if (isFavorite)  R.string.remove_product_from_fav else R.string.add_product_to_fav,
                 description = dialogMessage,
                 buttonText = if (isFavorite)R.string.remove else R.string.add ,
-                animatedId =if (isFavorite) R.raw.remove_from_favorite else R.raw.added_to_favourite  ,
+                animatedId =if (isFavorite) R.raw.remove_from_favorite else R.raw.added_to_favourite ,
+                buttonColor = if(isFavorite)MaterialTheme.colorScheme.error else mainColor,
                 onClickButton = onAcceptFavChanged,
                 onClose = onDismissFavChanged
             )
@@ -384,6 +386,7 @@ fun ProductDetailsContentScreen(
                     description = R.string.please_login,
                     buttonText = R.string.login,
                     animatedId = R.raw.sign_for_error_or_explanation_alert,
+                    buttonColor = MaterialTheme.colorScheme.error,
                     onClickButton = { productNavController.navigate(Screens.Login.route) },
                     onClose = onDismissRemoveCart
                 )
