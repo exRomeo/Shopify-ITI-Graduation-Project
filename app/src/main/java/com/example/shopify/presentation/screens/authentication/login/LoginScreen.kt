@@ -55,11 +55,24 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
     val loginViewModel: LoginViewModel = viewModel(factory = loginViewModelFactory)
     val authState by loginViewModel.authResponse.collectAsState()
     val googleState by loginViewModel.googleState.collectAsState()
-    val context = LocalContext.current
-    /*LaunchedEffect(key1 = Unit){
-        CurrentUserHelper.initialize(authRepository)
-        DiscountHelper.initialize(context.applicationContext)
-    }*/
+//    val context = LocalContext.current
+//    /*LaunchedEffect(key1 = Unit){
+//        CurrentUserHelper.initialize(authRepository)
+//        DiscountHelper.initialize(context.applicationContext)
+//    }*/
+    when (googleState) {
+        is GoogleSignInState -> {
+            if (googleState.success != null) {
+                LaunchedEffect(googleState) {
+                    Log.i("TAG", "Google navigate: ")
+                    loginNavController.navigate(Screens.Home.route)
+                }
+            } else {
+                Log.i("TAG", "LoginScreen: Error in google")
+            }
+        }
+    }
+
     when (val authResponse = authState) {
         is AuthenticationResponseState.Success -> {
             LaunchedEffect(key1 = authState) {
@@ -88,7 +101,7 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
                             title = R.string.network_connection,
                             description = R.string.not_connection,
                             buttonText = R.string.tryAgain,
-                            animatedId = R.raw.no_network_error_page_with_cat,
+                            animatedId = R.raw.custom_network_error,
                             onClickButton = { showNetworkDialog = false },
                             onClose = {
                                 showNetworkDialog = false
@@ -117,19 +130,6 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
         }
     }
 
-    when (googleState) {
-        is GoogleSignInState -> {
-            if (googleState.success != null) {
-                LaunchedEffect(googleState) {
-                    Log.i("TAG", "Google navigate: ")
-                    loginNavController.navigate(Screens.Home.route)
-                }
-            } else {
-                Log.i("TAG", "LoginScreen: Error in google")
-            }
-        }
-    }
-
     if (ConnectionUtil.isConnected()) {
         if (loginViewModel.checkedLoggedIn()) {
             Log.i("TAG", "Check logged in: ${authRepository.checkedLoggedIn()}")
@@ -144,7 +144,7 @@ fun LoginScreen(loginNavController: NavController) { //state hoisting move state
                 title = R.string.network_connection,
                 description = R.string.not_connection,
                 buttonText = R.string.tryAgain,
-                animatedId = R.raw.no_network_error_page_with_cat,
+                animatedId = R.raw.custom_network_error,
                 onClickButton = { showNetworkDialog = false },
                 onClose = {
                     showNetworkDialog = false

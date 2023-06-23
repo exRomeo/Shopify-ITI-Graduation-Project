@@ -125,17 +125,6 @@ fun LoginContentScreen(
             onValueChange = onPasswordChanged,
             textFieldType = TextFieldType.Password
         )
-
-        Spacer(modifier = Modifier.height(2.dp))
-        Box(Modifier.fillMaxWidth()) {
-            Text(
-                modifier = Modifier.align(Alignment.TopEnd),
-                text = stringResource(id = R.string.forget_password),
-                style = ibarraRegular,
-                color = mainColor,
-                fontSize = 14.sp
-            )
-        }
         if (errorResponse.isNotEmpty()) {
             Log.i("TAG", "Error response error: $errorResponse")
             Spacer(modifier = Modifier.height(2.dp))

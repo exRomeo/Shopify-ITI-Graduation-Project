@@ -1,5 +1,6 @@
 package com.example.shopify.presentation.screens.product_details_screen
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,10 +22,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.shopify.data.models.Options
+import com.example.shopify.data.models.Product
 
 
 @Composable
-fun SizeOptions(option: List<Options>) {
+fun SizeOptions(variants : List<Product>) {
     Row(
         modifier = Modifier
             .fillMaxWidth(1f)
@@ -32,12 +34,10 @@ fun SizeOptions(option: List<Options>) {
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        var selectedIndex by remember { mutableStateOf(-1) }
-        option.forEachIndexed { index, item ->
-            if (option[index].name == "Size") {
+        var selectedIndex by remember { mutableStateOf(0)}
                 LazyRow {
                     items(1) {
-                        option[index].values?.forEachIndexed { sizeIndex, _ ->
+                        variants.forEachIndexed { sizeIndex, _ ->
                             OutlinedButton(
                                 onClick = { selectedIndex = sizeIndex },
                                 modifier = when (sizeIndex) {
@@ -78,14 +78,12 @@ fun SizeOptions(option: List<Options>) {
                                     )
                                 }
                             ) {
-                                Text(option[index].values?.get(sizeIndex) ?: "")
+                                Text(text = variants[sizeIndex].size ?: "")
+                                Log.i("TAG", "SizeOptions: ${variants[sizeIndex].size}")
                             }
                             Spacer(modifier = Modifier.width(4.dp))
                         }
                     }
-                }
-
-            }
         }
     }
 }

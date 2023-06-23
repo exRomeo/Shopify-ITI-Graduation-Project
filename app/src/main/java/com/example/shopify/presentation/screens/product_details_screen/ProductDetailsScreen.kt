@@ -228,8 +228,9 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                                 title = R.string.network_connection,
                                 description = R.string.not_connection,
                                 buttonText = R.string.tryAgain,
-                                animatedId = R.raw.no_network_error_page_with_cat,
-                                onClickButton = { showNetworkDialog = false },
+                                animatedId = R.raw.custom_network_error,
+                                onClickButton = { showNetworkDialog = false
+                                                navController.popBackStack()},
                                 onClose = {
                                     showNetworkDialog = false
                                     navController.popBackStack()

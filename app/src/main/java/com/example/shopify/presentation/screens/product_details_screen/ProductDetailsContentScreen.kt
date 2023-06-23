@@ -300,7 +300,7 @@ fun ProductDetailsContentScreen(
                             fontSize = 20.sp
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        SizeOptions(product?.options ?: listOf())
+                        SizeOptions(product?.variants ?: listOf())
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Divider(
@@ -347,28 +347,23 @@ fun ProductDetailsContentScreen(
             }
         }
         if (showCartDialog) {
-            WarningDialog(
-                dialogTitle = stringResource(id = R.string.remove_product),
-                message = stringResource(id = R.string.cart_item_removal_warning),
-                dismissButtonText = stringResource(id = R.string.cancel),
-                confirmButtonText = stringResource(id = R.string.remove),
-                onConfirm = onAcceptRemoveCart,
-                onDismiss = onDismissRemoveCart
-
+            ShowCustomDialog(
+                title = R.string.remove_product,
+                description = R.string.cart_item_removal_warning,
+                buttonText = R.string.remove,
+                animatedId = R.raw.remove_from_cart,
+                onClickButton = onAcceptRemoveCart,
+                onClose = onDismissRemoveCart
             )
         }
         if (showFavWarningDialog) {
-            WarningDialog(
-                dialogTitle = if (isFavorite) stringResource(id = R.string.remove_product_from_fav) else stringResource(
-                    id = R.string.add_product_to_fav
-                ),
-                message = stringResource(id = dialogMessage),
-                dismissButtonText = stringResource(id = R.string.cancel),
-                confirmButtonText = if (isFavorite) stringResource(id = R.string.remove) else if (!isFavorite) stringResource(
-                    id = R.string.add
-                ) else "",
-                onConfirm = onAcceptFavChanged,
-                onDismiss = onDismissFavChanged
+            ShowCustomDialog(
+                title = if (isFavorite)  R.string.remove_product_from_fav else R.string.add_product_to_fav,
+                description = dialogMessage,
+                buttonText = if (isFavorite)R.string.remove else R.string.add ,
+                animatedId =if (isFavorite) R.raw.remove_from_favorite else R.raw.added_to_favourite  ,
+                onClickButton = onAcceptFavChanged,
+                onClose = onDismissFavChanged
             )
 
         }

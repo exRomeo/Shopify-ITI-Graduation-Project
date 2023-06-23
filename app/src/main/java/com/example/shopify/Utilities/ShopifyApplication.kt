@@ -78,9 +78,9 @@ class ShopifyApplication : Application() {
         ConnectionUtil.initialize(applicationContext)
         if (authRepository.checkedLoggedIn()) { //Is loggedIn
             GlobalScope.launch(Dispatchers.IO) {
-                currentCustomer = getCurrentCustomer(authRepository)
-                CurrentUserHelper.initialize(authRepository)
-                DiscountHelper.initialize(applicationContext)
+//                currentCustomer = getCurrentCustomer(authRepository)
+//                CurrentUserHelper.initialize(authRepository)
+//                DiscountHelper.initialize(applicationContext)
             }
         } else {  //IsNot LoggedIn
             currentCustomer = null

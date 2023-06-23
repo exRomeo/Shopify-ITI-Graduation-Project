@@ -72,22 +72,4 @@ class ProductDetailsViewModel(
         }
     }
 
-    private fun checkResponseState(responseState: UiState) {
-        when (responseState) {
-            is UiState.Success<*> -> {
-                _productInfoState.value = UiState.Success(responseState.data)
-                Log.i("TAG", "Success checkProductDetails: ${responseState.data}")
-            }
-
-            is UiState.Error -> {
-                _productInfoState.value = UiState.Error(responseState.error)
-                Log.i("TAG", "ERROR checkProductDetails: ${responseState.error}")
-            }
-
-            is UiState.Loading -> {
-                Log.i("TAG", "Loading checkProductDetails: LOADING")
-
-            }
-        }
-    }
 }
