@@ -42,9 +42,9 @@ fun ShowCustomDialog(
     @StringRes buttonText: Int,
     @RawRes animatedId: Int,
     onClose: () -> Unit,
-    onDismiss: () -> Unit
+    onClickButton: () -> Unit
 ) {
-    Dialog(onDismissRequest = onDismiss) {
+    Dialog(onDismissRequest = onClickButton) {
         Box(
             modifier = Modifier
                 .height(460.dp)
@@ -64,7 +64,7 @@ fun ShowCustomDialog(
                     IconButton(
                         modifier = Modifier.align(Alignment.TopStart),
                         onClick = {
-                            onDismiss()
+                            onClickButton()
                             onClose()
                         }) {
                         Icon(
@@ -99,7 +99,7 @@ fun ShowCustomDialog(
                         )
                         Spacer(modifier = Modifier.height(24.dp))
                         Button(
-                            onClick = onDismiss,
+                            onClick = onClickButton,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(5.dp))

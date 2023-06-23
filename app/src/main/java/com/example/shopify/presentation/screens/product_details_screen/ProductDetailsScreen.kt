@@ -193,7 +193,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                             description = R.string.unexpected_error,
                             buttonText = R.string.tryAgain,
                             animatedId = R.raw.error_animation,
-                            onDismiss = { showNetworkDialog = false },
+                            onClickButton = { showNetworkDialog = false },
                             onClose = {
                                 showNetworkDialog = false
                                 navController.popBackStack()
@@ -216,7 +216,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                             description = R.string.unexpected_error,
                             buttonText = R.string.tryAgain,
                             animatedId = R.raw.error_animation,
-                            onDismiss = { showNetworkDialog = false },
+                            onClickButton = { showNetworkDialog = false },
                             onClose = {
                                 showNetworkDialog = false
                                 navController.popBackStack()
@@ -233,7 +233,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                             description = R.string.not_connection,
                             buttonText = R.string.tryAgain,
                             animatedId = R.raw.custom_network_error,
-                            onDismiss = { showNetworkDialog = false },
+                            onClickButton = { showNetworkDialog = false },
                             onClose = {
                                 showNetworkDialog = false
                                 navController.popBackStack()

@@ -39,6 +39,9 @@ class LoginViewModel(private val authRepository: IAuthRepository) : ViewModel() 
         return authRepository.signOutFirebase()
     }
 
+    fun checkedLoggedIn(): Boolean = authRepository.checkedLoggedIn()
+
+
     fun googleSignIn(credential: AuthCredential) {
         viewModelScope.launch(Dispatchers.IO) {
             val response = authRepository.googleSignIn(credential)

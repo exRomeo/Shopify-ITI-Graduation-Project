@@ -15,6 +15,7 @@ import com.example.shopify.data.remote.authentication.FakeAuthenticationClientTe
 import com.example.shopify.data.remote.authentication.IAuthenticationClient
 import com.example.shopify.data.repositories.authentication.AuthRepository
 import com.example.shopify.data.repositories.authentication.IAuthRepository
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -71,7 +72,7 @@ class SignupViewModelTest {
     }
 
     @Test
-    fun loginUser_emailAndPassword_notNullResult() = runTest{
+    fun loginUser_emailAndPassword_success() = runTest{
         //Given -> right email and password
         val email = "nadaelshafey@yahoo.com"
         val password = "Nada123#"
@@ -86,4 +87,21 @@ class SignupViewModelTest {
         assertThat(resultState, isA(AuthenticationResponseState.Success::class.java))
 
     }
+    @Test
+    fun loginUser_emailAndPassword_loading() = runTest{
+        //Given -> right email and password
+        val email = "nadaelshafey@yahoo.com"
+        val password = "Nada123#"
+
+        //When -> calling  loginUser()
+        viewModel.loginUser(email, password)
+        val result= async { viewModel.authResponse.first() }
+        val resultState = result.await()
+        advanceUntilIdle()
+
+        //Then -> The result must be loading
+        assertThat(resultState, isA(AuthenticationResponseState.Loading::class.java))
+
+    }
+
 }
