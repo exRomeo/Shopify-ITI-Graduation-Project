@@ -139,4 +139,6 @@
     <string name="login_as_guest">As Guest\n</string>
     <string name="please_login"> you have not created an account yet, you can easily register by clicking on the "Login" button.</string>
     <string name="Egp">EGP</string>
+    <string name="place_order">Place Order</string>
+    <string name="apply">Apply</string>
 </resources>
