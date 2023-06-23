@@ -1,6 +1,6 @@
 # Shoppingo Application
 
-This project is an ecommerce mobile application that offers a convenient and user-friendly shopping experience to customers who prefer to shop on their mobile devices.
+This is a graduation project for ITI which is an ecommerce mobile application that offers a convenient and user-friendly shopping experience to customers who prefer to shop on their mobile devices.
 
 ## Documentation
 
