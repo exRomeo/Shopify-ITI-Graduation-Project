@@ -55,6 +55,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.shopify.R
+import com.example.shopify.core.helpers.DiscountHelper
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.data.models.currency.Currency
 import com.example.shopify.data.models.draftorder.LineItem
@@ -283,14 +284,22 @@ fun CheckoutItems(cartItems: List<LineItem>, viewModel: CheckoutViewModel) {
 fun OrderSummary(viewModel: CheckoutViewModel) {
     val itemsCount by viewModel.totalItems.collectAsState()
     val totalPrice by viewModel.totalPrice.collectAsState()
+    val discountCode by remember { mutableStateOf(DiscountHelper.getDiscount()) }
+    var isError by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxWidth(),
         verticalArrangement = Arrangement.SpaceEvenly,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.Start
     ) {
-        Text(text = itemsCount)
-        Text(text = "Total Price = ${viewModel.currencySymbol} $totalPrice")
+        Text(
+            text = itemsCount,
+            style = TextStyle(fontWeight = FontWeight.SemiBold)
+        )
+        Text(
+            text = "Total Price = ${viewModel.currencySymbol} $totalPrice",
+            style = TextStyle(fontWeight = FontWeight.SemiBold)
+        )
         var code by remember { mutableStateOf("") }
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -299,17 +308,28 @@ fun OrderSummary(viewModel: CheckoutViewModel) {
             OutlinedTextField(modifier = Modifier.fillMaxWidth(0.7f),
                 value = code,
                 onValueChange = { code = it },
+                isError = isError,
                 label = {
                     Text(
                         text = stringResource(id = R.string.discount_code)
                     )
                 }
             )
+            TextButton(modifier = Modifier.padding(start = 8.dp), onClick = {
+                if (discountCode != null) {
+                    viewModel.applyDiscount(discountCode!!)
+                } else {
+                    isError = true
+                }
+            }) {
+                Text(text = stringResource(id = R.string.apply))
+            }
         }
         Text(text = stringResource(id = R.string.payment_method))
         var selectedOption by remember { mutableStateOf(PaymentMethod.Credit) }
 
         Row(
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -353,7 +373,6 @@ fun OrderSummaryAlert(viewModel: CheckoutViewModel, onDismiss: () -> Unit, onCon
             TextButton(
                 onClick = {
                     onDismiss()
-
                 }
             ) {
                 Text(text = stringResource(id = R.string.cancel))
@@ -364,7 +383,7 @@ fun OrderSummaryAlert(viewModel: CheckoutViewModel, onDismiss: () -> Unit, onCon
                 onConfirm()
                 onDismiss()
             }) {
-                Text(text = stringResource(id = R.string.confirm))
+                Text(text = stringResource(id = R.string.place_order))
             }
         }
     )
