@@ -143,7 +143,22 @@ dependencies {
     // Stripe Android SDK
     implementation 'com.stripe:stripe-android:20.25.6'
 
+    //Coroutines Testing
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1"
 
+    //hamcrest
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+    androidTestImplementation 'org.hamcrest:hamcrest:2.2'
+    testImplementation 'org.hamcrest:hamcrest-library:2.2'
+    androidTestImplementation 'org.hamcrest:hamcrest-library:2.2'
+
+    //Robolectric
+    testImplementation "org.robolectric:robolectric:4.9.2"
+
+    // InstantTaskExecutorRule
+    testImplementation "androidx.arch.core:core-testing:2.2.0"
+    androidTestImplementation 'androidx.arch.core:core-testing:2.2.0'
 }
 
 kapt {

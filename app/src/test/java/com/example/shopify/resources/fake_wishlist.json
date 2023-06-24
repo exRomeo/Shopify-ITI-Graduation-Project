@@ -1,0 +1,363 @@
+{
+  "draft_order": {
+    "id": 1121902264626,
+    "note": ">wishlist<",
+    "email": null,
+    "taxes_included": false,
+    "currency": "EGP",
+    "invoice_sent_at": null,
+    "created_at": "2023-06-19T20:00:30-04:00",
+    "updated_at": "2023-06-21T09:04:54-04:00",
+    "tax_exempt": false,
+    "completed_at": null,
+    "name": "#D237",
+    "status": "open",
+    "line_items": [
+      {
+        "id": 58260500513074,
+        "variant_id": 45344376652082,
+        "product_id": 8398826111282,
+        "title": "CONVERSE | CHUCK TAYLOR ALL STAR LO",
+        "variant_title": "3 / white",
+        "sku": "C-01-white-3",
+        "vendor": "CONVERSE",
+        "quantity": 1,
+        "requires_shipping": true,
+        "taxable": true,
+        "gift_card": false,
+        "fulfillment_service": "manual",
+        "grams": 0,
+        "tax_lines": [
+          {
+            "rate": 0.14,
+            "title": "GST",
+            "price": "14.00"
+          }
+        ],
+        "applied_discount": null,
+        "name": "CONVERSE | CHUCK TAYLOR ALL STAR LO - 3 / white",
+        "properties": [],
+        "custom": false,
+        "price": "100.00",
+        "admin_graphql_api_id": "gid://shopify/DraftOrderLineItem/58260500513074"
+      },
+      {
+        "id": 58260500545842,
+        "variant_id": 45344378782002,
+        "product_id": 8398826864946,
+        "title": "CONVERSE | TODDLER CHUCK TAYLOR ALL STAR AXEL MID",
+        "variant_title": "5 / black",
+        "sku": "C-03-black-5",
+        "vendor": "CONVERSE",
+        "quantity": 1,
+        "requires_shipping": true,
+        "taxable": true,
+        "gift_card": false,
+        "fulfillment_service": "manual",
+        "grams": 0,
+        "tax_lines": [
+          {
+            "rate": 0.14,
+            "title": "GST",
+            "price": "9.80"
+          }
+        ],
+        "applied_discount": null,
+        "name": "CONVERSE | TODDLER CHUCK TAYLOR ALL STAR AXEL MID - 5 / black",
+        "properties": [],
+        "custom": false,
+        "price": "70.00",
+        "admin_graphql_api_id": "gid://shopify/DraftOrderLineItem/58260500545842"
+      },
+      {
+        "id": 58260500578610,
+        "variant_id": 45344382320946,
+        "product_id": 8398828339506,
+        "title": "ADIDAS | CLASSIC BACKPACK",
+        "variant_title": "OS / black",
+        "sku": "AD-03-black-OS",
+        "vendor": "ADIDAS",
+        "quantity": 1,
+        "requires_shipping": true,
+        "taxable": true,
+        "gift_card": false,
+        "fulfillment_service": "manual",
+        "grams": 0,
+        "tax_lines": [
+          {
+            "rate": 0.14,
+            "title": "GST",
+            "price": "9.80"
+          }
+        ],
+        "applied_discount": null,
+        "name": "ADIDAS | CLASSIC BACKPACK - OS / black",
+        "properties": [],
+        "custom": false,
+        "price": "70.00",
+        "admin_graphql_api_id": "gid://shopify/DraftOrderLineItem/58260500578610"
+      },
+      {
+        "id": 58260500611378,
+        "variant_id": 45344377897266,
+        "product_id": 8398826537266,
+        "title": "CONVERSE | CHUCK TAYLOR ALL STAR II HI",
+        "variant_title": "4 / black",
+        "sku": "C-02-black-4",
+        "vendor": "CONVERSE",
+        "quantity": 1,
+        "requires_shipping": true,
+        "taxable": true,
+        "gift_card": false,
+        "fulfillment_service": "manual",
+        "grams": 0,
+        "tax_lines": [
+          {
+            "rate": 0.14,
+            "title": "GST",
+            "price": "19.60"
+          }
+        ],
+        "applied_discount": null,
+        "name": "CONVERSE | CHUCK TAYLOR ALL STAR II HI - 4 / black",
+        "properties": [],
+        "custom": false,
+        "price": "140.00",
+        "admin_graphql_api_id": "gid://shopify/DraftOrderLineItem/58260500611378"
+      },
+      {
+        "id": 58260500644146,
+        "variant_id": 45344369279282,
+        "product_id": 8398823129394,
+        "title": "ADIDAS | SUPERSTAR 80S",
+        "variant_title": "5 / white",
+        "sku": "AD-01-white-5",
+        "vendor": "ADIDAS",
+        "quantity": 1,
+        "requires_shipping": true,
+        "taxable": true,
+        "gift_card": false,
+        "fulfillment_service": "manual",
+        "grams": 0,
+        "tax_lines": [
+          {
+            "rate": 0.14,
+            "title": "GST",
+            "price": "23.80"
+          }
+        ],
+        "applied_discount": null,
+        "name": "ADIDAS | SUPERSTAR 80S - 5 / white",
+        "properties": [],
+        "custom": false,
+        "price": "170.00",
+        "admin_graphql_api_id": "gid://shopify/DraftOrderLineItem/58260500644146"
+      },
+      {
+        "id": 58260500676914,
+        "variant_id": 45344382320946,
+        "product_id": 8398828339506,
+        "title": "ADIDAS | CLASSIC BACKPACK",
+        "variant_title": "OS / black",
+        "sku": "AD-03-black-OS",
+        "vendor": "ADIDAS",
+        "quantity": 1,
+        "requires_shipping": true,
+        "taxable": true,
+        "gift_card": false,
+        "fulfillment_service": "manual",
+        "grams": 0,
+        "tax_lines": [
+          {
+            "rate": 0.14,
+            "title": "GST",
+            "price": "9.80"
+          }
+        ],
+        "applied_discount": null,
+        "name": "ADIDAS | CLASSIC BACKPACK - OS / black",
+        "properties": [],
+        "custom": false,
+        "price": "70.00",
+        "admin_graphql_api_id": "gid://shopify/DraftOrderLineItem/58260500676914"
+      },
+      {
+        "id": 58260500709682,
+        "variant_id": 45344382910770,
+        "product_id": 8398828503346,
+        "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+        "variant_title": "OS / blue",
+        "sku": "AD-04\r\n-blue-OS",
+        "vendor": "ADIDAS",
+        "quantity": 1,
+        "requires_shipping": true,
+        "taxable": true,
+        "gift_card": false,
+        "fulfillment_service": "manual",
+        "grams": 0,
+        "tax_lines": [
+          {
+            "rate": 0.14,
+            "title": "GST",
+            "price": "7.00"
+          }
+        ],
+        "applied_discount": null,
+        "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+        "properties": [],
+        "custom": false,
+        "price": "50.00",
+        "admin_graphql_api_id": "gid://shopify/DraftOrderLineItem/58260500709682"
+      },
+      {
+        "id": 58260500742450,
+        "variant_id": 45344379765042,
+        "product_id": 8398827258162,
+        "title": "ADIDAS | KID'S STAN SMITH",
+        "variant_title": "1 / white",
+        "sku": "AD-02-white-1",
+        "vendor": "ADIDAS",
+        "quantity": 1,
+        "requires_shipping": true,
+        "taxable": true,
+        "gift_card": false,
+        "fulfillment_service": "manual",
+        "grams": 0,
+        "tax_lines": [
+          {
+            "rate": 0.14,
+            "title": "GST",
+            "price": "12.60"
+          }
+        ],
+        "applied_discount": null,
+        "name": "ADIDAS | KID'S STAN SMITH - 1 / white",
+        "properties": [],
+        "custom": false,
+        "price": "90.00",
+        "admin_graphql_api_id": "gid://shopify/DraftOrderLineItem/58260500742450"
+      },
+      {
+        "id": 58260500775218,
+        "variant_id": 45344369279282,
+        "product_id": 8398823129394,
+        "title": "ADIDAS | SUPERSTAR 80S",
+        "variant_title": "5 / white",
+        "sku": "AD-01-white-5",
+        "vendor": "ADIDAS",
+        "quantity": 1,
+        "requires_shipping": true,
+        "taxable": true,
+        "gift_card": false,
+        "fulfillment_service": "manual",
+        "grams": 0,
+        "tax_lines": [
+          {
+            "rate": 0.14,
+            "title": "GST",
+            "price": "23.80"
+          }
+        ],
+        "applied_discount": null,
+        "name": "ADIDAS | SUPERSTAR 80S - 5 / white",
+        "properties": [],
+        "custom": false,
+        "price": "170.00",
+        "admin_graphql_api_id": "gid://shopify/DraftOrderLineItem/58260500775218"
+      },
+      {
+        "id": 58260500807986,
+        "variant_id": 45344369279282,
+        "product_id": 8398823129394,
+        "title": "ADIDAS | SUPERSTAR 80S",
+        "variant_title": "5 / white",
+        "sku": "AD-01-white-5",
+        "vendor": "ADIDAS",
+        "quantity": 1,
+        "requires_shipping": true,
+        "taxable": true,
+        "gift_card": false,
+        "fulfillment_service": "manual",
+        "grams": 0,
+        "tax_lines": [
+          {
+            "rate": 0.14,
+            "title": "GST",
+            "price": "23.80"
+          }
+        ],
+        "applied_discount": null,
+        "name": "ADIDAS | SUPERSTAR 80S - 5 / white",
+        "properties": [],
+        "custom": false,
+        "price": "170.00",
+        "admin_graphql_api_id": "gid://shopify/DraftOrderLineItem/58260500807986"
+      }
+    ],
+    "shipping_address": null,
+    "billing_address": null,
+    "invoice_url": "https://mad43-alex-and-team2.myshopify.com/77159006514/invoices/7ca75e6eb67780032b756d0c7b0ade2c",
+    "applied_discount": null,
+    "order_id": null,
+    "shipping_line": null,
+    "tax_lines": [
+      {
+        "rate": 0.14,
+        "title": "GST",
+        "price": "14.00"
+      },
+      {
+        "rate": 0.14,
+        "title": "GST",
+        "price": "9.80"
+      },
+      {
+        "rate": 0.14,
+        "title": "GST",
+        "price": "9.80"
+      },
+      {
+        "rate": 0.14,
+        "title": "GST",
+        "price": "19.60"
+      },
+      {
+        "rate": 0.14,
+        "title": "GST",
+        "price": "23.80"
+      },
+      {
+        "rate": 0.14,
+        "title": "GST",
+        "price": "9.80"
+      },
+      {
+        "rate": 0.14,
+        "title": "GST",
+        "price": "7.00"
+      },
+      {
+        "rate": 0.14,
+        "title": "GST",
+        "price": "12.60"
+      },
+      {
+        "rate": 0.14,
+        "title": "GST",
+        "price": "23.80"
+      },
+      {
+        "rate": 0.14,
+        "title": "GST",
+        "price": "23.80"
+      }
+    ],
+    "tags": "",
+    "note_attributes": [],
+    "total_price": "1254.00",
+    "subtotal_price": "1100.00",
+    "total_tax": "154.00",
+    "payment_terms": null,
+    "admin_graphql_api_id": "gid://shopify/DraftOrder/1121902264626"
+  }
+}
