@@ -5,7 +5,7 @@ import java.io.Serializable
 
 
 data class SmartCollections(
-    val smart_collections: List<Brand>
+    val smart_collections: List<Brand>? =null
 ) : Serializable
 
 data class Brand(

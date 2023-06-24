@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+
+
 class BrandsViewModel(
     private val repository: IProductRepository,
     private val wishlistManager: WishlistManager,
@@ -29,7 +31,7 @@ class BrandsViewModel(
 
     fun getSpecificBrandProducts(id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-         val response = repository.getSpecificBrandProducts(id)
+           val response = repository.getSpecificBrandProducts(id)
             if (response.isSuccessful && response.body() != null) {
                 _products.value = UiState.Success(response.body())
             }

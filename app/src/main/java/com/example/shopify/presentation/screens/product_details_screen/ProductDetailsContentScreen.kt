@@ -66,7 +66,6 @@ import com.example.shopify.R
 import com.example.shopify.core.navigation.Screens
 import com.example.shopify.data.models.SingleProduct
 import com.example.shopify.presentation.common.composables.ShowCustomDialog
-import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.presentation.screens.onBoarding.PagerIndicator
 import com.example.shopify.ui.theme.ibarraBold
 import com.example.shopify.ui.theme.ibarraRegular
