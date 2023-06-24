@@ -43,6 +43,6 @@ object FakeAddress {
         default = false
     )
 
-    val addressList = listOf(address1, address2, address3)
+    val addressList = mutableListOf(address1, address2, address3)
 
 }

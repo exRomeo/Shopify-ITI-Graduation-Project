@@ -127,6 +127,7 @@ fun CheckoutScreen(navController: NavHostController) {
         floatingActionButton = {
 
             ExtendedFloatingActionButton(
+                containerColor = onMainColor,
                 onClick = {
                     showSummary = true
 

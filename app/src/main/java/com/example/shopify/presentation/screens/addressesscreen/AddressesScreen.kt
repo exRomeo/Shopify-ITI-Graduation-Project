@@ -49,6 +49,7 @@ import com.example.shopify.presentation.common.composables.NotLoggedInScreen
 import com.example.shopify.presentation.common.composables.SettingItemCard
 import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.ui.theme.lightMainColor
+import com.example.shopify.ui.theme.onMainColor
 import com.example.shopify.utilities.ShopifyApplication
 
 
@@ -83,7 +84,8 @@ fun AddressScreen(navController: NavHostController) {
     }
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = { showDialog = true }) {
+            FloatingActionButton(
+                containerColor = onMainColor,onClick = { showDialog = true }) {
                 Icon(
                     Icons.Default.Add,
                     contentDescription = stringResource(id = R.string.add_address)
