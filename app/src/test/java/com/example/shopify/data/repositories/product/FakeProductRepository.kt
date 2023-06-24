@@ -25,8 +25,8 @@ class FakeProductRepository(
         return Response.success(ProductsResponse)
     }
 
-    override suspend fun getSingleProductDetails(productId: Long): UiState {
-        return UiState.Success(SingleProductResponse)
+    override suspend fun getSingleProductDetails(productId: Long):Response<SingleProductResponseBody>{
+        return  Response.success(SingleProductResponse)
     }
 
     override suspend fun getRandomProducts(): Response<Products> {

@@ -2,6 +2,7 @@ package com.example.shopify.presentation.screens.brands
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.shopify.MainCoroutineRule
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.data.managers.cart.CartManager
 import com.example.shopify.data.managers.wishlist.WishlistManager
@@ -12,10 +13,7 @@ import com.example.shopify.data.models.SingleProductResponseBody
 import com.example.shopify.data.models.SmartCollections
 import com.example.shopify.data.remote.product.FakeRemoteResource
 import com.example.shopify.data.repositories.product.FakeProductRepository
-import com.example.shopify.data.repositories.product.ProductRepository
 import com.example.shopify.data.repositories.user.remote.retrofitclient.ShopifyAPIClient
-import com.example.shopify.presentation.screens.homescreen.HomeViewModel
-import com.example.weatherapplication.MainCoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
@@ -23,9 +21,8 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.Matchers
 import org.hamcrest.core.IsNull
-import org.junit.Assert.*
-
 import org.junit.After
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

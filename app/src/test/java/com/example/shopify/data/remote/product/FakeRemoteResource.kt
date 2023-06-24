@@ -22,8 +22,8 @@ class FakeRemoteResource(private var smartCollectionResponse:SmartCollections,
     }
 
 
-    override suspend fun getProductInfo(productID: Long): UiState {
-       return  UiState.Success(SingleProductResponse)
+    override suspend fun getProductInfo(productID: Long):Response<SingleProductResponseBody>{
+       return success(SingleProductResponse)
     }
 
     override suspend fun getSpecificBrandProducts(id: Long): Response<Products> {

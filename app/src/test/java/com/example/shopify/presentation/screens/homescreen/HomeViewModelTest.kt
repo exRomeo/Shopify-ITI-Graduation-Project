@@ -2,6 +2,7 @@ package com.example.shopify.presentation.screens.homescreen
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.shopify.MainCoroutineRule
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.data.managers.cart.CartManager
 import com.example.shopify.data.managers.wishlist.WishlistManager
@@ -14,7 +15,6 @@ import com.example.shopify.data.remote.product.FakeRemoteResource
 import com.example.shopify.data.repositories.product.FakeProductRepository
 import com.example.shopify.data.repositories.product.ProductRepository
 import com.example.shopify.data.repositories.user.remote.retrofitclient.ShopifyAPIClient
-import com.example.weatherapplication.MainCoroutineRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first

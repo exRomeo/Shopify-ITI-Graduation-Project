@@ -7,25 +7,21 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -43,81 +39,30 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.shopify.R
+import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.core.navigation.Bottombar
+import com.example.shopify.core.navigation.Screens
 import com.example.shopify.data.managers.cart.CartManager
 import com.example.shopify.data.managers.wishlist.WishlistManager
-import com.example.shopify.data.models.Image
-import com.example.shopify.data.models.Product
 import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.Products
-import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.common.composables.CustomSearchbar
 import com.example.shopify.presentation.common.composables.LottieAnimation
+import com.example.shopify.presentation.common.composables.ShowCustomDialog
 import com.example.shopify.presentation.screens.brands.BrandsViewModel
 import com.example.shopify.presentation.screens.brands.BrandsViewModelFactory
 import com.example.shopify.presentation.screens.brands.ProductsCards
-import com.example.shopify.ui.theme.ShopifyTheme
 import com.example.shopify.utilities.ShopifyApplication
 
 
 val mainCategories = listOf("Men", "Women", "Kid", "Sale")
-val list: List<Variant> = listOf(
-    Variant(
-        1,
-        "ppp",
-        listOf(
-            Product(
-                1, 1, "adidas", "200", 1
-            )
-        ),
-        Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png")
-    ), (Variant(
-        1,
-        "ppp",
-        listOf(
-            Product(
-                1, 1, "adidas", "200", 1
-            )
-        ),
-        Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png")
-    )), (Variant(
-        1,
-        "ppp",
-        listOf(
-            Product(
-                1, 1, "adidas", "200", 1
-            )
-        ),
-        Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png")
-    )), (Variant(
-        1,
-        "ppp",
-        listOf(
-            Product(
-                1, 1, "adidas", "200", 1
-            )
-        ),
-        Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png")
-    )), (Variant(
-        1,
-        "ppp",
-        listOf(
-            Product(
-                1, 1, "adidas", "200", 1
-            )
-        ),
-        Image(src = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png")
-    ))
-)
+
 
 val items = listOf(
 
@@ -164,8 +109,7 @@ fun CategoriesScreen(navController: NavHostController) {
     val productsState: UiState by viewModel.productsList.collectAsState()
     var productsList: List<ProductSample> = listOf()
     var filteredList: List<ProductSample> = listOf()
-    var state: String = "fail"
-    // var FABIcon = R.drawable.ic_category
+    var state = "fail"
     var FABIcon by rememberSaveable {
         mutableStateOf(R.drawable.app)
 
@@ -184,6 +128,9 @@ fun CategoriesScreen(navController: NavHostController) {
     var filteredState by rememberSaveable {
         mutableStateOf(filteredList)
 
+    }
+    var openDialogue by remember {
+        mutableStateOf(false)
     }
     val searchFilteredList by remember {
         derivedStateOf {
@@ -210,13 +157,8 @@ fun CategoriesScreen(navController: NavHostController) {
             productsList =
                 (productsState as UiState.Success<Products>).data.products!!
             filteredState = productsList.filter { item ->
-                //  item.variants?.get(0)?.price?.let { it1 -> Log.i("hla", it1) }
-                item.variants?.get(0)?.price?.toFloat()!! >= productPrice
+                item.variants.get(0).price?.toFloat()!! >= productPrice
             }
-            Log.i("hala", productPrice.toString())
-
-            // filteredState = productsList
-            //   Log.i("menna", productsList.toString())
         }
 
         else -> {
@@ -225,7 +167,6 @@ fun CategoriesScreen(navController: NavHostController) {
     }
     Scaffold(
         bottomBar = { Bottombar(navController = navController) },
-        //floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
             FloatingButton(
                 items = items, onMiniFABClicked = {
@@ -311,21 +252,16 @@ fun CategoriesScreen(navController: NavHostController) {
 
                 p = price
                 productPrice = p
-                Log.i("hala", productPrice.toString())
 
                 filteredState = productsList.filter { item ->
-                    //  item.variants?.get(0)?.price?.let { it1 -> Log.i("hla", it1) }
                     item.variants?.get(0)?.price?.toFloat()!! >= price
 
                 }
 
-                //  viewModel.getProductsBySubcategory()
-                // Log.i("hla", price.toString())
-                Log.i("hla", filteredList.toString())
                 filteredState
             }
             if (filteredState.isNotEmpty()) {
-                // viewModel.type = ""
+
                 ProductsCards(
                     navController = navController,
                     viewModel = viewModel2,
@@ -334,7 +270,11 @@ fun CategoriesScreen(navController: NavHostController) {
                     isFavourite = false,
                     onFavouriteClicked = {}
                 ) { product ->
-                    viewModel2.addItemToCart(product.id, product.variants[0].id)
+                    if (CurrentUserHelper.isLoggedIn()) {
+                        viewModel2.addItemToCart(product.id, product.variants[0].id)
+                    } else {
+                        openDialogue = true
+                    }
                 }
             } else {
 
@@ -354,6 +294,19 @@ fun CategoriesScreen(navController: NavHostController) {
                     LottieAnimation(animation = R.raw.loading_animation)
                 }
             }
+            if (openDialogue) {
+                Surface(color = Color.Gray) {
+                    ShowCustomDialog(
+                        title = R.string.login,
+                        description = R.string.please_login,
+                        buttonText = R.string.login,
+                        animatedId = R.raw.sign_for_error_or_explanation_alert,
+                        buttonColor = MaterialTheme.colorScheme.error,
+                        onClickButton = { navController.navigate(Screens.Login.route) },
+                        onClose = { openDialogue = false }
+                    )
+                }
+            }
 
         }
     }
@@ -368,10 +321,7 @@ fun MainFilters(
 ) {
 
     val selectedIndex = remember { mutableStateOf(defaultSelectedItemIndex) }
-    Row(
-        //  modifier = Modifier.padding(start = 20.dp),
-        // horizontalArrangement = Arrangement.Center
-    ) {
+    Row {
         items.forEachIndexed { index, item ->
             OutlinedButton(
                 modifier = Modifier.width(100.dp),
@@ -445,43 +395,6 @@ fun SliderComponent(onPriceValueChanged: (Float) -> List<ProductSample>) {
     Text(text = "> $sliderValue")
 }
 
-@Composable
-fun CategoriesItems() {
-    val list = (1..10).map { it.toString() }
-
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(128.dp),
-// content padding
-        contentPadding = PaddingValues(
-            start = 12.dp,
-            top = 16.dp,
-            end = 12.dp,
-            bottom = 16.dp
-        ),
-        content = {
-            items(list.size) { index ->
-                Card(
-                    // backgroundColor = Color.Red,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .fillMaxWidth(),
-                    // elevation = CardElevation(),
-                ) {
-                    Text(
-                        text = list[index],
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 30.sp,
-                        color = Color(0xFFFFFFFF),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-            }
-        }
-    )
-}
-
-
 enum class FloatingButtonState {
     Expanded,
     Collapsed
@@ -504,24 +417,19 @@ fun MiniFAB(
             onMiniFABClicked(item.label)
             Log.i("hla", "mini clicked")
         },
-        //  border = BorderStroke(1.dp, Color.Red),
+
         shape = CircleShape,
-        //RoundedCornerShape(80), // = 50% percent
-        // or shape = CircleShape
         containerColor = Color.Transparent
     ) {
         Image(
             painter = painterResource(item.icon),
             contentScale = ContentScale.Inside,
-            //  Icon(modifier = Modifier.size(40.dp) ,
-            //  painter = painterResource(R.drawable.accessories),
             contentDescription = "content description"
         )
 
     }
 
 }
-
 
 @Composable
 fun FloatingButton(
@@ -539,46 +447,26 @@ fun FloatingButton(
         if (it == FloatingButtonState.Collapsed) 0f else 315f
     }
 
-    Column(
-        //modifier = Modifier.alpha(if (transition.currentState == FloatingButtonState.Expanded) 1f else 0f)
-    ) {
+    Column {
         if (transition.currentState == FloatingButtonState.Expanded) {
             items.forEach {
 
                 MiniFAB(
-                    modifier = Modifier
-                    //   .alpha(if (transition.currentState == FloatingButtonState.Expanded) 1f else 0f
-                    ,
+                    modifier = Modifier,
                     item = it, onMiniFABClicked = onMiniFABClicked
                 )
 
                 Spacer(modifier = Modifier.size(16.dp))
             }
         }
-
-
-
-
-
         FloatingActionButton(
             containerColor = MaterialTheme.colorScheme.primary,
             shape = CircleShape,
             onClick =
-            //{
-            // Log.i("menna", "clicked")
-            onFABCLicked
-            //  onFloatingButtonStateChange(
-//                    if (transition.currentState == FloatingButtonState.Collapsed) {
-//                        floatingButtonState = FloatingButtonState.Expanded
-//                    } else {
-//                        floatingButtonState = FloatingButtonState.Collapsed
-//
-//                    }
-            //  }
-            ,
+            onFABCLicked,
             modifier = Modifier
                 .rotate(rotate)
-            // .padding(20.dp)
+
         )
         {
             Image(
@@ -594,18 +482,4 @@ fun FloatingButton(
 }
 
 
-@Preview
-@Composable
-fun MainFiltersPreview() {
-    ShopifyTheme {
-
-        //   CategoriesScreen()
-        // Floatingbutton()
-
-    }
-}
-
-
-//SliderComponent({})
-//  MainFilters(items = mainCategories, onItemSelection = {})
 

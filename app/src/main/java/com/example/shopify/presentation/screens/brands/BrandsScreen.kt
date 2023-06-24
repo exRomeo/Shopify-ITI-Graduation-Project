@@ -20,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,6 +54,7 @@ import com.example.shopify.data.models.Variant
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.common.composables.CustomSearchbar
 import com.example.shopify.presentation.common.composables.LottieAnimation
+import com.example.shopify.presentation.common.composables.ShowCustomDialog
 import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.presentation.screens.homescreen.CardDesign
 import com.example.shopify.presentation.screens.homescreen.FavoriteButton
@@ -76,14 +78,13 @@ fun BrandsScreen(navController: NavHostController, id: Long) {
     )
 
     val productsState: UiState by viewModel.brandList.collectAsState()
-    var productsList:List<ProductSample> by remember {
+    var productsList: List<ProductSample> by remember {
         mutableStateOf(listOf())
     }
 
     var openDialogue by remember {
         mutableStateOf(false)
     }
-
 
 
     var searchText by remember { mutableStateOf("") }
@@ -98,25 +99,25 @@ fun BrandsScreen(navController: NavHostController, id: Long) {
     }
     val filteredList by remember {
         derivedStateOf {
-            if (searchText.isEmpty()|| searchText == "") {
-                 productsList
+            if (searchText.isEmpty() || searchText == "") {
+                productsList
 
-            }else {
+            } else {
 
-               productsList.filter { it.title?.contains(searchText, ignoreCase = true) ?: false }
+                productsList.filter { it.title?.contains(searchText, ignoreCase = true) ?: false }
 
             }
         }
     }
 
-     LaunchedEffect(Unit) {
+    LaunchedEffect(Unit) {
 
-         if (id != null) {
-             viewModel.id = id
-             viewModel.getSpecificBrandProducts(id)
-         }
+        if (id != null) {
+            viewModel.id = id
+            viewModel.getSpecificBrandProducts(id)
+        }
 
-     }
+    }
 
 
     when (productsState) {
@@ -135,41 +136,29 @@ fun BrandsScreen(navController: NavHostController, id: Long) {
         }
     }
 
-        Column() {
+    Column() {
 
-            CustomSearchbar(
-                searchText = searchText,
-                onTextChange = { searchText = it },
-                hintText = R.string.search_brands,
-                isSearching = isSearching,
-                onCloseSearch = { searchText = "" }
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+        CustomSearchbar(
+            searchText = searchText,
+            onTextChange = { searchText = it },
+            hintText = R.string.search_brands,
+            isSearching = isSearching,
+            onCloseSearch = { searchText = "" }
+        )
+        Spacer(modifier = Modifier.height(8.dp))
 
-            if (filteredList.isNotEmpty()) {
+        if (filteredList.isNotEmpty()) {
             ProductsCards(
                 navController = navController,
                 viewModel = viewModel,
                 modifier = Modifier,
                 isFavourite = false,
                 onFavouriteClicked = {
-//                        product ->
-//                    isFavourite = !isFavourite
-//                    if (isFavourite) {
-//                        viewModel.addWishlistItem(product)
-//
-//                    }
-//                    if (!isFavourite) {
-//                        viewModel.removeWishlistItem(product)
-//
-//                    }
-
                 },
                 onAddToCard = { product ->
-                    if(CurrentUserHelper.isLoggedIn()) {
+                    if (CurrentUserHelper.isLoggedIn()) {
                         viewModel.addItemToCart(product.id, product.variants[0].id)
-                    }
-                    else{
+                    } else {
                         openDialogue = true
 
                     }
@@ -178,21 +167,22 @@ fun BrandsScreen(navController: NavHostController, id: Long) {
                 products = filteredList,
             )
         }
-            if(openDialogue) {
-                WarningDialog(
-                    dialogTitle = "oops!!",
-                    message = "You are not signed in ,please sign in to add to your cart",
-                    dismissButtonText = "",
-                    confirmButtonText = "ok",
-                    onConfirm = {
+        if (openDialogue) {
+            Surface(color = Color.Gray) {
+                ShowCustomDialog(
+                    title = R.string.login,
+                    description = R.string.please_login,
+                    buttonText = R.string.login,
+                    animatedId = R.raw.sign_for_error_or_explanation_alert,
+                    buttonColor = MaterialTheme.colorScheme.error,
+                    onClickButton = { navController.navigate(Screens.Login.route) },
+                    onClose = {
                         openDialogue = false
-                    },
-                    onDismiss = {},
-                    addDismissButton = false
+                    }
                 )
+
             }
-
-
+        }
     }
 }
 
@@ -222,26 +212,47 @@ fun ProductsCards(
             var isFavourite by remember {
                 mutableStateOf(false)
             }
-            LaunchedEffect(key1 = Unit ) {
+            var openDialogue by remember {
+                mutableStateOf(false)
+            }
+            LaunchedEffect(key1 = Unit) {
                 isFavourite = viewModel.isFavorite(item.id)
             }
             CardDesign(onCardClicked = {
                 navController.navigate(route = "${Screens.Details.route}/${item.id}")
             }) {
                 ProductItem(isFavourite = isFavourite, onFavouritesClicked = { product ->
+                    if (CurrentUserHelper.isLoggedIn()) {
+                        isFavourite = !isFavourite
+                        if (isFavourite) {
+                            viewModel.addWishlistItem(product.id, product.variants[0].id)
 
-                    isFavourite = !isFavourite
-                    if (isFavourite) {
-                        viewModel.addWishlistItem(product.id, product.variants[0].id)
+                        }
+                        if (!isFavourite) {
+                            viewModel.removeWishlistItem(product.id)
 
-                    }
-                    if (!isFavourite) {
-                        viewModel.removeWishlistItem(product.id)
-
+                        }
+                    } else {
+                        openDialogue = true
                     }
 
                 }, onAddToCard = { onAddToCard(item) }, item = item, navController = navController)
 
+
+            }
+
+            if (openDialogue) {
+                Surface(color = Color.Gray) {
+                    ShowCustomDialog(
+                        title = R.string.login,
+                        description = R.string.please_login,
+                        buttonText = R.string.login,
+                        animatedId = R.raw.sign_for_error_or_explanation_alert,
+                        buttonColor = MaterialTheme.colorScheme.error,
+                        onClickButton = { navController.navigate(Screens.Login.route) },
+                        onClose = { openDialogue = false }
+                    )
+                }
             }
         }
     }

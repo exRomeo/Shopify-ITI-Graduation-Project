@@ -1,21 +1,17 @@
 package com.example.shopify.data.repositories.product
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.example.shopify.MainCoroutineRule
 import com.example.shopify.data.models.Brand
 import com.example.shopify.data.models.Image
 import com.example.shopify.data.models.Products
 import com.example.shopify.data.models.SingleProductResponseBody
 import com.example.shopify.data.models.SmartCollections
 import com.example.shopify.data.remote.product.FakeRemoteResource
-import com.example.shopify.presentation.screens.brands.BrandsViewModel
-import com.example.weatherapplication.MainCoroutineRule
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.Matchers
-import org.junit.Assert.*
-
 import org.junit.After
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -58,15 +54,15 @@ class ProductRepositoryTest {
 
     }
 
-//    @Test
-//    fun getSingleProductDetails() = runTest{
-//        //given
-//        val id = 8398828339506
-//        //when
-//        val result = repository.getSingleProductDetails(id)
-//        //then
-//        assertThat(result, Matchers.`is`(SingleProductResponse))
-//    }
+    @Test
+    fun getSingleProductDetails() = runTest{
+        //given
+        val id = 8398828339506
+        //when
+        val result = repository.getSingleProductDetails(id)
+        //then
+        assertThat(result.body(), Matchers.`is`(SingleProductResponse))
+    }
 
     @Test
     fun getSpecificBrandProducts()= runTest{

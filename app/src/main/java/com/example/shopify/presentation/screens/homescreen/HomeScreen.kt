@@ -85,6 +85,7 @@ import com.example.shopify.data.models.SmartCollections
 import com.example.shopify.data.repositories.authentication.IAuthRepository
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.common.composables.CustomSearchbar
+import com.example.shopify.presentation.common.composables.ShowCustomDialog
 import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.utilities.ShopifyApplication
 
@@ -145,7 +146,6 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
         }
 
         is UiState.Success<*> -> {
-            Log.i("menna", "success")
             brandList = (brandsState as UiState.Success<SmartCollections>).data.smart_collections!!
         }
 
@@ -156,6 +156,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
     when (randomsState) {
         is UiState.Loading -> {
         }
+
         is UiState.Success<*> -> {
             randomList = (randomsState as UiState.Success<Products>).data.products!!
         }
@@ -164,9 +165,6 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
             Log.i("homepage", (randomsState as UiState.Error).error.toString())
         }
     }
-
-    //  ScaffoldStructure("home",navController) {
-    // Scaffold (bottomBar = {Bottombar(navController = rememberNavController())}) {
     Scaffold(
         bottomBar = { Bottombar(navController = navController) }
     ) {
@@ -196,7 +194,6 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
 
 
                 HomeSection(sectionTitle = R.string.brands) {
-                    //  (brandsState as UiState.Success).data.body()?.let {
                     BrandCards(brands = filteredList, navController = navController)
                 }
 
@@ -215,17 +212,17 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
 
                         })
                     if (openDialogue) {
-                        WarningDialog(
-                            dialogTitle = "oops!!",
-                            message = "You are not signed in ,please sign in to add to your cart",
-                            dismissButtonText = "",
-                            confirmButtonText = "ok",
-                            onConfirm = {
-                                openDialogue = false
-                            },
-                            onDismiss = {},
-                            addDismissButton = false
-                        )
+                        Surface(color = Color.Gray) {
+                            ShowCustomDialog(
+                                title = R.string.login,
+                                description = R.string.please_login,
+                                buttonText = R.string.login,
+                                animatedId = R.raw.sign_for_error_or_explanation_alert,
+                                buttonColor = MaterialTheme.colorScheme.error,
+                                onClickButton = { navController.navigate(Screens.Login.route) },
+                                onClose = { openDialogue = false }
+                            )
+                        }
                     }
 
                 }
@@ -327,7 +324,6 @@ fun ItemCardContent(
 
     }
 
-
 }
 
 @Composable
@@ -341,7 +337,6 @@ fun BrandCardContent(
         modifier = modifier
             .padding(15.dp)
             .clickable {
-                Log.i("menna", brand.id.toString())
                 navController.navigate("${Screens.Brands.route}/${brand.id}")
             }
     ) {
@@ -370,7 +365,6 @@ fun BrandCardContent(
 @OptIn(ExperimentalTvMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun AdsCarousel(
-    openDialogue: Boolean = true
 ) {
     val items: List<String> = listOf(
         "https://img.freepik.com/free-psd/summer-sale-70-discount_23-2148476960.jpg",
@@ -378,13 +372,10 @@ fun AdsCarousel(
         "https://fitsmallbusiness.com/wp-content/uploads/2018/05/23-Best-Sales-Promotion-Ideas.png",
         "https://a.storyblok.com/f/140059/720x400/ab918c4aa1/sales-promotion-examples-to-help-boost-your-business-main.jpg"
     )
-    // val sharedPreference = SharedPreference.customPreference(LocalContext.current,"customer")
 
     val couponsList: List<String> =
         listOf("Cf56u%erdHJJ", "AAgf8876GFd", "GRTO#kl76C", "PTYR%&R#dw")
     val offers: List<Int> = listOf(5, 20, 50, 70)
-    val sharedPreference: SharedPreferences =
-        (LocalContext.current.applicationContext as ShopifyApplication).sharedPreference
     var openDialogue by remember {
         mutableStateOf(false)
     }
@@ -446,7 +437,6 @@ fun AdsCarousel(
 
                                 Text(text = "Get your Discount")
 
-                                //  }
                                 if (openDialogue) {
 
                                     if (CurrentUserHelper.isLoggedIn()) {
@@ -456,7 +446,7 @@ fun AdsCarousel(
                                             ClipData.newPlainText("coupon", couponsList[itemIndex])
                                         clipboardManager.setPrimaryClip(clip)
                                         DiscountHelper.addDiscountValue(offers[itemIndex])
-                                        //sharedPreference.discountPercentage = offers[itemIndex]
+
 
                                         WarningDialog(
                                             dialogTitle = "GREAT OFFERS !!",
@@ -560,7 +550,6 @@ fun HomeSection(
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        //modifier = modifier.padding(vertical = 2.dp)
     )
     {
         Text(
@@ -614,27 +603,46 @@ fun ItemCards(
             LaunchedEffect(key1 = Unit) {
                 isFavourite = viewModel.isFavorite(item.id)
             }
+            var openDialogue by remember {
+                mutableStateOf(false)
+            }
             CardDesign(onCardClicked = {}) {
                 ItemCardContent(
                     navController = navController,
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
                     isFavourite = isFavourite,
                     onFavouritesClicked = { product ->
-                        Log.i("menna", DiscountHelper.getDiscount().toString())
+                        if (CurrentUserHelper.isLoggedIn()) {
 
-                        isFavourite = !isFavourite
-                        if (isFavourite) {
-                            viewModel.addWishlistItem(product.id, product.variants[0].id)
+                            isFavourite = !isFavourite
+                            if (isFavourite) {
+                                viewModel.addWishlistItem(product.id, product.variants[0].id)
 
-                        }
-                        if (!isFavourite) {
-                            viewModel.removeWishlistItem(product.id)
+                            }
+                            if (!isFavourite) {
+                                viewModel.removeWishlistItem(product.id)
 
+                            }
+                        } else {
+                            openDialogue = true
                         }
                     },
                     onAddToCard = { onAddToCard(item) },
                     item = item
                 )
+            }
+            if (openDialogue) {
+                Surface(color = Color.Gray) {
+                    ShowCustomDialog(
+                        title = R.string.login,
+                        description = R.string.please_login,
+                        buttonText = R.string.login,
+                        animatedId = R.raw.sign_for_error_or_explanation_alert,
+                        buttonColor = MaterialTheme.colorScheme.error,
+                        onClickButton = { navController.navigate(Screens.Login.route) },
+                        onClose = { openDialogue = false }
+                    )
+                }
             }
 
         }
