@@ -6,8 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shopify.core.helpers.AuthenticationResponseState
+import com.example.shopify.data.models.Address
+import com.example.shopify.data.models.Customer
 import com.example.shopify.data.models.CustomerRequestBody
+import com.example.shopify.data.models.GoogleSignInState
 import com.example.shopify.data.repositories.authentication.IAuthRepository
+import com.google.firebase.auth.AuthCredential
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,17 +35,18 @@ class SignupViewModel(private val authRepository: IAuthRepository) : ViewModel()
             checkShopifyLoggedInState(
                 response,
                 requestBody.customer.email,
-                requestBody.customer.password
+                requestBody.customer.password ?: "A00000#"
             )
         }
     }
 
-    private fun registerUserToFirebase(email: String, password: String, customerId: Long) {
+     fun registerUserToFirebase(email: String, password: String, customerId: Long) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             viewModelScope.launch(Dispatchers.IO) {
                 val response =
                     authRepository.registerUserToFirebase(email, password, customerId)
                 _authResponse.value = response
+                Log.i("TAG", "after register to firebase: ${_authResponse.value}")
             }
         }
     }
@@ -51,7 +56,9 @@ class SignupViewModel(private val authRepository: IAuthRepository) : ViewModel()
         email: String,
         password: String
     ) {
+
         when (responseState) {
+
             is AuthenticationResponseState.Loading -> {
                 Log.i("TAG", "checkLoggedInState: IS LOADING")
             }
@@ -68,7 +75,6 @@ class SignupViewModel(private val authRepository: IAuthRepository) : ViewModel()
             }
 
             else -> {
-                Log.i("TAG", "checkShopifyLoggedInState: ERROR")
                 _authResponse.value = responseState
             }
         }

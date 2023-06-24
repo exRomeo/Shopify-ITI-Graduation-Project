@@ -28,6 +28,8 @@ android {
         buildConfigField "String", "CURRENCY_APIKEY", "\"${properties.getProperty("CURRENCY_APIKEY")}\""
         buildConfigField "String", "STRIPE_SECRET", "\"${properties.getProperty("STRIPE_SECRET")}\""
         buildConfigField "String", "STRIP_PUB_KEY", "\"${properties.getProperty("STRIP_PUB_KEY")}\""
+        buildConfigField "String", "SERVER_CLIENT", "\"${properties.getProperty("SERVER_CLIENT")}\""
+
     }
 
     buildTypes {
@@ -70,7 +72,7 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 
-//Coroutines
+    //Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1"
@@ -139,29 +141,19 @@ dependencies {
 // Stripe Android SDK
     implementation 'com.stripe:stripe-android:20.25.6'
 
-//Testing
-//CoroutineTest
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1"
-
-// AndroidX Test - Instrumented testing
-    androidTestImplementation "androidx.test.ext:junit:1.1.5"
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation "androidx.arch.core:core-testing:2.2.0"
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-
-// hamcrest
+    //Testing
+    testImplementation "junit:junit:4.13.2"
     testImplementation "org.hamcrest:hamcrest:2.2"
-    testImplementation "org.hamcrest:hamcrest-library:2.2"
+    testImplementation "org.robolectric:robolectric:4.10-alpha-1"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3"
 
-// AndroidX and Robolectric
-// InstantTaskExecutorRule
     testImplementation "androidx.arch.core:core-testing:2.2.0"
-    testImplementation "androidx.test.ext:junit-ktx:1.1.5"
+    testImplementation "androidx.test:core:1.5.0"
     testImplementation "androidx.test:core-ktx:1.5.0"
-    testImplementation "org.robolectric:robolectric:4.9.2"
+    testImplementation "androidx.test.ext:junit:1.1.5"
+    testImplementation "androidx.test.ext:junit-ktx:1.1.5"
+
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
 
 
 }

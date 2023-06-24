@@ -21,7 +21,9 @@ data class Product(
     val title: String?,
     val price: String?,
     @field:SerializedName("inventory_quantity")
-    val availableAmount: Long?
+    val availableAmount: Long?,
+    @field:SerializedName("option1")
+    val size: String? = ""
 )
 
 
@@ -31,7 +33,7 @@ data class ProductSample(
     val variants: List<Product>,
     val images: List<Image>,
     val image: Image,
-    var isFavorite :Boolean = false
+    val isFavorite: Boolean = false
 )
 
 data class ProductResponse(

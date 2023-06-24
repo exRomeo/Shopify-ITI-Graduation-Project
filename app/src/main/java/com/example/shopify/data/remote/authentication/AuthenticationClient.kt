@@ -2,6 +2,7 @@ package com.example.shopify.data.remote.authentication
 
 import android.util.Log
 import com.example.shopify.core.helpers.AuthenticationResponseState
+import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.core.helpers.KeyFirebase
 import com.example.shopify.data.models.CustomerFirebase
 import com.example.shopify.data.models.CustomerRequestBody
@@ -67,7 +68,6 @@ class AuthenticationClient(
             if (authenticationFirebase.currentUser == null) {
                 AuthenticationResponseState.NotLoggedIn
             } else {
-                //updateCustomerID(KeyFirebase.card_id,1523)
                 AuthenticationResponseState.Success(null)
             }
         } catch (ex: Exception) {
@@ -76,8 +76,8 @@ class AuthenticationClient(
 
     override suspend fun signOutFirebase(): Boolean {
         return try {
+            Log.i("TAG", "${authenticationFirebase.currentUser} is sign-out:")
             authenticationFirebase.signOut()
-            Log.i("TAG", "${authenticationFirebase.currentUser} is signout:")
             true
         } catch (ex: Exception) {
             false
@@ -92,10 +92,9 @@ class AuthenticationClient(
             AuthenticationResponseState.Error(ex)
         }
 
-    override fun checkedLoggedIn(): Boolean =
-        authenticationFirebase.currentUser != null
-
-
+    override fun checkedLoggedIn(): Boolean {
+        return authenticationFirebase.currentUser !=null
+    }
     override fun addCustomerIDs(customerID: Long) {
         val customerMap = hashMapOf(
             "customer_id" to customerID,
@@ -132,9 +131,7 @@ class AuthenticationClient(
         val customer: CustomerFirebase?
         return@coroutineScope try {
             val uid = authenticationFirebase.currentUser?.uid ?: ""
-            Log.i("TAG", "retrieveCustomerID: $uid")
             querySnapshot = fireStore.collection("customer").document(uid).get().await()
-            Log.i("TAG", "retrieveCustomerID: ${querySnapshot.data}")
             val customerData = querySnapshot.toObject<CustomerFirebase>()
             Log.i("TAG", "retrieveCustomerID: $customerData")
             customer = CustomerFirebase(
@@ -143,7 +140,6 @@ class AuthenticationClient(
                 card_id = customerData?.card_id,
                 wishlist_id = customerData?.wishlist_id
             )
-            Log.i("TAG", "retrieveCustomer FROM FIREBASE: $customer")
             customer
         } catch (ex: Exception) {
             Log.i("TAG", "retrieveCustomerID: Failure ${ex.message}")
@@ -151,17 +147,3 @@ class AuthenticationClient(
         }
     }
 }
-/*override suspend fun loginUserWithGoogle(
-      idToken: String,
-      context: Context
-  ): AuthenticationResponseState {
-      val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-          .requestIdToken(idToken)
-          .requestEmail()
-          .requestProfile()
-          .build()
-      val signInClient = GoogleSignIn.getClient(context,options)
-
-
-
-}*/

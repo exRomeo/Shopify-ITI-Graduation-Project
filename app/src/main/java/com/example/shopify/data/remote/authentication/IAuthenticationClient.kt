@@ -10,7 +10,6 @@ import com.google.firebase.auth.AuthCredential
 interface IAuthenticationClient {
     suspend fun getSingleCustomerFromShopify(customerID: Long): AuthenticationResponseState
     suspend fun registerUserToShopify(customer: CustomerRequestBody): AuthenticationResponseState
-
     suspend fun registerUserToFirebase(
         email: String,
         password: String,
