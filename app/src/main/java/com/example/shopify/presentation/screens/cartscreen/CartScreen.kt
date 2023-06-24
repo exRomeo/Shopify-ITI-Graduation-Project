@@ -52,6 +52,7 @@ import com.example.shopify.presentation.common.composables.NoConnectionScreen
 import com.example.shopify.presentation.common.composables.NoData
 import com.example.shopify.presentation.common.composables.WarningDialog
 import com.example.shopify.ui.theme.lightMainColor
+import com.example.shopify.ui.theme.onMainColor
 import com.example.shopify.utilities.ShopifyApplication
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,6 +84,7 @@ fun CartScreen(
         floatingActionButton = {
             if (cartHasItems)
                 ExtendedFloatingActionButton(
+                    containerColor = onMainColor,
                     modifier = Modifier, onClick = {
                         if (cartHasItems)
                             navController.navigate(Screens.Checkout.route)

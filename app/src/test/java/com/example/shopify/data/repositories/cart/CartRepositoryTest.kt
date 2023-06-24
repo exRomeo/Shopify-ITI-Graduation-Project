@@ -19,9 +19,9 @@ class CartRepositoryTest {
     }
 
     @Test
-    fun getWishlistItems_itemsReceived() = runTest {
+    fun getCartItems_itemsReceived() = runTest {
 
-        //given set of 3 wishlist items
+        //given set of 3 Cart items
         val items = cartRepository.cart
         cartRepository.getCartItems()
 
@@ -33,30 +33,30 @@ class CartRepositoryTest {
     }
 
     @Test
-    fun addWishlistItem_wishlistItemsIncreased() = runTest {
-        //given set of 3 wishlist items
+    fun addCartItem_wishlistItemsIncreased() = runTest {
+        //given set of 3 Cart items
         val items = cartRepository.cart
         cartRepository.getCartItems()
 
-        //when added new wishlist item
+        //when added new Cart item
         cartRepository.addCartItem(2656468, 286161867)
         val result = items.first()
-        //then wishlist is increased by one
+        //then Cart is increased by one
         assertThat(result.size, `is`(4))
     }
 
     @Test
-    fun removeWishlistItem_wishlistItemsDecreased() = runTest {
+    fun removeCartItem_wishlistItemsDecreased() = runTest {
 
-        //given set of 3 wishlist items
+        //given set of 3 Cart items
         val items = cartRepository.cart
         cartRepository.getCartItems()
 
-        //when removing wishlist item
+        //when removing Cart item
         cartRepository.removeCart(FakeProducts.product1.id)
         val result = items.first()
 
-        //then wishlist is decreased by one
+        //then Cart is decreased by one
         assertThat(result.size, `is`(2))
     }
 

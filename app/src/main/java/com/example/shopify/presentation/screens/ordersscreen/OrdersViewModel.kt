@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.shopify.core.helpers.UserScreenUISState
 import com.example.shopify.core.utils.ConnectionUtil
+import com.example.shopify.data.repositories.orders.IOrdersRepository
 import com.example.shopify.data.repositories.orders.OrdersRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class OrdersViewModel(private val ordersRepository: OrdersRepository) : ViewModel() {
+class OrdersViewModel(private val ordersRepository: IOrdersRepository) : ViewModel() {
     private var _snackbarMessage: MutableSharedFlow<Int> = MutableSharedFlow()
     val snackbarMessage = _snackbarMessage.asSharedFlow()
 

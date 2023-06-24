@@ -30,7 +30,7 @@ class WishlistRepositoryTest {
         //when received
         val result = items.first()
 
-        //Then orders list size is 2
+        //Then wishlist list size is 2
         assertThat(result.size, `is`(3))
     }
 

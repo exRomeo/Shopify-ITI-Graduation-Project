@@ -18,5 +18,5 @@ object FakeProducts {
     val product3 = ProductSample(3, "Product 3", listOf(variant1, variant3), listOf(image1, image3), image3)
     val product4 = ProductSample(4, "Product 4", listOf(variant2, variant1), listOf(image2, image3), image1)
 
-    val productList = listOf(product1, product2, product3)
+    val productList = mutableListOf(product1, product2, product3)
 }
