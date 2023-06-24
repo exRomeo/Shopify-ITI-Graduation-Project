@@ -22,7 +22,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -52,6 +51,8 @@ import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.NoConnectionScreen
 import com.example.shopify.presentation.common.composables.NoData
 import com.example.shopify.presentation.common.composables.WarningDialog
+import com.example.shopify.ui.theme.lightMainColor
+import com.example.shopify.ui.theme.onMainColor
 import com.example.shopify.utilities.ShopifyApplication
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,6 +84,7 @@ fun CartScreen(
         floatingActionButton = {
             if (cartHasItems)
                 ExtendedFloatingActionButton(
+                    containerColor = onMainColor,
                     modifier = Modifier, onClick = {
                         if (cartHasItems)
                             navController.navigate(Screens.Checkout.route)
@@ -116,8 +118,8 @@ fun CartScreen(
                         Icon(Icons.Default.ArrowBack, "")
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp)
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = lightMainColor
                 ),
                 title = {
                     Text(

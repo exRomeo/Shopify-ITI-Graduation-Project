@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Shopingoo</string>
+    <string name="app_name">Shoppingo</string>
     <string name="profile_picture">profile picture</string>
     <string name="track_orders">Track Orders</string>
     <string name="cart">Cart</string>
@@ -145,4 +145,6 @@
     <string name="city">City</string>
     <string name="country_is_required">Country is required</string>
     <string name="country">Country</string>
+    <string name="ok">OK</string>
+    <string name="need_to_be_logged_in">You Need To Be Logged in First!</string>
 </resources>
