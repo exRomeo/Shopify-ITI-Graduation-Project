@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 
 data class SingleProductResponseBody(
-    val product: SingleProduct
+    val product: SingleProduct? = null
 )
 
 data class SingleProduct(
