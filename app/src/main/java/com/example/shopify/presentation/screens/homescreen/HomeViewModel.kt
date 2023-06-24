@@ -30,7 +30,7 @@ class HomeViewModel(
 
     }
 
-     fun getBrands() {
+    fun getBrands() {
         viewModelScope.launch(Dispatchers.IO) {
         val response = repository.getBrands()
             if(response.isSuccessful && response.body()!= null){
