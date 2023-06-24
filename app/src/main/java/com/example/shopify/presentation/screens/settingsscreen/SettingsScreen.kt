@@ -15,12 +15,10 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,6 +39,7 @@ import com.example.shopify.presentation.common.composables.NoConnectionScreen
 import com.example.shopify.presentation.common.composables.NotLoggedInScreen
 import com.example.shopify.presentation.common.composables.SettingItemCard
 import com.example.shopify.ui.theme.ShopifyTheme
+import com.example.shopify.ui.theme.lightMainColor
 import com.example.shopify.utilities.ShopifyApplication
 
 const val TAG = "TAG"
@@ -60,8 +59,8 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp)
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = lightMainColor
                 ),
                 title = {
                     Text(

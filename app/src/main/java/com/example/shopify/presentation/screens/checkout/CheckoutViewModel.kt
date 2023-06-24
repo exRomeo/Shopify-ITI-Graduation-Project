@@ -1,6 +1,7 @@
 package com.example.shopify.presentation.screens.checkout
 
 import androidx.annotation.StringRes
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -47,6 +48,9 @@ class CheckoutViewModel(private val checkoutRepository: ICheckoutRepository) : V
 
     private var _totalPrice: MutableStateFlow<Double> = MutableStateFlow(0.00)
     val totalPrice = _totalPrice.asStateFlow()
+
+    val orderConfirmed = mutableStateOf(false)
+
 
     var currencySymbol: String = "EGP"
 
@@ -103,6 +107,7 @@ class CheckoutViewModel(private val checkoutRepository: ICheckoutRepository) : V
     fun confirmOrder() {
         viewModelScope.launch {
             showMessage(R.string.payment_succeeded)
+            orderConfirmed.value = true
             checkoutRepository.makeOrder(
                 OrderBody(
                     OrderOut(
@@ -120,9 +125,11 @@ class CheckoutViewModel(private val checkoutRepository: ICheckoutRepository) : V
                 )
             )
             checkoutRepository.clearCart()
-            delay(500)
-            forceNavigate(Screens.Home)
         }
+    }
+
+    fun hideDialog() {
+        orderConfirmed.value = false
     }
 
 
@@ -150,6 +157,7 @@ class CheckoutViewModel(private val checkoutRepository: ICheckoutRepository) : V
 
     fun forceNavigate(destination: Screens) {
         viewModelScope.launch {
+            delay(500)
             _forceNav.emit(destination)
         }
     }

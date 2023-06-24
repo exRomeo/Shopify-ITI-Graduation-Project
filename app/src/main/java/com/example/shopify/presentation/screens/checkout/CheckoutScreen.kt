@@ -36,7 +36,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -52,6 +51,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -60,6 +60,7 @@ import androidx.navigation.NavHostController
 import com.example.shopify.R
 import com.example.shopify.core.helpers.DiscountHelper
 import com.example.shopify.core.helpers.UserScreenUISState
+import com.example.shopify.core.navigation.Screens
 import com.example.shopify.data.models.currency.Currency
 import com.example.shopify.data.models.draftorder.LineItem
 import com.example.shopify.presentation.common.composables.LineItemCard
@@ -105,11 +106,21 @@ fun CheckoutScreen(navController: NavHostController) {
         mutableStateOf(false)
     }
 
+
+
+
     if (showSummary) {
-        OrderSummaryAlert(viewModel = viewModel, onDismiss = { showSummary = false }) {
+        OrderSummaryAlert(viewModel = viewModel, onDismiss = { showSummary = false }, onConfirm = {
             viewModel.confirmPayment()
-        }
+        })
     }
+
+    if (viewModel.orderConfirmed.value)
+        OrderConfirmed(message = stringResource(id = R.string.payment_succeeded)) {
+            viewModel.hideDialog()
+            viewModel.forceNavigate(Screens.Home)
+        }
+
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
 
@@ -149,8 +160,8 @@ fun CheckoutScreen(navController: NavHostController) {
                         Icon(Icons.Default.ArrowBack, "")
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp)
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = lightMainColor
                 ),
                 title = {
                     Text(
@@ -405,6 +416,30 @@ fun OrderSummaryAlert(viewModel: CheckoutViewModel, onDismiss: () -> Unit, onCon
                     onDismiss()
                 }) {
                 Text(text = stringResource(id = R.string.place_order))
+            }
+        }
+    )
+}
+
+@Composable
+fun OrderConfirmed(message: String, onDismiss: () -> Unit) {
+    AlertDialog(containerColor = lightMainColor,
+        onDismissRequest = onDismiss,
+        text = {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = message,
+                style = TextStyle(textAlign = TextAlign.Center, fontWeight = FontWeight.SemiBold)
+            )
+        },
+        confirmButton = {
+            Button(modifier = Modifier
+                .fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = mainColor),
+                onClick = {
+                    onDismiss()
+                }) {
+                Text(text = stringResource(id = R.string.ok))
             }
         }
     )
