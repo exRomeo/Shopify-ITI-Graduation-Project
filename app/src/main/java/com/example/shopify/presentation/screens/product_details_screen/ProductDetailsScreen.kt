@@ -3,6 +3,7 @@ package com.example.shopify.presentation.screens.product_details_screen
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -206,6 +207,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                             description = R.string.unexpected_error,
                             buttonText = R.string.tryAgain,
                             animatedId = R.raw.error_animation,
+                            buttonColor = MaterialTheme.colorScheme.error,
                             onClickButton = { showNetworkDialog = false },
                             onClose = {
                                 showNetworkDialog = false
@@ -228,7 +230,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                                 title = R.string.network_connection,
                                 description = R.string.not_connection,
                                 buttonText = R.string.tryAgain,
-                                animatedId = R.raw.no_network_error_page_with_cat,
+                                animatedId = R.raw.custom_network_error,
                                 onClickButton = { showNetworkDialog = false },
                                 onClose = {
                                     showNetworkDialog = false
@@ -247,6 +249,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                                 description = R.string.unexpected_error,
                                 buttonText = R.string.tryAgain,
                                 animatedId = R.raw.error_animation,
+                                buttonColor = MaterialTheme.colorScheme.error,
                                 onClickButton = { showNetworkDialog = false },
                                 onClose = {
                                     showNetworkDialog = false

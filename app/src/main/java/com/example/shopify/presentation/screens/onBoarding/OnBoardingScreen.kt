@@ -81,13 +81,13 @@ fun OnBoardingScreen(navController: NavHostController) {
     if (sharedPreference.hasCompletedOnBoarding) {
         Log.i("menna", "true")
         LaunchedEffect(Unit) {
-            navController.navigate(Screens.Home.route)
+            navController.navigate(Screens.Login.route)
         }
     } else {
         Log.i("menna", "false")
         OnBoardingPager(items, pagerState, onComplete = {
             sharedPreference.hasCompletedOnBoarding = true
-            navController.navigate(Screens.Home.route)
+            navController.navigate(Screens.Login.route)
         })
     }
 }
