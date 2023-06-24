@@ -75,6 +75,8 @@ val md_theme_dark_scrim = Color(0xFF000000)
 
 //custom color
 val mainColor = Color(0xFF0d8c7c)
+val onMainColor = Color(0xFF42AA9D)
+val lightMainColor = Color(0xffdbe4e1)
 val backgroundColor = Color(0x33AFB4B3)
 val textColor = Color(0xFF1c2423)
 val hintColor = Color(0xFFA5AAA9)

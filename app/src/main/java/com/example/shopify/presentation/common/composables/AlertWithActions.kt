@@ -10,6 +10,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -31,6 +32,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.shopify.R
 import com.example.shopify.data.models.address.Address
+import com.example.shopify.ui.theme.lightMainColor
+import com.example.shopify.ui.theme.mainColor
 
 @Composable
 fun EditAddressDialog(
@@ -56,7 +59,7 @@ fun EditAddressDialog(
 
     val pattern = Regex("^[a-zA-Z ]+$")
 
-    AlertDialog(
+    AlertDialog(containerColor = lightMainColor,
         onDismissRequest = {
             onDismiss()
             clearFields()
@@ -124,14 +127,14 @@ fun EditAddressDialog(
                         text = stringResource(id = R.string.default_address),
                         style = TextStyle(fontSize = MaterialTheme.typography.bodyLarge.fontSize)
                     )
-                    Checkbox(checked = default, onCheckedChange = { default = it })
+                    Checkbox(colors = CheckboxDefaults.colors(),checked = default, onCheckedChange = { default = it })
                 }
 
 
             }
         },
         confirmButton = {
-            Button(
+            Button(colors = ButtonDefaults.buttonColors(containerColor = mainColor),
                 onClick = {
                     if (phoneNumber.isNotEmpty() && firstName.isNotEmpty() && lastName.isNotEmpty() && fullAddress.isNotEmpty()) {
                         onConfirm(
@@ -154,7 +157,7 @@ fun EditAddressDialog(
             }
         },
         dismissButton = {
-            TextButton(
+            TextButton(colors = ButtonDefaults.buttonColors(contentColor = mainColor, containerColor = Color.Transparent),
                 onClick = {
                     onDismiss()
                     clearFields()
@@ -187,11 +190,11 @@ fun WarningDialog(
     dismissButtonText: String,
     confirmButtonText: String,
     onConfirm: () -> Unit,
-    addDismissButton :Boolean = true,
+    addDismissButton: Boolean = true,
     onDismiss: () -> Unit,
 
-) {
-    AlertDialog(
+    ) {
+    AlertDialog(containerColor = lightMainColor,
         onDismissRequest = {
             onDismiss()
         },
@@ -225,7 +228,7 @@ fun WarningDialog(
         },
         dismissButton = {
             if (addDismissButton) {
-                TextButton(
+                TextButton(colors = ButtonDefaults.buttonColors(contentColor = mainColor, containerColor = Color.Transparent),
                     onClick = {
                         onDismiss()
                     }

@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -28,13 +29,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,10 +46,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -57,6 +60,7 @@ import androidx.navigation.NavHostController
 import com.example.shopify.R
 import com.example.shopify.core.helpers.DiscountHelper
 import com.example.shopify.core.helpers.UserScreenUISState
+import com.example.shopify.core.navigation.Screens
 import com.example.shopify.data.models.currency.Currency
 import com.example.shopify.data.models.draftorder.LineItem
 import com.example.shopify.presentation.common.composables.LineItemCard
@@ -66,6 +70,9 @@ import com.example.shopify.presentation.common.composables.NoData
 import com.example.shopify.presentation.common.composables.SelectionDropdownMenu
 import com.example.shopify.presentation.common.composables.SingleSelectionDropdownMenu
 import com.example.shopify.ui.theme.co_background
+import com.example.shopify.ui.theme.lightMainColor
+import com.example.shopify.ui.theme.mainColor
+import com.example.shopify.ui.theme.onMainColor
 import com.example.shopify.utilities.ShopifyApplication
 import com.stripe.android.paymentsheet.PaymentSheetContract
 
@@ -99,11 +106,21 @@ fun CheckoutScreen(navController: NavHostController) {
         mutableStateOf(false)
     }
 
+
+
+
     if (showSummary) {
-        OrderSummaryAlert(viewModel = viewModel, onDismiss = { showSummary = false }) {
+        OrderSummaryAlert(viewModel = viewModel, onDismiss = { showSummary = false }, onConfirm = {
             viewModel.confirmPayment()
-        }
+        })
     }
+
+    if (viewModel.orderConfirmed.value)
+        OrderConfirmed(message = stringResource(id = R.string.payment_succeeded)) {
+            viewModel.hideDialog()
+            viewModel.forceNavigate(Screens.Home)
+        }
+
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
 
@@ -143,8 +160,8 @@ fun CheckoutScreen(navController: NavHostController) {
                         Icon(Icons.Default.ArrowBack, "")
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(5.dp)
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = lightMainColor
                 ),
                 title = {
                     Text(
@@ -226,8 +243,7 @@ fun CheckoutScreenContent(viewModel: CheckoutViewModel, cartItems: List<LineItem
 fun CheckoutItems(cartItems: List<LineItem>, viewModel: CheckoutViewModel) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Card(
-            modifier = Modifier
-                .weight(1f),
+            modifier = Modifier,
             colors = CardDefaults.elevatedCardColors(containerColor = co_background),
             elevation = CardDefaults.elevatedCardElevation(defaultElevation = 5.dp)
         ) {
@@ -315,13 +331,17 @@ fun OrderSummary(viewModel: CheckoutViewModel) {
                     )
                 }
             )
-            TextButton(modifier = Modifier.padding(start = 8.dp), onClick = {
-                if (discountCode != null) {
-                    viewModel.applyDiscount(discountCode!!)
-                } else {
-                    isError = true
-                }
-            }) {
+            TextButton(
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = mainColor,
+                    containerColor = Color.Transparent
+                ), modifier = Modifier.padding(start = 8.dp), onClick = {
+                    if (discountCode != null) {
+                        viewModel.applyDiscount(discountCode!!)
+                    } else {
+                        isError = true
+                    }
+                }) {
                 Text(text = stringResource(id = R.string.apply))
             }
         }
@@ -335,6 +355,10 @@ fun OrderSummary(viewModel: CheckoutViewModel) {
         ) {
             Text(text = stringResource(id = R.string.cod))
             RadioButton(
+                colors = RadioButtonDefaults.colors(
+                    selectedColor = mainColor,
+                    unselectedColor = onMainColor
+                ),
                 selected = selectedOption == PaymentMethod.Cod,
                 onClick = {
                     if (totalPrice.toInt() < 1000) {
@@ -345,7 +369,10 @@ fun OrderSummary(viewModel: CheckoutViewModel) {
                 },
             )
             Text(text = stringResource(id = R.string.credit))
-            RadioButton(
+            RadioButton(colors = RadioButtonDefaults.colors(
+                selectedColor = mainColor,
+                unselectedColor = onMainColor
+            ),
                 selected = selectedOption == PaymentMethod.Credit,
                 onClick = {
                     selectedOption = PaymentMethod.Credit
@@ -359,7 +386,7 @@ fun OrderSummary(viewModel: CheckoutViewModel) {
 
 @Composable
 fun OrderSummaryAlert(viewModel: CheckoutViewModel, onDismiss: () -> Unit, onConfirm: () -> Unit) {
-    AlertDialog(
+    AlertDialog(containerColor = lightMainColor,
         onDismissRequest = onDismiss,
         title = {
             Text(
@@ -370,7 +397,10 @@ fun OrderSummaryAlert(viewModel: CheckoutViewModel, onDismiss: () -> Unit, onCon
             OrderSummary(viewModel = viewModel)
         },
         dismissButton = {
-            TextButton(
+            TextButton(colors = ButtonDefaults.buttonColors(
+                contentColor = mainColor,
+                containerColor = Color.Transparent
+            ),
                 onClick = {
                     onDismiss()
                 }
@@ -379,11 +409,37 @@ fun OrderSummaryAlert(viewModel: CheckoutViewModel, onDismiss: () -> Unit, onCon
             }
         },
         confirmButton = {
-            Button(onClick = {
-                onConfirm()
-                onDismiss()
-            }) {
+            Button(
+                colors = ButtonDefaults.buttonColors(containerColor = mainColor),
+                onClick = {
+                    onConfirm()
+                    onDismiss()
+                }) {
                 Text(text = stringResource(id = R.string.place_order))
+            }
+        }
+    )
+}
+
+@Composable
+fun OrderConfirmed(message: String, onDismiss: () -> Unit) {
+    AlertDialog(containerColor = lightMainColor,
+        onDismissRequest = onDismiss,
+        text = {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = message,
+                style = TextStyle(textAlign = TextAlign.Center, fontWeight = FontWeight.SemiBold)
+            )
+        },
+        confirmButton = {
+            Button(modifier = Modifier
+                .fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = mainColor),
+                onClick = {
+                    onDismiss()
+                }) {
+                Text(text = stringResource(id = R.string.ok))
             }
         }
     )

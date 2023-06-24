@@ -1,10 +1,12 @@
 package com.example.shopify.presentation.common.composables
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -56,6 +58,8 @@ import com.example.shopify.data.models.ProductSample
 import com.example.shopify.data.models.draftorder.LineItem
 import com.example.shopify.data.models.order.OrderIn
 import com.example.shopify.ui.theme.co_background
+import com.example.shopify.ui.theme.lightMainColor
+import com.example.shopify.ui.theme.md_theme_dark_error
 
 
 @Composable
@@ -70,7 +74,8 @@ fun SettingItemCard(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+        colors = CardDefaults.cardColors(containerColor = lightMainColor)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
@@ -168,7 +173,7 @@ fun WishlistItemCard(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))
-                        .background(MaterialTheme.colorScheme.onPrimary)
+                        .background(md_theme_dark_error)
                         .height(125.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -261,7 +266,7 @@ fun CartItemCard(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp))
-                    .background(MaterialTheme.colorScheme.onPrimary)
+                    .background(lightMainColor)
                     .height(125.dp),
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -338,7 +343,12 @@ fun OrderItemCard(
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 5.dp),
     ) {
 
-        Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier
+                .background(lightMainColor)
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = "${stringResource(id = R.string.order_no)} ${order.id}",
@@ -357,37 +367,39 @@ fun OrderItemCard(
             }
         }
         Divider(Modifier.padding(horizontal = 8.dp))
-        Row {
 
 
-            Column(
-                modifier
-                    .padding(start = 8.dp, top = 4.dp, bottom = 4.dp, end = 4.dp)
-                    .weight(1f)
-            ) {
-                LazyColumn(modifier = Modifier.heightIn(0.dp, 150.dp)) {
-                    items(order.lineItems) {
-                        LineItemCard(it)
-                    }
-                    item {
-                        Divider(Modifier.padding(bottom = 4.dp, end = 4.dp))
-                        Text(
-                            text = "Total = ${order.currency} ${order.total}",
-                            style = TextStyle(
-                                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                                fontWeight = FontWeight.SemiBold
-                            ),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                }
+        LazyColumn(
+            modifier = Modifier.heightIn(0.dp, 150.dp).animateContentSize(),
+            contentPadding = PaddingValues(vertical = 4.dp, horizontal = 8.dp)
+        ) {
+            items(order.lineItems) {
+                LineItemCard(it)
+            }
+
+        }
+        Divider(Modifier.padding(top = 4.dp, start = 8.dp, end = 8.dp))
+        Row(
+            modifier = Modifier
+                .background(lightMainColor)
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Total = ${order.currency} ${order.total}",
+                    style = TextStyle(
+                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
                 Spacer(modifier = Modifier.padding(vertical = 4.dp))
                 Text(
                     modifier = Modifier.padding(bottom = 8.dp),
                     text = stringResource(id = R.string.expected_to_arrive)
                 )
-
             }
 
         }
