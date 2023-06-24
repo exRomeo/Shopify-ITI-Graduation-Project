@@ -34,7 +34,11 @@ class RemoteResource private constructor() : IRemoteResource /*ProductSource*/ {
 
     override suspend fun getProductInfo(productID: Long): Response<SingleProductResponseBody> =
         apiService.getProductInfo(productID)
-
+    //  try{
+//        }
+//        catch (ex:Exception){
+//           // UiState.Error(ex)
+//        }
 
     override suspend fun getSpecificBrandProducts(id: Long): Response<Products> {
         return apiService.getSpecificBrandProducts(id)

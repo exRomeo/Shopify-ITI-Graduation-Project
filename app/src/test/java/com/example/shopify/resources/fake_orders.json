@@ -1,0 +1,2481 @@
+{
+  "orders": [
+    {
+      "id": 5389652853042,
+      "admin_graphql_api_id": "gid://shopify/Order/5389652853042",
+      "app_id": 44139282433,
+      "browser_ip": null,
+      "buyer_accepts_marketing": false,
+      "cancel_reason": null,
+      "cancelled_at": null,
+      "cart_token": null,
+      "checkout_id": null,
+      "checkout_token": null,
+      "client_details": null,
+      "closed_at": null,
+      "company": null,
+      "confirmed": true,
+      "contact_email": "ramy3r@yahoo.com",
+      "created_at": "2023-06-22T03:27:12-04:00",
+      "currency": "EGP",
+      "current_subtotal_price": "4340.00",
+      "current_subtotal_price_set": {
+        "shop_money": {
+          "amount": "4340.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "4340.00",
+          "currency_code": "EGP"
+        }
+      },
+      "current_total_additional_fees_set": null,
+      "current_total_discounts": "0.00",
+      "current_total_discounts_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        }
+      },
+      "current_total_duties_set": null,
+      "current_total_price": "4340.00",
+      "current_total_price_set": {
+        "shop_money": {
+          "amount": "4340.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "4340.00",
+          "currency_code": "EGP"
+        }
+      },
+      "current_total_tax": "0.00",
+      "current_total_tax_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        }
+      },
+      "customer_locale": null,
+      "device_id": null,
+      "discount_codes": [],
+      "email": "ramy3r@yahoo.com",
+      "estimated_taxes": false,
+      "financial_status": "paid",
+      "fulfillment_status": null,
+      "landing_site": null,
+      "landing_site_ref": null,
+      "location_id": null,
+      "merchant_of_record_app_id": null,
+      "name": "#1056",
+      "note": null,
+      "note_attributes": [],
+      "number": 56,
+      "order_number": 1056,
+      "order_status_url": "https://mad43-alex-and-team2.myshopify.com/77159006514/orders/9836f95f05f1ea66e9b78e05dd73f5c7/authenticate?key=1ab100e60e472892a71700f1a762c73b",
+      "original_total_additional_fees_set": null,
+      "original_total_duties_set": null,
+      "payment_gateway_names": [],
+      "phone": null,
+      "presentment_currency": "EGP",
+      "processed_at": "2023-06-22T03:27:12-04:00",
+      "reference": null,
+      "referring_site": null,
+      "source_identifier": null,
+      "source_name": "44139282433",
+      "source_url": null,
+      "subtotal_price": "4340.00",
+      "subtotal_price_set": {
+        "shop_money": {
+          "amount": "4340.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "4340.00",
+          "currency_code": "EGP"
+        }
+      },
+      "tags": "",
+      "tax_lines": [],
+      "taxes_included": false,
+      "test": false,
+      "token": "9836f95f05f1ea66e9b78e05dd73f5c7",
+      "total_discounts": "0.00",
+      "total_discounts_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        }
+      },
+      "total_line_items_price": "4340.00",
+      "total_line_items_price_set": {
+        "shop_money": {
+          "amount": "4340.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "4340.00",
+          "currency_code": "EGP"
+        }
+      },
+      "total_outstanding": "4340.00",
+      "total_price": "4340.00",
+      "total_price_set": {
+        "shop_money": {
+          "amount": "4340.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "4340.00",
+          "currency_code": "EGP"
+        }
+      },
+      "total_shipping_price_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        }
+      },
+      "total_tax": "0.00",
+      "total_tax_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        }
+      },
+      "total_tip_received": "0.00",
+      "total_weight": 0,
+      "updated_at": "2023-06-22T03:28:13-04:00",
+      "user_id": null,
+      "billing_address": null,
+      "customer": {
+        "id": 7121192321330,
+        "email": "ramy3r@yahoo.com",
+        "accepts_marketing": false,
+        "created_at": "2023-06-14T11:55:53-04:00",
+        "updated_at": "2023-06-22T03:27:13-04:00",
+        "first_name": "Ramy",
+        "last_name": "Mohammed",
+        "state": "enabled",
+        "note": null,
+        "verified_email": true,
+        "multipass_identifier": null,
+        "tax_exempt": false,
+        "phone": "+201556003397",
+        "email_marketing_consent": {
+          "state": "not_subscribed",
+          "opt_in_level": "single_opt_in",
+          "consent_updated_at": null
+        },
+        "sms_marketing_consent": {
+          "state": "not_subscribed",
+          "opt_in_level": "single_opt_in",
+          "consent_updated_at": null,
+          "consent_collected_from": "OTHER"
+        },
+        "tags": "",
+        "currency": "EGP",
+        "accepts_marketing_updated_at": "2023-06-14T11:55:53-04:00",
+        "marketing_opt_in_level": null,
+        "tax_exemptions": [],
+        "admin_graphql_api_id": "gid://shopify/Customer/7121192321330",
+        "default_address": {
+          "id": 9341920411954,
+          "customer_id": 7121192321330,
+          "first_name": "Ramy",
+          "last_name": "Mohammed",
+          "company": null,
+          "address1": "2 ammar bn yasser st. alagami alexandria",
+          "address2": null,
+          "city": null,
+          "province": null,
+          "country": null,
+          "zip": null,
+          "phone": "01556003397",
+          "name": "Ramy Mohammed",
+          "province_code": null,
+          "country_code": null,
+          "country_name": null,
+          "default": true
+        }
+      },
+      "discount_applications": [],
+      "fulfillments": [],
+      "line_items": [
+        {
+          "id": 13946106609970,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946106609970",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | KID'S STAN SMITH - 1 / white",
+          "price": "90.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "90.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "90.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398827258162,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-02-white-1",
+          "taxable": true,
+          "title": "ADIDAS | KID'S STAN SMITH",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344379765042,
+          "variant_inventory_management": "shopify",
+          "variant_title": "1 / white",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946106642738,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946106642738",
+          "fulfillable_quantity": 3,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 3,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946106675506,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946106675506",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | SUPERSTAR 80S - 5 / white",
+          "price": "170.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "170.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "170.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398823129394,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-01-white-5",
+          "taxable": true,
+          "title": "ADIDAS | SUPERSTAR 80S",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344369279282,
+          "variant_inventory_management": "shopify",
+          "variant_title": "5 / white",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946106708274,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946106708274",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946106741042,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946106741042",
+          "fulfillable_quantity": 2,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK - OS / black",
+          "price": "70.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828339506,
+          "properties": [],
+          "quantity": 2,
+          "requires_shipping": true,
+          "sku": "AD-03-black-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382320946,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / black",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946106773810,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946106773810",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK - OS / black",
+          "price": "70.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828339506,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-03-black-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382320946,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / black",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946106806578,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946106806578",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946106839346,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946106839346",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | KID'S STAN SMITH - 1 / white",
+          "price": "90.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "90.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "90.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398827258162,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-02-white-1",
+          "taxable": true,
+          "title": "ADIDAS | KID'S STAN SMITH",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344379765042,
+          "variant_inventory_management": "shopify",
+          "variant_title": "1 / white",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946106872114,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946106872114",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946106904882,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946106904882",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | SUPERSTAR 80S - 5 / white",
+          "price": "170.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "170.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "170.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398823129394,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-01-white-5",
+          "taxable": true,
+          "title": "ADIDAS | SUPERSTAR 80S",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344369279282,
+          "variant_inventory_management": "shopify",
+          "variant_title": "5 / white",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946106937650,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946106937650",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946106970418,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946106970418",
+          "fulfillable_quantity": 3,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK - OS / black",
+          "price": "70.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828339506,
+          "properties": [],
+          "quantity": 3,
+          "requires_shipping": true,
+          "sku": "AD-03-black-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382320946,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / black",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107003186,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107003186",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK - OS / black",
+          "price": "70.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828339506,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-03-black-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382320946,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / black",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107035954,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107035954",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107068722,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107068722",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | KID'S STAN SMITH - 1 / white",
+          "price": "90.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "90.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "90.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398827258162,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-02-white-1",
+          "taxable": true,
+          "title": "ADIDAS | KID'S STAN SMITH",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344379765042,
+          "variant_inventory_management": "shopify",
+          "variant_title": "1 / white",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107101490,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107101490",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107134258,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107134258",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | SUPERSTAR 80S - 5 / white",
+          "price": "170.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "170.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "170.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398823129394,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-01-white-5",
+          "taxable": true,
+          "title": "ADIDAS | SUPERSTAR 80S",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344369279282,
+          "variant_inventory_management": "shopify",
+          "variant_title": "5 / white",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107167026,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107167026",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107199794,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107199794",
+          "fulfillable_quantity": 4,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK - OS / black",
+          "price": "70.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828339506,
+          "properties": [],
+          "quantity": 4,
+          "requires_shipping": true,
+          "sku": "AD-03-black-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382320946,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / black",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107232562,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107232562",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK - OS / black",
+          "price": "70.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828339506,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-03-black-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382320946,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / black",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107265330,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107265330",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107298098,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107298098",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | KID'S STAN SMITH - 1 / white",
+          "price": "90.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "90.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "90.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398827258162,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-02-white-1",
+          "taxable": true,
+          "title": "ADIDAS | KID'S STAN SMITH",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344379765042,
+          "variant_inventory_management": "shopify",
+          "variant_title": "1 / white",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107330866,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107330866",
+          "fulfillable_quantity": 3,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 3,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107363634,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107363634",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | SUPERSTAR 80S - 5 / white",
+          "price": "170.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "170.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "170.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398823129394,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-01-white-5",
+          "taxable": true,
+          "title": "ADIDAS | SUPERSTAR 80S",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344369279282,
+          "variant_inventory_management": "shopify",
+          "variant_title": "5 / white",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107396402,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107396402",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107429170,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107429170",
+          "fulfillable_quantity": 2,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK - OS / black",
+          "price": "70.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828339506,
+          "properties": [],
+          "quantity": 2,
+          "requires_shipping": true,
+          "sku": "AD-03-black-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382320946,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / black",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107461938,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107461938",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK - OS / black",
+          "price": "70.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828339506,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-03-black-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382320946,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / black",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107494706,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107494706",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107527474,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107527474",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | KID'S STAN SMITH - 1 / white",
+          "price": "90.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "90.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "90.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398827258162,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-02-white-1",
+          "taxable": true,
+          "title": "ADIDAS | KID'S STAN SMITH",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344379765042,
+          "variant_inventory_management": "shopify",
+          "variant_title": "1 / white",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107560242,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107560242",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107593010,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107593010",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | SUPERSTAR 80S - 5 / white",
+          "price": "170.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "170.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "170.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398823129394,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-01-white-5",
+          "taxable": true,
+          "title": "ADIDAS | SUPERSTAR 80S",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344369279282,
+          "variant_inventory_management": "shopify",
+          "variant_title": "5 / white",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107625778,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107625778",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107658546,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107658546",
+          "fulfillable_quantity": 3,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK - OS / black",
+          "price": "70.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828339506,
+          "properties": [],
+          "quantity": 3,
+          "requires_shipping": true,
+          "sku": "AD-03-black-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382320946,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / black",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107691314,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107691314",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK - OS / black",
+          "price": "70.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828339506,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-03-black-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382320946,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / black",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107724082,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107724082",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107756850,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107756850",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | KID'S STAN SMITH - 1 / white",
+          "price": "90.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "90.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "90.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398827258162,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-02-white-1",
+          "taxable": true,
+          "title": "ADIDAS | KID'S STAN SMITH",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344379765042,
+          "variant_inventory_management": "shopify",
+          "variant_title": "1 / white",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107789618,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107789618",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107822386,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107822386",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | SUPERSTAR 80S - 5 / white",
+          "price": "170.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "170.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "170.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398823129394,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-01-white-5",
+          "taxable": true,
+          "title": "ADIDAS | SUPERSTAR 80S",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344369279282,
+          "variant_inventory_management": "shopify",
+          "variant_title": "5 / white",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107855154,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107855154",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107887922,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107887922",
+          "fulfillable_quantity": 4,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK - OS / black",
+          "price": "70.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828339506,
+          "properties": [],
+          "quantity": 4,
+          "requires_shipping": true,
+          "sku": "AD-03-black-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382320946,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / black",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107920690,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107920690",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK - OS / black",
+          "price": "70.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "70.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828339506,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-03-black-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382320946,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / black",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        },
+        {
+          "id": 13946107953458,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13946107953458",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR - OS / blue",
+          "price": "50.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "50.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398828503346,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "AD-04\r\n-blue-OS",
+          "taxable": true,
+          "title": "ADIDAS | CLASSIC BACKPACK | LEGEND INK MULTICOLOUR",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344382910770,
+          "variant_inventory_management": "shopify",
+          "variant_title": "OS / blue",
+          "vendor": "ADIDAS",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        }
+      ],
+      "payment_terms": null,
+      "refunds": [],
+      "shipping_address": null,
+      "shipping_lines": []
+    },
+    {
+      "id": 5388972392754,
+      "admin_graphql_api_id": "gid://shopify/Order/5388972392754",
+      "app_id": 44139282433,
+      "browser_ip": null,
+      "buyer_accepts_marketing": false,
+      "cancel_reason": null,
+      "cancelled_at": null,
+      "cart_token": null,
+      "checkout_id": null,
+      "checkout_token": null,
+      "client_details": null,
+      "closed_at": null,
+      "company": null,
+      "confirmed": true,
+      "contact_email": "ramy3r@yahoo.com",
+      "created_at": "2023-06-21T05:29:10-04:00",
+      "currency": "EGP",
+      "current_subtotal_price": "140.00",
+      "current_subtotal_price_set": {
+        "shop_money": {
+          "amount": "140.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "140.00",
+          "currency_code": "EGP"
+        }
+      },
+      "current_total_additional_fees_set": null,
+      "current_total_discounts": "0.00",
+      "current_total_discounts_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        }
+      },
+      "current_total_duties_set": null,
+      "current_total_price": "140.00",
+      "current_total_price_set": {
+        "shop_money": {
+          "amount": "140.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "140.00",
+          "currency_code": "EGP"
+        }
+      },
+      "current_total_tax": "0.00",
+      "current_total_tax_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        }
+      },
+      "customer_locale": null,
+      "device_id": null,
+      "discount_codes": [],
+      "email": "ramy3r@yahoo.com",
+      "estimated_taxes": false,
+      "financial_status": "paid",
+      "fulfillment_status": null,
+      "landing_site": null,
+      "landing_site_ref": null,
+      "location_id": null,
+      "merchant_of_record_app_id": null,
+      "name": "#1055",
+      "note": null,
+      "note_attributes": [],
+      "number": 55,
+      "order_number": 1055,
+      "order_status_url": "https://mad43-alex-and-team2.myshopify.com/77159006514/orders/923ec9f89a0e78fd6333df442c451a6c/authenticate?key=18ddfaff094332ac1cf4dbc37465f29a",
+      "original_total_additional_fees_set": null,
+      "original_total_duties_set": null,
+      "payment_gateway_names": [],
+      "phone": null,
+      "presentment_currency": "EGP",
+      "processed_at": "2023-06-21T05:29:10-04:00",
+      "reference": null,
+      "referring_site": null,
+      "source_identifier": null,
+      "source_name": "44139282433",
+      "source_url": null,
+      "subtotal_price": "140.00",
+      "subtotal_price_set": {
+        "shop_money": {
+          "amount": "140.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "140.00",
+          "currency_code": "EGP"
+        }
+      },
+      "tags": "",
+      "tax_lines": [],
+      "taxes_included": false,
+      "test": false,
+      "token": "923ec9f89a0e78fd6333df442c451a6c",
+      "total_discounts": "0.00",
+      "total_discounts_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        }
+      },
+      "total_line_items_price": "140.00",
+      "total_line_items_price_set": {
+        "shop_money": {
+          "amount": "140.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "140.00",
+          "currency_code": "EGP"
+        }
+      },
+      "total_outstanding": "140.00",
+      "total_price": "140.00",
+      "total_price_set": {
+        "shop_money": {
+          "amount": "140.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "140.00",
+          "currency_code": "EGP"
+        }
+      },
+      "total_shipping_price_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        }
+      },
+      "total_tax": "0.00",
+      "total_tax_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "EGP"
+        }
+      },
+      "total_tip_received": "0.00",
+      "total_weight": 0,
+      "updated_at": "2023-06-21T05:30:11-04:00",
+      "user_id": null,
+      "billing_address": null,
+      "customer": {
+        "id": 7121192321330,
+        "email": "ramy3r@yahoo.com",
+        "accepts_marketing": false,
+        "created_at": "2023-06-14T11:55:53-04:00",
+        "updated_at": "2023-06-22T03:27:13-04:00",
+        "first_name": "Ramy",
+        "last_name": "Mohammed",
+        "state": "enabled",
+        "note": null,
+        "verified_email": true,
+        "multipass_identifier": null,
+        "tax_exempt": false,
+        "phone": "+201556003397",
+        "email_marketing_consent": {
+          "state": "not_subscribed",
+          "opt_in_level": "single_opt_in",
+          "consent_updated_at": null
+        },
+        "sms_marketing_consent": {
+          "state": "not_subscribed",
+          "opt_in_level": "single_opt_in",
+          "consent_updated_at": null,
+          "consent_collected_from": "OTHER"
+        },
+        "tags": "",
+        "currency": "EGP",
+        "accepts_marketing_updated_at": "2023-06-14T11:55:53-04:00",
+        "marketing_opt_in_level": null,
+        "tax_exemptions": [],
+        "admin_graphql_api_id": "gid://shopify/Customer/7121192321330",
+        "default_address": {
+          "id": 9341920411954,
+          "customer_id": 7121192321330,
+          "first_name": "Ramy",
+          "last_name": "Mohammed",
+          "company": null,
+          "address1": "2 ammar bn yasser st. alagami alexandria",
+          "address2": null,
+          "city": null,
+          "province": null,
+          "country": null,
+          "zip": null,
+          "phone": "01556003397",
+          "name": "Ramy Mohammed",
+          "province_code": null,
+          "country_code": null,
+          "country_name": null,
+          "default": true
+        }
+      },
+      "discount_applications": [],
+      "fulfillments": [],
+      "line_items": [
+        {
+          "id": 13944986730802,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13944986730802",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "CONVERSE | CHUCK TAYLOR ALL STAR II HI - 4 / black",
+          "price": "140.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "140.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "140.00",
+              "currency_code": "EGP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8398826537266,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "C-02-black-4",
+          "taxable": true,
+          "title": "CONVERSE | CHUCK TAYLOR ALL STAR II HI",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EGP"
+            }
+          },
+          "variant_id": 45344377897266,
+          "variant_inventory_management": "shopify",
+          "variant_title": "4 / black",
+          "vendor": "CONVERSE",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        }
+      ],
+      "payment_terms": null,
+      "refunds": [],
+      "shipping_address": null,
+      "shipping_lines": []
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 package com.example.shopify.presentation.screens.authentication.registeration
 
 import android.util.Log
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -10,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -17,7 +19,12 @@ import androidx.navigation.NavController
 import com.example.shopify.R
 import com.example.shopify.utilities.ShopifyApplication
 import com.example.shopify.core.helpers.AuthenticationResponseState
+import com.example.shopify.core.navigation.Screens
+import com.example.shopify.data.models.GoogleSignInState
 import com.example.shopify.data.repositories.authentication.IAuthRepository
+import com.example.shopify.presentation.common.composables.LottieAnimation
+import com.example.shopify.presentation.common.composables.ShowCustomDialog
+import kotlinx.coroutines.launch
 import java.io.IOException
 
 @Composable
@@ -32,6 +39,12 @@ fun SignupScreen(signupNavController: NavController) {
         mutableStateOf("")
     }
     var address by remember {
+        mutableStateOf("")
+    }
+    var city by remember {
+        mutableStateOf("")
+    }
+    var country by remember {
         mutableStateOf("")
     }
     var phone by remember {
@@ -71,12 +84,13 @@ fun SignupScreen(signupNavController: NavController) {
         is AuthenticationResponseState.Loading -> {
             error = ""
             Log.i("TAG", " LOADING")
+            LottieAnimation(animation = R.raw.shopping_cart_loading_animation)
         }
 
         is AuthenticationResponseState.Error -> {
-            when (authResponse.message) {
-                is IOException -> error = stringResource(id = R.string.please_check_network)
-                else -> error = stringResource(id = R.string.email_password_must_be_unique)
+            error = when (authResponse.message) {
+                is IOException -> stringResource(id = R.string.please_check_network)
+                else -> stringResource(id = R.string.email_password_must_be_unique)
             }
             Log.i("TAG", " ERROR ${authResponse.message}")
         }
@@ -86,6 +100,7 @@ fun SignupScreen(signupNavController: NavController) {
             Log.i("TAG", "THERE'S SOMETHING WRONG ")
         }
     }
+
     SignupContentScreen(
         signupViewModel = signupViewModel,
         firstName = firstName,
@@ -98,6 +113,10 @@ fun SignupScreen(signupNavController: NavController) {
         onPhoneChanged = { phone = it },
         address = address,
         onAddressChanged = { address = it },
+        city = city,
+        onCityChanged = { city = it },
+        country = country,
+        onCountryChanged = { country = it },
         password = password,
         onPasswordChanged = { password = it },
         confirmPassword = confirmPassword,

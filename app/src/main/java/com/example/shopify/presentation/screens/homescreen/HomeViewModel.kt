@@ -24,9 +24,6 @@ class HomeViewModel(
     private var _randomList: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val randomList: StateFlow<UiState> = _randomList
 
-    private var _favProduct: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val favProduct: StateFlow<Boolean> = _favProduct
-
     init {
         getBrands()
         getRandomProducts()
@@ -35,24 +32,25 @@ class HomeViewModel(
 
     fun getBrands() {
         viewModelScope.launch(Dispatchers.IO) {
-            val response = repository.getBrands()
-            if (response.isSuccessful && response.body() != null) {
+        val response = repository.getBrands()
+            if(response.isSuccessful && response.body()!= null){
                 _brandsList.value = UiState.Success(response.body())
             }
-            //   _brandsList.value = UiState.Error
+         //   _brandsList.value = UiState.Error
         }
     }
 
-    fun getRandomProducts() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = repository.getRandomProducts()
-            if (response.isSuccessful && response.body() != null) {
-                _randomList.value = UiState.Success(response.body())
-            } else {
-                _randomList.value = UiState.Error(response.errorBody())
-            }
-        }
-    }
+     fun getRandomProducts() {
+         viewModelScope.launch(Dispatchers.IO) {
+             val response = repository.getRandomProducts()
+             if (response.isSuccessful && response.body() != null) {
+                 _randomList.value = UiState.Success(response.body())
+             }
+             else{
+                 _randomList.value = UiState.Error(response.errorBody())
+             }
+         }
+     }
 
 
     fun addWishlistItem(productId: Long, variantId: Long) {
@@ -61,8 +59,8 @@ class HomeViewModel(
         }
     }
 
-    suspend fun isFavorite(productId: Long/*, variantId: Long*/): Boolean {
-        return wishlistManager.isFavorite(productId/*, variantId*/)
+    suspend fun isFavorite(productId: Long/*, variantId: Long*/) :Boolean{
+        return wishlistManager.isFavorite(productId)
     }
 
     fun removeWishlistItem(productId: Long) {

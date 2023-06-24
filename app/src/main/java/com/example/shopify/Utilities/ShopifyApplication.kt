@@ -12,6 +12,8 @@ import com.example.shopify.data.managers.address.AddressManager
 import com.example.shopify.data.managers.cart.CartManager
 import com.example.shopify.data.managers.orders.OrdersManager
 import com.example.shopify.data.managers.wishlist.WishlistManager
+import com.example.shopify.data.models.CollectCurrentCustomerData
+import com.example.shopify.data.models.GetCurrentCustomer.getCurrentCustomer
 import com.example.shopify.data.remote.authentication.AuthenticationClient
 import com.example.shopify.data.remote.authentication.IAuthenticationClient
 import com.example.shopify.data.remote.product.RemoteResource
@@ -66,6 +68,7 @@ class ShopifyApplication : Application() {
             SharedPreference.customPreference(applicationContext, CUSTOMER_PREF_NAME)
         )
     }
+    var currentCustomer: CollectCurrentCustomerData? = null
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate() {
@@ -75,9 +78,12 @@ class ShopifyApplication : Application() {
         ConnectionUtil.initialize(applicationContext)
         if (authRepository.checkedLoggedIn()) { //Is loggedIn
             GlobalScope.launch(Dispatchers.IO) {
-                CurrentUserHelper.initialize(authRepository)
-                DiscountHelper.initialize(applicationContext)
+//                currentCustomer = getCurrentCustomer(authRepository)
+//                CurrentUserHelper.initialize(authRepository)
+//                DiscountHelper.initialize(applicationContext)
             }
+        } else {  //IsNot LoggedIn
+            currentCustomer = null
         }
     }
 

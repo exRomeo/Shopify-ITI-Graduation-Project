@@ -3,11 +3,11 @@ package com.example.shopify.presentation.screens.product_details_screen
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,9 +19,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.shopify.R
+import com.example.shopify.core.helpers.CurrentUserHelper
 import com.example.shopify.utilities.ShopifyApplication
 import com.example.shopify.core.helpers.UiState
-import com.example.shopify.core.utils.ConnectionUtil
+import com.example.shopify.core.navigation.Screens
 import com.example.shopify.data.managers.cart.CartManager
 import com.example.shopify.data.managers.wishlist.WishlistManager
 import com.example.shopify.data.models.Image
@@ -31,8 +32,6 @@ import com.example.shopify.data.models.SingleProductResponseBody
 import com.example.shopify.data.repositories.product.IProductRepository
 import com.example.shopify.presentation.common.composables.LottieAnimation
 import com.example.shopify.presentation.common.composables.ShowCustomDialog
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import java.io.IOException
 import kotlin.random.Random
 
@@ -69,17 +68,17 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
     var showFavDialog by remember { mutableStateOf(false) }
     var showToast by remember { mutableStateOf(false) }
     var showReviewsDialog by remember { mutableStateOf(false) }
+    var userIsLoggedIn by remember { mutableStateOf(true) }
     var isFavorite by remember { mutableStateOf(false) }
     var toastMessage by remember { mutableStateOf(0) }
     var dialogMessage by remember { mutableStateOf(0) }
-
     var rating by remember {
         mutableStateOf(3.5)
     }
     LaunchedEffect(Unit) { rating = Random.nextDouble(3.0, 5.0) }
 
     LaunchedEffect(Unit) {
-        productDetailsViewModel.getProductInfo(productId/*8398820573490*/)
+        productDetailsViewModel.getProductInfo(productId)
         productDetailsViewModel.isFavorite(productId)
         productDetailsViewModel.favProduct.collect() { state ->
             if (state) {
@@ -90,7 +89,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
 
     when (val state = productState) {
         is UiState.Success<*> -> {
-            LaunchedEffect(key1 = state /*, favoriteState*/) {
+            LaunchedEffect(key1 = state) {
                 product =
                     (productState as UiState.Success<SingleProductResponseBody>).data.product
             }
@@ -105,23 +104,28 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                     showReviewsDialog = showReviewsDialog,
                     showToast = showToast,
                     showCartDialog = showCartDialog,
+                    userIsLoggedIn = userIsLoggedIn,
                     rating = rating,
+                    buttonTitle = if (productAddedToCart) R.string.check_out else R.string.add_to_cart,
                     dialogMessage = dialogMessage,
                     toastMessage = toastMessage,
                     itemCount = itemCount,
                     product = product,
                     onFavoriteChanged = {
-                        showFavDialog = true
-                        showToast = false
-                        dialogMessage =
-                            if (isFavorite) R.string.fav_item_removal_warning else
-                                R.string.add_item_to_fav_message
+                        if (CurrentUserHelper.isLoggedIn()) {
+                            userIsLoggedIn = true
+                            showFavDialog = true
+                            showToast = false
+                            dialogMessage =
+                                if (isFavorite) R.string.fav_item_removal_warning else
+                                    R.string.add_item_to_fav_message
+                        } else {
+                            userIsLoggedIn = false
+                        }
                     },
                     onAcceptFavChanged = {
                         showFavDialog = false
                         showToast = true
-//                        productDetailsViewModel.isFavorite(productId)
-//                        isFavorite = favoriteState
                         isFavorite = !isFavorite
                         toastMessage = if (isFavorite) {
                             productDetailsViewModel.addWishlistItem(productSample)
@@ -164,25 +168,35 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                     },
                     onDismissRemoveCart = {
                         showCartDialog = false
+                        userIsLoggedIn = true
                     },
 
                     addToCartAction = {
                         showToast = false
-                        if (itemCount > 0) {
-                            productDetailsViewModel.addItemToCart(productSample)
-                            productAddedToCart = true
-                            showToast = true
-                            toastMessage = R.string.product_add_to_cart_success
+                        if (CurrentUserHelper.isLoggedIn()) {
+                            userIsLoggedIn = true
+                            if (productAddedToCart) {
+                                navController.navigate(Screens.Checkout.route)
+                            } else {
+                                if (itemCount > 0) {
+                                    productDetailsViewModel.addItemToCart(productSample)
+                                    productAddedToCart = true
+                                    showToast = true
+                                    toastMessage = R.string.product_add_to_cart_success
+                                } else {
+                                    showToast = true
+                                    toastMessage = R.string.please_enter_quantity_of_product
+                                }
+                            }
                         } else {
-                            showToast = true
-                            toastMessage = R.string.please_enter_quantity_of_product
+                            showNetworkDialog = true
+                            userIsLoggedIn = false
                         }
+
                     },
 
                     showReviews = { showReviewsDialog = true },
                     onDismissShowReview = { showReviewsDialog = false },
-//        onTryAgainConnection = {
-//            showNetworkDialog = false }
                 )
             } else {
                 showNetworkDialog = true
@@ -193,6 +207,7 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
                             description = R.string.unexpected_error,
                             buttonText = R.string.tryAgain,
                             animatedId = R.raw.error_animation,
+                            buttonColor = MaterialTheme.colorScheme.error,
                             onClickButton = { showNetworkDialog = false },
                             onClose = {
                                 showNetworkDialog = false
@@ -205,42 +220,47 @@ fun ProductDetailsScreen(navController: NavHostController, productId: Long) {
             }
 
         }
-
         is UiState.Error -> {
-            if (state.error != null) {
-                showNetworkDialog = true
-                if (showNetworkDialog)
-                    Surface(color = Color.Gray) {
-                        ShowCustomDialog(
-                            title = R.string.something_is_wrong,
-                            description = R.string.unexpected_error,
-                            buttonText = R.string.tryAgain,
-                            animatedId = R.raw.error_animation,
-                            onClickButton = { showNetworkDialog = false },
-                            onClose = {
-                                showNetworkDialog = false
-                                navController.popBackStack()
-                            }
-                        )
+            when (state.error) {
+                null -> {
+                    showNetworkDialog = true
+                    if (showNetworkDialog)
+                        Surface(color = Color.Gray) {
+                            ShowCustomDialog(
+                                title = R.string.network_connection,
+                                description = R.string.not_connection,
+                                buttonText = R.string.tryAgain,
+                                animatedId = R.raw.custom_network_error,
+                                onClickButton = { showNetworkDialog = false },
+                                onClose = {
+                                    showNetworkDialog = false
+                                    navController.popBackStack()
+                                }
+                            )
 
-                    }
-            } else {
-                showNetworkDialog = true
-                if (showNetworkDialog)
-                    Surface(color = Color.Gray) {
-                        ShowCustomDialog(
-                            title = R.string.network_connection,
-                            description = R.string.not_connection,
-                            buttonText = R.string.tryAgain,
-                            animatedId = R.raw.custom_network_error,
-                            onClickButton = { showNetworkDialog = false },
-                            onClose = {
-                                showNetworkDialog = false
-                                navController.popBackStack()
-                            }
-                        )
-                    }
+                        }
+                }
+                else -> {
+                    showNetworkDialog = true
+                   if (showNetworkDialog)
+                        Surface(color = Color.Gray) {
+                            ShowCustomDialog(
+                                title = R.string.something_is_wrong,
+                                description = R.string.unexpected_error,
+                                buttonText = R.string.tryAgain,
+                                animatedId = R.raw.error_animation,
+                                buttonColor = MaterialTheme.colorScheme.error,
+                                onClickButton = { showNetworkDialog = false },
+                                onClose = {
+                                    showNetworkDialog = false
+                                    navController.popBackStack()
+                                }
+                            )
+
+                        }
+                }
             }
+
         }
 
         else -> {

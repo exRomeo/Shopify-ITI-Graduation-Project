@@ -11,6 +11,7 @@ import com.example.shopify.core.utils.ConnectionUtil
 import com.example.shopify.data.models.address.Address
 import com.example.shopify.data.models.draftorder.LineItem
 import com.example.shopify.data.models.order.Customer
+import com.example.shopify.data.models.order.DiscountCode
 import com.example.shopify.data.models.order.OrderBody
 import com.example.shopify.data.models.order.OrderOut
 import com.example.shopify.data.repositories.checkout.ICheckoutRepository
@@ -49,6 +50,8 @@ class CheckoutViewModel(private val checkoutRepository: ICheckoutRepository) : V
 
     var currencySymbol: String = "EGP"
 
+    var isDiscountApplied = false
+    var percentage = 0
     private var currencyRate: Double = 1.00
     private lateinit var chosenAddress: Address
 
@@ -103,6 +106,13 @@ class CheckoutViewModel(private val checkoutRepository: ICheckoutRepository) : V
             checkoutRepository.makeOrder(
                 OrderBody(
                     OrderOut(
+                        discountCodes = if (isDiscountApplied) listOf(
+                            DiscountCode(
+                                "FakeCode;D",
+                                percentage.toString(),
+                                type = "percentage"
+                            )
+                        ) else null,
                         shippingAddress = chosenAddress,
                         lineItems = checkoutRepository.getCart(),
                         customer = Customer(id = chosenAddress.customerID)
@@ -196,6 +206,15 @@ class CheckoutViewModel(private val checkoutRepository: ICheckoutRepository) : V
             }
 
             is PaymentSheetResult.Failed -> showMessage(R.string.payment_failed)
+        }
+    }
+
+    fun applyDiscount(percentage: Int) {
+        this.percentage = percentage
+        if (!isDiscountApplied) {
+            val discountAmount = totalPrice.value * percentage / 100
+            _totalPrice.value = totalPrice.value - discountAmount
+            isDiscountApplied = true
         }
     }
 }

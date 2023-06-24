@@ -3,6 +3,7 @@ package com.example.shopify.presentation.screens.product_details_screen
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.shopify.core.helpers.AuthenticationResponseState
 import com.example.shopify.core.helpers.UiState
 import com.example.shopify.data.managers.cart.CartManager
 import com.example.shopify.data.managers.wishlist.WishlistManager
@@ -33,6 +34,7 @@ class ProductDetailsViewModel(
                     _productInfoState.value = UiState.Error(response.errorBody())
                 }
             } catch (e: Exception) {
+                // handle no network connection error
                 _productInfoState.value = UiState.Error(null)
             }
         }
@@ -69,4 +71,5 @@ class ProductDetailsViewModel(
             cartManager.removeCart(product.id)
         }
     }
+
 }
