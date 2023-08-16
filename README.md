@@ -13,7 +13,7 @@ This is a graduation project for ITI which is an ecommerce mobile application th
   -ACCESS_TOKEN= INSERT_YOUR_SHOPIFY_ACCES_TOKEN  
   -CURRENCY_APIKEY= INSERT_YOUR_API_KEY  
   -STRIPE_SECRET= INSERT_YOUR_API_KEY  
-  -STRIP_PUB_KEY= INSERT_YOUR_API_KEY  
+  -STRIPE_PUB_KEY= INSERT_YOUR_API_KEY  
   -SERVER_CLIENT = INSERT_YOUR_WEB_CLIENT_ID_FOR_GOOGLE
 
 3. sync gradle and run the app 
